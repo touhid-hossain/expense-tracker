@@ -8,15 +8,17 @@ import {
 import React from "react";
 import RecentSales from "./components/RecentSales";
 import { Link } from "react-router-dom";
+import Overview from "./components/OverviewBarChart";
+import OverviewPieChart from "./components/OverviewPieChart";
 
 const Dashboard = () => {
   return (
     <div className="text-gray-400">
       {/* 1st-part */}
-      <div className="">
-        <div className="flex items-center">
+      <div className="flex items-center">
+        <div className="flex flex-col">
           {/*Dashboard-Cards */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mt-10">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-10">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -118,12 +120,26 @@ const Dashboard = () => {
         </Card> */}
           </div>
 
-          {/*Dashboard Chart */}
-          <div>
-            <h1>Pie-CHart</h1>
-          </div>
+          {/*Overview Bar-Chart */}
+          <Card className="col-span-4 mt-5">
+            <CardHeader>
+              <CardTitle>Overview Bar Chart</CardTitle>
+            </CardHeader>
+            <CardContent className="pl-2">
+              <Overview />
+            </CardContent>
+          </Card>
         </div>
-        <div>Bar-Chart</div>
+        {/* Overview Pie-Chart */}
+
+        <Card className="col-span-2 mt-5">
+          <CardHeader>
+            <CardTitle>Overview Pie Chart</CardTitle>
+          </CardHeader>
+          <CardContent className="pl-2">
+            <OverviewPieChart />
+          </CardContent>
+        </Card>
       </div>
 
       {/* 2nd-part */}
