@@ -10,9 +10,9 @@ const RecentSales = () => {
           <AvatarFallback>OM</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Olivia Martin</p>
+          <p className="text-sm font-medium leading-none">Salary</p>
           <p className="text-sm text-muted-foreground">
-            olivia.martin@email.com
+           oct 1 - 01.00pm
           </p>
         </div>
         <div className="ml-auto font-medium">+$1,999.00</div>
@@ -23,8 +23,8 @@ const RecentSales = () => {
           <AvatarFallback>JL</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Jackson Lee</p>
-          <p className="text-sm text-muted-foreground">jackson.lee@email.com</p>
+          <p className="text-sm font-medium leading-none">House Rent</p>
+          <p className="text-sm text-muted-foreground">oct 2 - 03.00pm</p>
         </div>
         <div className="ml-auto font-medium">+$39.00</div>
       </div>
@@ -34,9 +34,9 @@ const RecentSales = () => {
           <AvatarFallback>IN</AvatarFallback>
         </Avatar>
         <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Isabella Nguyen</p>
+          <p className="text-sm font-medium leading-none">Gas Bill</p>
           <p className="text-sm text-muted-foreground">
-            isabella.nguyen@email.com
+          oct 5 - 05.00pm
           </p>
         </div>
         <div className="ml-auto font-medium">+$299.00</div>

@@ -117,11 +117,11 @@ const Dashboard = () => {
               +201 since last hour
             </p>
           </CardContent>
-        </Card> */}
+            </Card> */}
           </div>
 
           {/*Overview Bar-Chart */}
-          <Card className="col-span-4 mt-5">
+          <Card className="mt-5">
             <CardHeader>
               <CardTitle>Overview Bar Chart</CardTitle>
             </CardHeader>
@@ -132,7 +132,7 @@ const Dashboard = () => {
         </div>
         {/* Overview Pie-Chart */}
 
-        <Card className="col-span-2 mt-5">
+        <Card className="mt-5">
           <CardHeader>
             <CardTitle>Overview Pie Chart</CardTitle>
           </CardHeader>
@@ -144,7 +144,7 @@ const Dashboard = () => {
 
       {/* 2nd-part */}
       {/* Recent Transaction List */}
-      <Card className="col-span-3 mt-10">
+      <Card className="mt-10">
         <CardHeader className="flex flex-row justify-between items-center">
           <div>
             <CardTitle className="mb-2">Recent Sales</CardTitle>

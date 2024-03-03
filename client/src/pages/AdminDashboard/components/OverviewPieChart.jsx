@@ -9,6 +9,7 @@ const data = [
 ];
 
 const renderActiveShape = (props) => {
+    console.log(props)
   const RADIAN = Math.PI / 180;
   const {
     cx,
@@ -91,8 +92,8 @@ const OverviewPieChart = () => {
   );
 
   return (
-    // <ResponsiveContainer width="100%" height="100%">
-    <PieChart width={400} height={400}>
+    <ResponsiveContainer width={400} height={400}>
+    <PieChart>
       <Pie
         activeIndex={activeIndex}
         activeShape={renderActiveShape}
@@ -106,7 +107,7 @@ const OverviewPieChart = () => {
         onMouseEnter={onPieEnter}
       />
     </PieChart>
-    // </ResponsiveContainer>
+   </ResponsiveContainer>
   );
 };
 
