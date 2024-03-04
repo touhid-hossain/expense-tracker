@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 const Sidebar = () => {
   return (
-    <div className="flex flex-col items-center justify-between gap-20 w-1/5 px-5 py-8 bg-zinc-800">
+    <div className="flex flex-shrink-0 flex-col items-center justify-between gap-20 w-[400px] px-5 py-8 h-screen sticky top-0 bg-zinc-800">
       {/* User */}
       <div className="flex flex-col gap-3 items-center">
         <img src={UserImg} className="max-w-[140px]  rounded-lg" alt="" />

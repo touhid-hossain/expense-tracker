@@ -5,7 +5,6 @@
   text-align: center;
 } */
 
-
 /* Store Colors for Gallery */
 /* :root {
   --color-red: rgb(245, 79, 79);
@@ -25,3 +24,7 @@
   justify-content: center;
   flex-direction: column;
 } */
+
+.sidebarWrapper {
+  height: min(100vh, 1000px);
+}
