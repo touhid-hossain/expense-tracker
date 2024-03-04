@@ -15,7 +15,7 @@ const Dashboard = () => {
   return (
     <div className="text-gray-400">
       {/* 1st-part */}
-      <div className="flex items-center">
+      <div className="flex gap-4">
         <div className="flex flex-col">
           {/*Dashboard-Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-10">
@@ -132,30 +132,30 @@ const Dashboard = () => {
         </div>
         {/* Overview Pie-Chart */}
 
-        <Card className="mt-5">
+        {/* <Card className="mt-5">
           <CardHeader>
             <CardTitle>Overview Pie Chart</CardTitle>
           </CardHeader>
           <CardContent className="pl-2">
             <OverviewPieChart />
           </CardContent>
+        </Card> */}
+
+        {/* 2nd-part */}
+        {/* Recent Transaction List */}
+        <Card className="w-2/4 mt-10">
+          <CardHeader className="flex flex-row justify-between items-center">
+            <div>
+              <CardTitle className="mb-2">Recent Sales</CardTitle>
+              <CardDescription>You made 265 sales this month.</CardDescription>
+            </div>
+            <Link to="/transaction">View All.</Link>
+          </CardHeader>
+          <CardContent>
+            <RecentSales />
+          </CardContent>
         </Card>
       </div>
-
-      {/* 2nd-part */}
-      {/* Recent Transaction List */}
-      <Card className="mt-10">
-        <CardHeader className="flex flex-row justify-between items-center">
-          <div>
-            <CardTitle className="mb-2">Recent Sales</CardTitle>
-            <CardDescription>You made 265 sales this month.</CardDescription>
-          </div>
-          <Link to="/transaction">View All.</Link>
-        </CardHeader>
-        <CardContent>
-          <RecentSales />
-        </CardContent>
-      </Card>
     </div>
   );
 };
