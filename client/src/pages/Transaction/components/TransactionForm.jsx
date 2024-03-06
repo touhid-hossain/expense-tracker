@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,7 +35,7 @@ const TransactionForm = () => {
               control={form.control}
               name="transactionName"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel>Transaction Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter transaction name" {...field} />
@@ -49,7 +48,7 @@ const TransactionForm = () => {
               control={form.control}
               name="optionTypes"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel>Transaction Types</FormLabel>
                   <FormControl>
                     <Select {...field}>
@@ -73,7 +72,7 @@ const TransactionForm = () => {
               control={form.control}
               name="amount"
               render={({ field }) => (
-                <FormItem className="">
+                <FormItem>
                   <FormLabel>Amount</FormLabel>
                   <FormControl>
                     <Input

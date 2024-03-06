@@ -27,14 +27,14 @@ const SettingForm = () => {
   return (
     <Form {...form}>
       <form
-        className="grid grid-cols-2"
+        className="grid grid-cols-2 gap-10 "
         onSubmit={form.handleSubmit((data) => console.log(data))}
       >
         <FormField
           control={form.control}
           name="First Name"
           render={({ field }) => (
-            <FormItem className="">
+            <FormItem>
               <FormLabel>First Name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter your first name" {...field} />
@@ -47,7 +47,7 @@ const SettingForm = () => {
           control={form.control}
           name="Last Name"
           render={({ field }) => (
-            <FormItem className="">
+            <FormItem>
               <FormLabel>Last Name</FormLabel>
               <FormControl>
                 <Input placeholder="Enter your last name" {...field} />
@@ -60,7 +60,7 @@ const SettingForm = () => {
           control={form.control}
           name="optionTypes"
           render={({ field }) => (
-            <FormItem className="flex flex-col mt-5">
+            <FormItem className="flex flex-col ">
               <FormLabel>Date of Birth</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
@@ -94,7 +94,7 @@ const SettingForm = () => {
           control={form.control}
           name="Email Address"
           render={({ field }) => (
-            <FormItem className="mt-5">
+            <FormItem>
               <FormLabel>Email Address</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="Email Address" {...field} />
@@ -107,7 +107,7 @@ const SettingForm = () => {
           control={form.control}
           name="Enter password"
           render={({ field }) => (
-            <FormItem className="col-span-2 mt-5">
+            <FormItem className="col-span-2">
               <FormLabel>Enter password</FormLabel>
               <FormControl>
                 <div className="flex items-center gap-4">
@@ -119,7 +119,7 @@ const SettingForm = () => {
             </FormItem>
           )}
         />
-        <Button className="mt-5 w-[140px] col-span-2" type="submit">
+        <Button className="w-[140px] col-span-2" type="submit">
           submit
         </Button>
       </form>
