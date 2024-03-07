@@ -26,7 +26,7 @@ const TransactionForm = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="mb-2">Transactions</CardTitle>
+        <CardTitle className="mb-2 text-center">Create a new transaction</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -85,7 +85,7 @@ const TransactionForm = () => {
                 </FormItem>
               )}
             />
-            <Button className="mt-5" type="submit">
+            <Button className="mt-5 w-full" type="submit">
               Submit
             </Button>
           </form>
