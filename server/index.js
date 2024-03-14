@@ -1,7 +1,7 @@
 const express = require("express");
 const userRouter = require("./routes/userRoute");
 const app = express();
-const PORT = 3000;
+const PORT = 5000;
 
 app.use(express.urlencoded({ extended: true }));
 
