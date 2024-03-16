@@ -15,7 +15,7 @@ const Transaction = () => {
           <div className="flex justify-between items-end mb-10">
             <div>
               <CardTitle className="mb-5">
-                Transaction Page ADD SEARCH BAR
+                Transaction Page
               </CardTitle>
               <DialogTrigger asChild>
                 <Button variant="outline">Add new +</Button>
