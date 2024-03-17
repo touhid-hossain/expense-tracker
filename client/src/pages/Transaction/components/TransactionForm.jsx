@@ -94,24 +94,28 @@ const TransactionForm = () => {
                       <SelectContent>
                         {transactionCat ? (
                           <SelectGroup>
-                            <SelectLabel>Income Categories</SelectLabel>
+                            <div className="flex justify-between items-center">
+                              <SelectLabel>Income Categories</SelectLabel>
+                              {/* Add Income Custom Category */}
+                              <CustomCategory />
+                            </div>
                             <SelectItem value="apple">Salary</SelectItem>
                             <SelectItem value="banana">Sold Land</SelectItem>
                             <SelectItem value="banana">
                               Pension Money
                             </SelectItem>
-                            {/* Add Income Custom Category */}
-                            <CustomCategory />
                           </SelectGroup>
                         ) : (
                           <SelectGroup>
-                            <SelectLabel>Expense Categories</SelectLabel>
+                            <div className="flex justify-between items-center">
+                              <SelectLabel>Expense Categories</SelectLabel>
+                              {/* Add Expense Custom Category */}
+                              <CustomCategory />
+                            </div>
                             <SelectItem value="apple">House Rent</SelectItem>
                             <SelectItem value="banana">Gas Bill</SelectItem>
                             <SelectItem value="banana">Water Bill</SelectItem>
                             <SelectItem value="banana">Hooker Bill</SelectItem>
-                            {/* Add Expense Custom Category */}
-                            <CustomCategory />
                           </SelectGroup>
                         )}
                       </SelectContent>

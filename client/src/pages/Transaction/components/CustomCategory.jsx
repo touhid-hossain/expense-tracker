@@ -24,7 +24,7 @@ const CustomCategory = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-2 ml-5">+ Add new category</Button>
+        <Button variant="outline">+ Add new category</Button>
       </DialogTrigger>
       <DialogContent>
         <Card>
