@@ -14,9 +14,60 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useToast } from "@/components/ui/use-toast"
+
+const signUpFormSchema = z.object({
+  name: z
+    .string()
+    .min('1', { message: "This field has to be filled." }),
+  email: z
+    .string()
+    .min(1, { message: "This field has to be filled." })
+    .email("This is not a valid email."),
+  password: z
+    .string()
+    .min(6, { message: "Password has to be at least 6 characters long." })
+});
 
 const SignUp = () => {
-  const form = useForm();
+
+  const { toast } = useToast();
+
+  const form = useForm({
+    resolver: zodResolver(signUpFormSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+      password: ''
+    }
+  });
+
+  async function handleSignup(values) {
+    try {
+      const response = await axios.post('http://localhost:5000/api/v1/user/', {
+        name: values.name,
+        email: values.email,
+        password: values.password
+      });
+
+      if (response.status === 201) {
+        toast({
+          title: "User created Successfully",
+          variant: 'success'
+        })
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: error.response.data.message,
+        variant: "destructive"
+      })
+    }
+  }
+
   return (
     <div className="flex items-center h-screen">
       <Card className="w-[90%] sm:w-[450px] m-auto">
@@ -25,10 +76,10 @@ const SignUp = () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => console.log(data))}>
-            <FormField
+            <form onSubmit={form.handleSubmit(handleSignup)}>
+              <FormField
                 control={form.control}
-                name="username"
+                name="name"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel>Full Name</FormLabel>
@@ -60,7 +111,7 @@ const SignUp = () => {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
+                        type="password"
                         placeholder="Enter password"
                         {...field}
                       />
@@ -70,10 +121,10 @@ const SignUp = () => {
                 )}
               />
               <Button className="mt-5 w-full" type="submit">
-                Sign In
+                Sign Up
               </Button>
               <Button variant="outline" className="mt-5 w-full" type="submit">
-                Sign In with Google
+                Sign Up with Google
               </Button>
             </form>
           </Form>
