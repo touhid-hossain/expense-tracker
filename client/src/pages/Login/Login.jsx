@@ -13,10 +13,65 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/provider/authProvider";
+
+
+const loginFormSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: "This field has to be filled." })
+    .email("This is not a valid email."),
+  password: z
+  .string()
+  .min(6, { message: "Password has to be at least 6 characters long."})
+});
+
 
 const Login = () => {
-  const form = useForm();
+  const { toast } = useToast();
+
+  const { setToken } = useAuth();
+  const navigate = useNavigate();
+
+  const form = useForm({
+    resolver: zodResolver(loginFormSchema),
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  });
+
+  async function handleLogin(values) {
+    try {
+      const response = await axios.post('http://localhost:5000/api/v1/user/authenticate', {
+        email: values.email,
+        password: values.password
+      });
+
+      if (response.status === 200) {
+        toast({
+          title: "Successfully Logged In",
+          variant: 'success'
+        })
+
+       setToken(response.data.token);
+       navigate("/", { replace: true });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: error.response.data.message,
+        variant: "destructive"
+      })
+    }
+  }
+
   return (
     <div className="flex items-center h-screen">
       <Card className="w-[90%] sm:w-[450px] m-auto">
@@ -25,10 +80,10 @@ const Login = () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+            <form onSubmit={form.handleSubmit(handleLogin)}>
               <FormField
                 control={form.control}
-                name="transactionName"
+                name="email"
                 render={({ field }) => (
                   <FormItem className="mb-4">
                     <FormLabel>Email</FormLabel>
