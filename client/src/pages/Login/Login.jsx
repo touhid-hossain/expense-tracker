@@ -59,7 +59,7 @@ const Login = () => {
         email: values.email,
         password: values.password
       });
-
+      console.log(response)
       if (response.status === 200) {
         toast({
           title: "Successfully Logged In",
