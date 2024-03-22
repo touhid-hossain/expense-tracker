@@ -1,6 +1,7 @@
 const UserSchema = require('../models/user.models');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const deleteFile = require('../utils/deleteFile');
 
 // Function for getting all users
 exports.getAllUsers = async (req, res) => {
@@ -13,18 +14,18 @@ exports.getAllUsers = async (req, res) => {
 };
 
 // Function for getting a single user by id
-exports.getUserById = async (req, res) => {
+exports.getUser = async (req, res) => {
   let user;
   try {
-    user = await UserSchema.findById(req.params.id).select('-hashed_password');
-    if (user == null) {
+    user = await UserSchema.findById(req.userId).select('-hashed_password');
+    if (!user) {
       return res.status(404).json({ message: 'Cannot find user' });
     }
   } catch (err) {
     return res.status(500).json({ message: err.message });
   }
 
-  res.json(user);
+  res.status(200).json(user);
 };
 
 // Authenticate User
@@ -50,7 +51,7 @@ exports.authenticate = async (req, res) => {
     }
 
     const token = jwt.sign({ userId: existingUser._id }, 'touhid-nunu', {
-      expiresIn: '1h',
+      expiresIn: '24h',
     });
 
     res.status(200).json({ token });
@@ -103,33 +104,38 @@ exports.createUser = async (req, res) => {
 exports.updateUser = async (req, res) => {
   let user;
   try {
-    user = await UserSchema.findById(req.params.id);
-    if (user == null) {
+    user = await UserSchema.findById(req.userId);
+    if (!user) {
       return res.status(404).json({ message: 'Cannot find user' });
     }
-  } catch (err) {
-    return res.status(500).json({ message: err.message });
-  }
 
-  if (req.body.name !== null) {
-    user.name = req.body.name;
-  }
+    if (req.body.name) {
+      user.name = req.body.name;
+    }
 
-  if (req.body.email !== null) {
-    user.email = req.body.email;
-  }
+    if (req.body.email) {
+      user.email = req.body.email;
+    }
 
-  // CLOUDINARY /FIREBASE OR ETC
-  // if(req.body.image !== null ) {
-  //   co
-  // }
+    // Image Url
+    if (req.file) {
+      if (user.image_url) {
+        await deleteFile(user.image_url)
+      }
+      user.image_url = req.file.path
+    }
 
-  if (req.body.password !== null) {
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    user.hashed_password = hashedPassword;
-  }
+    if (req.body.password && req.body.newPassword) {
+      const passwordMatched = await bcrypt.compare(req.body.password, user.hashed_password);
 
-  try {
+      if (!passwordMatched) {
+        return res.status(401).json({ message: "Invalid Credentials" });
+      }
+
+      const hashedPassword = await bcrypt.hash(req.body.newPassword, 10);
+      user.hashed_password = hashedPassword;
+    }
+
     const updatedUser = await user.save();
 
     // EXCLUDE THE hashed_password FIELD FROM THE RESPONSE
@@ -139,7 +145,7 @@ exports.updateUser = async (req, res) => {
       return obj;
     }
 
-    res.json(updatedUser);
+    res.status(200).json({ message: "Successfully updated.", user: updatedUser });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -149,7 +155,7 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   let user;
   try {
-    user = await UserSchema.findById(req.params.id);
+    user = await UserSchema.findById(req.userId);
     if (user == null) {
       return res.status(404).json({ message: 'Cannot find user' });
     }

@@ -1,8 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import InnerNavbar from "../InnerNavbar/InnerNavbar";
+import { useUser } from "@/provider/userProvider";
+import axios from "axios";
 
 const Layout = ({ children }) => {
+  const { user, setUser } = useUser();
+
+  const getUserData = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/v1/user");
+      console.log("Respnse from layout useEffect:", response);
+      setUser(response.data);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+   if(!user) {
+    getUserData();
+   }
+  }, [user])
+  
+
   return (
     <div className="flex max-w-[1920px] mx-auto bg-black">
       <Sidebar />

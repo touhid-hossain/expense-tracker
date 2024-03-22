@@ -19,7 +19,8 @@ connectDB();
 
 // Application Level  Middleware pattern
 app.use("/api/v1/user", require("./routes/user.routes.js"));
-app.use("/api/v1/dashboard", dashboardRoutes);
+
+app.use("/uploads", express.static("uploads/"));
 
 // Server Start
 app.listen(PORT, () => {

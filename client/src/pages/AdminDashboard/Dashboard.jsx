@@ -9,9 +9,9 @@ import React from "react";
 import RecentSales from "./components/RecentSales";
 import { Link } from "react-router-dom";
 import Overview from "./components/OverviewBarChart";
-import OverviewPieChart from "./components/OverviewPieChart";
 
 const Dashboard = () => {
+  
   return (
     <div className="text-gray-400">
       {/* 1st-part */}
