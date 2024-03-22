@@ -4,7 +4,6 @@ const express = require("express");
 const env = require('dotenv')
 const connectDB = require("./connection/connectionDB.js");
 
-
 env.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +18,7 @@ connectDB()
 // Application Level  Middleware pattern
 app.use("/api/v1/user", require("./routes/user.routes.js"));
 
+app.use('/uploads', express.static('uploads/'));
 
 // Server Start
 app.listen(PORT, () => {

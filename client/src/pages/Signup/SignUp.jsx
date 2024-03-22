@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -13,7 +13,7 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
@@ -35,6 +35,14 @@ const signUpFormSchema = z.object({
 const SignUp = () => {
 
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { token } = useAuth();
+
+  useEffect(() => {
+    if (token) {
+      navigate('/'); // Redirect to home page if already logged in
+    }
+  }, [token, navigate]);
 
   const form = useForm({
     resolver: zodResolver(signUpFormSchema),
@@ -58,6 +66,7 @@ const SignUp = () => {
           title: "User created Successfully",
           variant: 'success'
         })
+        navigate("/login", { replace: true });
       }
     } catch (error) {
       console.log(error);

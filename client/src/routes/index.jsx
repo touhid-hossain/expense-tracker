@@ -57,7 +57,7 @@ const Routes = () => {
 
     const router = createBrowserRouter([
         ...routesForPublic,
-        ...(!token ? routesForNotAuthenticatedOnly : []),
+        ...routesForNotAuthenticatedOnly,
         ...routesForAuthenticatedOnly,
     ]);
 
