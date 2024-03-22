@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import {
@@ -20,12 +20,113 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-
 import CustomCategory from "./CustomCategory";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import axios from "axios";
+
+// const transactionCategories = [
+
+//   {
+//     _id: 1,
+//     name: "Salary",
+//     type: "income",
+//   },
+//   {
+//     _id: 2,
+//     name: "Sold Land",
+//     type: "income",
+//   },
+//   {
+//     _id: 3,
+//     name: "Pension Money",
+//     type: "income",
+//   },
+//   {
+//     _id: 4,
+//     name: "Gas Bill",
+//     type: "expense",
+//   },
+//   {
+//     _id: 5,
+//     name: "Water Bill",
+//     type: "expense",
+//   },
+//   {
+//     _id: 6,
+//     name: "Hooker Bill",
+//     type: "expense",
+//   },
+// ];
+
+// transactionCategories.map((g) => g.incomes.map((result)=> console.log(result)))
+
+// We have to send this url to the database for query list.  GET = http://localhost:5000/api/v1/category/?type={expense}
+
+// Transaction form schema
+
+const transactionFormSchema = z.object({
+  transactionName: z.string().min(4, {
+    message: "This field contain at least 1 character(6).",
+  }),
+  transactionType: z.string().min(1, {
+    message: "Select a transaction type",
+  }),
+  transactionCategories: z.string().min(1, {
+    message: "Select at least one category",
+  }),
+  transactionAmount: z
+    .string()
+    .min(1, { message: "At least put one figure of amount" }),
+});
 
 const TransactionForm = () => {
-  const [transactionCat, setTransactionCat] = useState(true);
-  const form = useForm();
+  const [transactionType, setTransactionType] = useState("income");
+  const [categoryList, setCategoryList] = useState([]);
+  const [openCustomCategory, setOpenCustomCategory] = useState(false);
+  const form = useForm({
+    resolver: zodResolver(transactionFormSchema),
+    defaultValues: {
+      transactionName: "",
+      transactionType: "income",
+      transactionCategories: "",
+      transactionAmount: "",
+    },
+  });
+
+  // Fetch all category by query
+  const getCategoryListByType = async () => {
+    const res = await axios.get(
+      `http://localhost:5000/api/v1/category/?type=${transactionType}`
+    );
+
+    setCategoryList(res?.data.categories);
+  };
+
+  // Fetch TypeData on every type change
+  useEffect(() => {
+    getCategoryListByType();
+  }, [transactionType]);
+
+
+  // Create New Transaction
+  const createNewTransaction = async (values) => {
+    const { data: newData } = await axios.post(
+      "http://localhost:5000/api/v1/transaction",
+      {
+        name: values.transactionName,
+        type: transactionType,
+        category:values.transactionCategories,
+        amount: values.transactionAmount
+      }
+    );
+    
+    console.log('New TransactionList Created at Mongo', newData)
+
+    // setCategoryList([...categoryList, newData?.category]);
+
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -35,8 +136,8 @@ const TransactionForm = () => {
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit((data) => console.log(data))}>
-            {/* Transaction Name */}
+          {/* Transaction Name */}
+          <form onSubmit={form.handleSubmit(createNewTransaction)}>
             <FormField
               control={form.control}
               name="transactionName"
@@ -53,20 +154,26 @@ const TransactionForm = () => {
             {/* Transaction Type */}
             <FormField
               control={form.control}
-              name="optionTypes"
+              name="transactionType"
               render={({ field }) => (
                 <FormItem className="mb-4">
                   <FormLabel>Transaction Types</FormLabel>
                   <FormControl>
-                    <Select {...field}>
+                    <Select
+                      onValueChange={(value) => {
+                        setTransactionType(value); // Update the transactionType state
+                        field.onChange(value); // Update the form field value
+                      }}
+                      defaultValue={field.value}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a Transaction Type" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Transaction Types</SelectLabel>
-                          <SelectItem value="apple">Income</SelectItem>
-                          <SelectItem value="banana">Expense</SelectItem>
+                          <SelectItem value="income">Income</SelectItem>
+                          <SelectItem value="expense">Expense</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -76,60 +183,68 @@ const TransactionForm = () => {
               )}
             />
             {/* Transaction Category */}
-            <FormField
-              control={form.control}
-              name="optionTypes"
-              render={({ field }) => (
-                <FormItem className="mb-4">
-                  <FormLabel>Transaction Category</FormLabel>
-                  <FormControl>
-                    <Select {...field}>
-                      <SelectTrigger>
-                        {transactionCat ? (
-                          <SelectValue placeholder="Select a Income Category" />
-                        ) : (
-                          <SelectValue placeholder="Select a Expense Category" />
-                        )}
-                      </SelectTrigger>
-                      <SelectContent>
-                        {transactionCat ? (
-                          <SelectGroup>
-                            <div className="flex justify-between items-center">
-                              <SelectLabel>Income Categories</SelectLabel>
-                              {/* Add Income Custom Category */}
-                              <CustomCategory />
-                            </div>
-                            <SelectItem value="apple">Salary</SelectItem>
-                            <SelectItem value="banana">Sold Land</SelectItem>
-                            <SelectItem value="banana">
-                              Pension Money
-                            </SelectItem>
-                          </SelectGroup>
-                        ) : (
-                          <SelectGroup>
-                            <div className="flex justify-between items-center">
-                              <SelectLabel>Expense Categories</SelectLabel>
-                              {/* Add Expense Custom Category */}
-                              <CustomCategory />
-                            </div>
-                            <SelectItem value="apple">House Rent</SelectItem>
-                            <SelectItem value="banana">Gas Bill</SelectItem>
-                            <SelectItem value="banana">Water Bill</SelectItem>
-                            <SelectItem value="banana">Hooker Bill</SelectItem>
-                          </SelectGroup>
-                        )}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
+            {transactionType ? (
+              <FormField
+                control={form.control}
+                name="transactionCategories"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel>Transaction Category</FormLabel>
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <SelectTrigger>
+                          {transactionType === "income" ? (
+                            <SelectValue placeholder="Select a Income Category" />
+                          ) : transactionType === "expense" ? (
+                            <SelectValue placeholder="Select a Expense Category" />
+                          ) : null}
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <div className="flex justify-between items-center">
+                              {transactionType === "income" ? (
+                                <SelectLabel>Income Categories</SelectLabel>
+                              ) : (
+                                <SelectLabel>Expense Categories</SelectLabel>
+                              )}
+                              {/* Add Income Custom Category */}
+                              <CustomCategory
+                                categoryList={categoryList}
+                                setCategoryList={setCategoryList}
+                                transactionType={transactionType}
+                                open={openCustomCategory}
+                                setOpen={setOpenCustomCategory}
+                              />
+                            </div>
+                            {categoryList?.map((category) => {
+                              if (category.type === transactionType) {
+                                return (
+                                  <SelectItem
+                                    key={category._id}
+                                    value={category._id}
+                                  >
+                                    {category.name}
+                                  </SelectItem>
+                                );
+                              }
+                            })}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            ) : null}
             {/* Transaction Amount */}
             <FormField
               control={form.control}
-              name="amount"
+              name="transactionAmount"
               render={({ field }) => (
                 <FormItem className="mb-4">
                   <FormLabel>Transaction Amount</FormLabel>

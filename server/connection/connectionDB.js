@@ -8,7 +8,7 @@ const connectDB = async () => {
             `DB connection successful! at ${new Date().toLocaleString()}`
         );
     } catch (err) {
-        console.log("some things went")
+        console.log("some things went wrong")
         console.log(err);
     }
 };
