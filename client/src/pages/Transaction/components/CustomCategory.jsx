@@ -57,6 +57,7 @@ const CustomCategory = ({
     setCategoryList([newData?.category, ...categoryList]);
     console.log("Antareep Changes from branch ")
     console.log('Add some stuff at custom category From Touhid')
+    console.log("2nd change from antareep branch test same file")
     setOpen(false);
   };
 
