@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import { FormInput, Lock } from "lucide-react";
+import { Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 

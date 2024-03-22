@@ -49,6 +49,7 @@ const CustomCategory = ({ transactionType, open,setOpen, categoryList, setCatego
     );
 
     setCategoryList([...categoryList, newData?.category]);
+    console.log("Antareep Changes from branch ")
 
     setOpen(false)
   };
