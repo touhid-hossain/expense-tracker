@@ -29,7 +29,13 @@ const newTransactionFormSchema = z.object({
   }),
 });
 
-const CustomCategory = ({ transactionType, open,setOpen, categoryList, setCategoryList }) => {
+const CustomCategory = ({
+  transactionType,
+  open,
+  setOpen,
+  categoryList,
+  setCategoryList,
+}) => {
   const form = useForm({
     resolver: zodResolver(newTransactionFormSchema),
     defaultValues: {
@@ -48,16 +54,18 @@ const CustomCategory = ({ transactionType, open,setOpen, categoryList, setCatego
       }
     );
 
-    setCategoryList([...categoryList, newData?.category]);
+    setCategoryList([newData?.category, ...categoryList]);
     console.log("Antareep Changes from branch ")
+    setOpen(false);
 
-    setOpen(false)
   };
 
   return (
-    <Dialog open={open}> 
+    <Dialog open={open}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={()=> setOpen(true)}>+ Add new category</Button>
+        <Button variant="outline" onClick={() => setOpen(true)}>
+          + Add new category
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <Card>
@@ -86,7 +94,11 @@ const CustomCategory = ({ transactionType, open,setOpen, categoryList, setCatego
                 <div className="flex justify-between items-center mt-6">
                   <DialogFooter className="sm:justify-start ">
                     <DialogClose asChild>
-                      <Button onClick={()=> setOpen(false)}  type="button" variant="destructive">
+                      <Button
+                        onClick={() => setOpen(false)}
+                        type="button"
+                        variant="destructive"
+                      >
                         Cancel
                       </Button>
                     </DialogClose>
