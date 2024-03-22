@@ -56,8 +56,8 @@ const CustomCategory = ({
 
     setCategoryList([newData?.category, ...categoryList]);
     console.log("Antareep Changes from branch ")
+    console.log('Add some stuff at custom category From Touhid')
     setOpen(false);
-
   };
 
   return (
