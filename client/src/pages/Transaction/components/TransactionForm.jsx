@@ -126,6 +126,7 @@ const TransactionForm = () => {
     // setCategoryList([...categoryList, newData?.category]);
 
   }
+  console.log("2nd change from antareep branch test different file")
 
   return (
     <Card>
