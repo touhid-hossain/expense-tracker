@@ -18,13 +18,45 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 
-const CustomCategory = () => {
-  const form = useForm();
+// Transaction form schema
+const newTransactionFormSchema = z.object({
+  transactionName: z.string().min(2, {
+    message: "This field contain at least 1 character(6).",
+  }),
+});
+
+const CustomCategory = ({ transactionType, open,setOpen, categoryList, setCategoryList }) => {
+  const form = useForm({
+    resolver: zodResolver(newTransactionFormSchema),
+    defaultValues: {
+      transactionName: "",
+    },
+  });
+
+  const customTransaction = async (values) => {
+    console.log("Created New Category", values);
+
+    const { data: newData } = await axios.post(
+      "http://localhost:5000/api/v1/category/create",
+      {
+        name: values.transactionName,
+        type: transactionType,
+      }
+    );
+
+    setCategoryList([...categoryList, newData?.category]);
+
+    setOpen(false)
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open}> 
       <DialogTrigger asChild>
-        <Button variant="outline">+ Add new category</Button>
+        <Button variant="outline" onClick={()=> setOpen(true)}>+ Add new category</Button>
       </DialogTrigger>
       <DialogContent>
         <Card>
@@ -35,7 +67,7 @@ const CustomCategory = () => {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit((data) => console.log(data))}>
+              <form onSubmit={form.handleSubmit(customTransaction)}>
                 {/* Transaction Name */}
                 <FormField
                   control={form.control}
@@ -53,14 +85,12 @@ const CustomCategory = () => {
                 <div className="flex justify-between items-center mt-6">
                   <DialogFooter className="sm:justify-start ">
                     <DialogClose asChild>
-                      <Button type="button" variant="secondary">
+                      <Button onClick={()=> setOpen(false)}  type="button" variant="destructive">
                         Cancel
                       </Button>
                     </DialogClose>
                   </DialogFooter>
-                  <Button className="" type="submit">
-                    Create
-                  </Button>
+                  <Button type="submit">Create</Button>
                 </div>
               </form>
             </Form>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TransactionList from "./components/TransactionList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 const Transaction = () => {
+  const [transactionList, setTransactionList]  = useState([])
   return (
     <Card className="mt-10">
       <Dialog>
