@@ -6,7 +6,6 @@ const connectDB = require("./connection/connectionDB.js");
 const userRoutes = require("./routes/user.routes.js")
 const transactionRoutes = require("./routes/transactions.routes.js")
 const categoryRoutes = require("./routes/category.routes.js")
-const dashboardRoutes = require("./routes/dashboard.routes");
 
 
 env.config();
