@@ -6,8 +6,6 @@ const connectDB = require("./connection/connectionDB.js");
 const userRoutes = require("./routes/user.routes.js")
 const transactionRoutes = require("./routes/transactions.routes.js")
 const categoryRoutes = require("./routes/category.routes.js")
-
-
 const dashboardRoutes = require("./routes/dashboard.routes");
 
 
@@ -30,8 +28,6 @@ app.use("/api/v1/transaction", transactionRoutes);
 app.use('/api/v1/category', categoryRoutes)
 
 app.use("/uploads", express.static("uploads/"));
-=======
-app.use('/uploads', express.static('uploads/'));
 
 // Server Start
 app.listen(PORT, () => {
