@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -6,25 +7,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import React, { useState } from "react";
 import SettingForm from "./components/SettingForm";
 
 const Settings = () => {
+  const [isEditing, setIsEditing] = useState(false);
   return (
     <Card className="mt-10">
-      <CardHeader>
-        <CardTitle>Account Information</CardTitle>
-        <CardDescription>Update Your account information</CardDescription>
+      <CardHeader className="flex flex-row justify-between items-center">
+        <div>
+          <CardTitle>Account Information</CardTitle>
+          <CardDescription>Update Your account information</CardDescription>
+        </div>
+
+        <Button disabled={isEditing} onClick={() => setIsEditing(true)}>
+          Edit
+        </Button>
       </CardHeader>
 
-      <CardContent>
-        <CardHeader className="flex flex-row justify-between">
-          <CardTitle>Personal Information</CardTitle>
-          <Button>Edit</Button>
-        </CardHeader>
-
+      <CardContent className="flex flex-col gap-5">
         {/* Setting Form */}
-        <SettingForm />
+        <SettingForm isEditing={isEditing} setIsEditing={setIsEditing} />
+
       </CardContent>
     </Card>
   );
