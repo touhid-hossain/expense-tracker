@@ -9,9 +9,25 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/provider/authProvider";
+import { useUser } from "@/provider/userProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { useToast } from "../ui/use-toast";
+import { Link } from "react-router-dom";
+import { getInitials } from "@/lib/utils";
 
 const InnerNavbar = () => {
+  const { setToken } = useAuth();
+  const { user } = useUser();
+  const { toast } = useToast();
+
+  const handleLogout = () => {
+    setToken();
+    toast({
+      title: "Logged Out Successfully",
+      variant: 'success'
+    })
+  }
   return (
     <div className="flex justify-between items-center">
       <div>
@@ -23,41 +39,46 @@ const InnerNavbar = () => {
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="absolute h-8 w-8 ">
               <AvatarImage
-                src="https://github.com/shadcn.png"
-                alt="@shadcn"
+                src={`http://localhost:5000/${user?.image_url}`}
+                alt="profile picture"
                 className="rounded-full"
               />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="end" forceMount>
-          <DropdownMenuLabel className="font-normal">
+        <DropdownMenuContent  className="w-56" align="end" forceMount>
+          <DropdownMenuLabel className="font-normal cursor-pointer">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">shadcn</p>
+              <p className="text-sm font-medium leading-none">{user?.name}</p>
               <p className="text-xs leading-none text-muted-foreground">
-                m@example.com
+                {user?.email}
               </p>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-            <DropdownMenuItem>
+          <Link to="/">
+            <DropdownMenuItem className="cursor-pointer">
               Profile
               <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              Billing
+            </Link>
+            <Link to="/transaction">
+            <DropdownMenuItem className="cursor-pointer">
+              Transaction
               <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem>
-              Settings
-              <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>New Team</DropdownMenuItem>
+            </Link>
+            <Link to="/settings">
+              <DropdownMenuItem className="cursor-pointer">
+                Settings
+                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>

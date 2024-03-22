@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Form,
   FormControl,
@@ -36,8 +36,14 @@ const loginFormSchema = z.object({
 const Login = () => {
   const { toast } = useToast();
 
-  const { setToken } = useAuth();
+  const { token, setToken } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (token) {
+      navigate('/'); // Redirect to home page if already logged in
+    }
+  }, [token, navigate]);
 
   const form = useForm({
     resolver: zodResolver(loginFormSchema),
@@ -102,7 +108,7 @@ const Login = () => {
                     <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input
-                        type="text"
+                        type="password"
                         placeholder="Enter password"
                         {...field}
                       />
