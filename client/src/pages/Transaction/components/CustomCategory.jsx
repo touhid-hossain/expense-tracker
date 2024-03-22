@@ -55,7 +55,9 @@ const CustomCategory = ({
     );
 
     setCategoryList([newData?.category, ...categoryList]);
+    console.log("Antareep Changes from branch ")
     setOpen(false);
+
   };
 
   return (
