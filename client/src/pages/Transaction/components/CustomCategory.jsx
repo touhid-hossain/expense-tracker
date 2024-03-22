@@ -49,7 +49,7 @@ const CustomCategory = ({ transactionType, open,setOpen, categoryList, setCatego
     );
 
     setCategoryList([...categoryList, newData?.category]);
-
+           console.log('Add some stuff at custom category From Touhid')
     setOpen(false)
   };
 
