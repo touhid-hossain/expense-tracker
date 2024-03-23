@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
   const getUserData = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/v1/user");
-      console.log("Respnse from layout useEffect:", response);
+      // console.log("Respnse from layout useEffect:", response);
       setUser(response.data);
     } catch (error) {
       console.log(error)

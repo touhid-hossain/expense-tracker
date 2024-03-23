@@ -24,46 +24,7 @@ import CustomCategory from "./CustomCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
-
-// const transactionCategories = [
-
-//   {
-//     _id: 1,
-//     name: "Salary",
-//     type: "income",
-//   },
-//   {
-//     _id: 2,
-//     name: "Sold Land",
-//     type: "income",
-//   },
-//   {
-//     _id: 3,
-//     name: "Pension Money",
-//     type: "income",
-//   },
-//   {
-//     _id: 4,
-//     name: "Gas Bill",
-//     type: "expense",
-//   },
-//   {
-//     _id: 5,
-//     name: "Water Bill",
-//     type: "expense",
-//   },
-//   {
-//     _id: 6,
-//     name: "Hooker Bill",
-//     type: "expense",
-//   },
-// ];
-
-// transactionCategories.map((g) => g.incomes.map((result)=> console.log(result)))
-
-// We have to send this url to the database for query list.  GET = http://localhost:5000/api/v1/category/?type={expense}
-
-// Transaction form schema
+import { TransactionListContext } from "@/provider/TransactionsProvider";
 
 const transactionFormSchema = z.object({
   transactionName: z.string().min(4, {
@@ -80,10 +41,12 @@ const transactionFormSchema = z.object({
     .min(1, { message: "At least put one figure of amount" }),
 });
 
-const TransactionForm = () => {
+const TransactionForm = ({ setOpen }) => {
   const [transactionType, setTransactionType] = useState("income");
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
+  const { transactionList, setTransactionList } = TransactionListContext();
+
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
@@ -108,7 +71,6 @@ const TransactionForm = () => {
     getCategoryListByType();
   }, [transactionType]);
 
-
   // Create New Transaction
   const createNewTransaction = async (values) => {
     const { data: newData } = await axios.post(
@@ -116,17 +78,14 @@ const TransactionForm = () => {
       {
         name: values.transactionName,
         type: transactionType,
-        category:values.transactionCategories,
-        amount: values.transactionAmount
+        category: values.transactionCategories,
+        amount: values.transactionAmount,
       }
     );
-    
-    console.log('New TransactionList Created at Mongo', newData)
-
-    // setCategoryList([...categoryList, newData?.category]);
-
-  }
-  console.log("2nd change from antareep branch test different file")
+    console.log("New TransactionList Created at Mongo", newData);
+    setTransactionList([newData?.transaction, ...transactionList]);
+    setOpen(false);
+  };
 
   return (
     <Card>
