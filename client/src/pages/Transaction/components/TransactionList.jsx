@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   Pagination,
   PaginationContent,
@@ -10,13 +10,30 @@ import {
 } from "@/components/ui/pagination";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import axios from "axios";
-import { useUser } from "@/provider/userProvider";
 import { getInitials } from "@/lib/utils";
-import { TransactionListContext } from "@/provider/TransactionsProvider";
+import { useUser } from "@/provider/userProvider";
+import { useTransaction } from "@/provider/transactionProvider";
+import { useAuth } from "@/provider/authProvider";
 
 const TransactionList = () => {
-  const { transactionList } = TransactionListContext();
+  const { transactionList, setTransactionList } = useTransaction();
   const { user } = useUser();
+
+  const getTransactionsList = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/v1/transaction"
+      );
+      setTransactionList(response?.data?.transactions);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // Fetch transactionList after creating a new transaction
+  useEffect(() => {
+    getTransactionsList();
+  }, []);
 
   return (
     <div className="space-y-8">
@@ -24,7 +41,7 @@ const TransactionList = () => {
         return (
           <div key={transaction._id} className="flex items-center">
             <Avatar className="h-9 w-9">
-              <AvatarImage src="/avatars/01.png" alt="Avatar" />
+              <AvatarImage src={`http://localhost:5000/${user?.image_url}`} alt="Avatar" />
               <AvatarFallback>{getInitials(user?.name)} </AvatarFallback>
             </Avatar>
             <div className="ml-4 space-y-1">

@@ -24,7 +24,7 @@ import CustomCategory from "./CustomCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "axios";
-import { TransactionListContext } from "@/provider/TransactionsProvider";
+import { useTransaction } from "@/provider/transactionProvider";
 
 const transactionFormSchema = z.object({
   transactionName: z.string().min(4, {
@@ -45,7 +45,7 @@ const TransactionForm = ({ setOpen }) => {
   const [transactionType, setTransactionType] = useState("income");
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
-  const { transactionList, setTransactionList } = TransactionListContext();
+  const { transactionList, setTransactionList } = useTransaction();
 
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),

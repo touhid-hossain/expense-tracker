@@ -3,6 +3,7 @@ import {
     createContext,
     useContext,
     useEffect,
+    useLayoutEffect,
     useMemo,
     useState,
 } from "react";
@@ -11,12 +12,12 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [token, setToken_] = useState(localStorage.getItem("token"));
-
+        
     const setToken = (newToken) => {
         setToken_(newToken);
     };
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         if (token) {
             axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             localStorage.setItem('token', token);
@@ -41,8 +42,6 @@ const AuthProvider = ({ children }) => {
     );
 
 };
-
-
 
 export const useAuth = () => {
     return useContext(AuthContext);
