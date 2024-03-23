@@ -1,4 +1,5 @@
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import {
     createContext,
     useContext,
@@ -12,15 +13,26 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
     const [token, setToken_] = useState(localStorage.getItem("token"));
-        
+
     const setToken = (newToken) => {
         setToken_(newToken);
     };
 
     useLayoutEffect(() => {
         if (token) {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-            localStorage.setItem('token', token);
+            const decodedToken = jwtDecode(token);
+            const expirationTime = decodedToken.exp * 1000; // Convert In Miliseconds
+            const now = Date.now();
+            const isExpired = now >= expirationTime;
+
+            if (isExpired) {
+                console.log("Token expired! Clearing token and headers.");
+                setToken(null); // Clear the token from context state
+                delete axios.defaults.headers.common["Authorization"]; // Remove Authorization token from axios headers
+            } else {
+                axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+                localStorage.setItem('token', token);
+            }
         } else {
             delete axios.defaults.headers.common["Authorization"];
             localStorage.removeItem('token')
