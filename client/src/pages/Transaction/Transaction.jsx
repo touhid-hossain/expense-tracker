@@ -1,21 +1,174 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TransactionList from "./components/TransactionList";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import TransactionForm from "./components/TransactionForm";
 import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useTransaction } from "@/provider/transactionProvider";
+import axios from "axios";
+import {
+  Pagination,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+  PaginationEllipsis,
+  PaginationContent,
+} from "@/components/ui/pagination";
+
+// const transactionList = [
+//   {
+//     _id: 1,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 2,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 3,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 4,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 5,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 6,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 7,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 8,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 9,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 10,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 11,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+//   {
+//     _id: 12,
+//     name: "buy a car",
+//     type: "income",
+//     category: "car",
+//     amount: "2545$",
+//     createdAt: "Oct-7, Monday",
+//   },
+// ];
 
 const Transaction = () => {
-  // const [transactionList, setTransactionList] = useState([]);
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
+  const { transactionList, setTransactionList } = useTransaction();
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const transactionsPerPage = 2;
+  const pagesToShow = 5;
+
+  const getTransactionsList = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/v1/transaction"
+      );
+      setTransactionList(response?.data?.transactions);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getTransactionsList();
+  }, []);
+
+  const indexOfLastTransaction = currentPage * transactionsPerPage;
+  const indexOfFirstTransaction = indexOfLastTransaction - transactionsPerPage;
+  const currentTransactions = transactionList.slice(
+    indexOfFirstTransaction, // 1st page - 0, 2nd page -  5, 3rd page- 10
+    indexOfLastTransaction // 1st page- 5, 2nd page- 10, 3rd page- 15
+  );
+  // console.log("slice by 1st and last index", currentTransactions);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const totalPages = Math.ceil(transactionList.length / transactionsPerPage);
+
+  const shouldShowStartEllipsis = currentPage > pagesToShow;
+  const shouldShowEndEllipsis = currentPage < totalPages - pagesToShow + 1;
+
+  console.log(
+    "start ellips",
+    shouldShowStartEllipsis,
+    "end ellips",
+    shouldShowEndEllipsis
+  );
+
   return (
-    <Card className="mt-10">
+    <Card className="mt-10 h-[85vh] flex flex-col justify-between">
       <CardHeader>
-        <div className="flex justify-between items-end mb-10">
+        <div className="flex justify-between items-end">
           <div>
             <CardTitle className="mb-5">Transaction Page</CardTitle>
             <Button
@@ -60,8 +213,65 @@ const Transaction = () => {
             />
           </DialogContent>
         </Dialog>
-        <TransactionList />
+        <TransactionList transactionList={currentTransactions} />
       </CardContent>
+      {/* Pagination */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        pagesToShow={pagesToShow}
+        onPageChange={paginate}
+        className="mb-3 cursor-pointer"
+      >
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious
+              disabled={currentPage === 1}
+              onClick={() => paginate(currentPage - 1)}
+              className={
+                currentPage === 1 ? "pointer-events-none opacity-50" : undefined
+              }
+            />
+          </PaginationItem>
+
+          {shouldShowStartEllipsis && <PaginationEllipsis />}
+
+          {[...Array(totalPages)].map((_, index) => {
+            if (
+              index + 1 === 1 ||
+              index + 1 === totalPages ||
+              (index + 1 >= currentPage - Math.floor(pagesToShow / 2) &&
+                index + 1 <= currentPage + Math.floor(pagesToShow / 2))
+            ) {
+              return (
+                <PaginationItem key={index}>
+                  <PaginationLink
+                    onClick={() => paginate(index + 1)}
+                    isActive={index + 1 === currentPage}
+                  >
+                    {index + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            }
+            return null;
+          })}
+
+          {shouldShowEndEllipsis && <PaginationEllipsis />}
+
+          <PaginationItem>
+            <PaginationNext
+              disabled={currentPage === totalPages}
+              onClick={() => paginate(currentPage + 1)}
+              className={
+                currentPage === totalPages
+                  ? "pointer-events-none opacity-50"
+                  : undefined
+              }
+            />
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </Card>
   );
 };
