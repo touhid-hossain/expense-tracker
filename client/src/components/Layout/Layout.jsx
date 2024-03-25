@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
       const response = await axios.get("http://localhost:5000/api/v1/user");
       setUser(response.data);
     } catch (error) {
-      console.log(error)
+      // console.log(error)
     }
   }
 
