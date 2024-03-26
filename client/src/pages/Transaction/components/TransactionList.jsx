@@ -5,9 +5,16 @@ const TransactionList = ({ transactionList }) => {
   const { user } = useUser();
   return (
     <div className="space-y-8">
-      {transactionList.map((transaction) => {
+      {
+        transactionList.length === 0 && (
+          <div className="flex items-center justify-center  h-[50vh]">
+            <h6>No Transactions found</h6>
+          </div>
+        )
+      }
+      {transactionList?.map((transaction) => {
         return (
-          <div key={transaction._id} className="flex items-center">
+          <div key={transaction?._id} className="flex items-center">
             <div className="h-9 w-9 rounded-full overflow-hidden">
               <img
                 className="h-full w-full object-cover"
@@ -17,14 +24,14 @@ const TransactionList = ({ transactionList }) => {
             </div>
             <div className="ml-4 space-y-1">
               <p className="text-sm font-medium leading-none">
-                {transaction.name}
+                {transaction?.name}
               </p>
               <p className="text-sm text-muted-foreground">
-                {transaction.createdAt}
+                {transaction?.createdAt}
               </p>
             </div>
             <div className="ml-auto font-medium">
-              {transaction.type === "income" ? "+" : "-"} {transaction.amount}
+              {transaction?.type === "income" ? "+" : "-"} {transaction?.amount}
             </div>
           </div>
         );

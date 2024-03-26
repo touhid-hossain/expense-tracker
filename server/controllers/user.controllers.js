@@ -50,8 +50,8 @@ exports.authenticate = async (req, res) => {
       return res.status(401).json({ message: "Wrong Credentials!" });
     }
 
-    const token = jwt.sign({ userId: existingUser._id }, 'touhid-nunu', {
-      expiresIn: '24h',
+    const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_ACCESS_TOKEN_SECRET, {
+      expiresIn: '48h',
     });
 
     res.status(200).json({ token });

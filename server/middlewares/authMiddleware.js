@@ -10,7 +10,7 @@ function verifyToken(req, res, next) {
     }
     const tokenString = parts[1];
     
-    const decoded = jwt.verify(tokenString, "touhid-nunu");
+    const decoded = jwt.verify(tokenString, process.env.JWT_ACCESS_TOKEN_SECRET);
     req.userId = decoded.userId;
     next();
   } catch (error) {

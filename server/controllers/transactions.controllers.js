@@ -22,11 +22,26 @@ exports.createTransaction = async (req, res) => {
 // Function for get all transactionList.
 exports.getAllTransaction = async (req, res) => {
   try {
-    const userTransactions = await Transaction.find({
-      creator: req.userId,
-    });
+    const page = req.query.page;
+    const limit = req.query.limit || 10;
+    const skip = (page - 1) * limit;
+    const search = req.query.search;
+    const type = req.query?.type;
 
-    res.status(201).json({ transactions: userTransactions });
+    const query = {
+      creator: req.userId,
+      name: { $regex: search, $options: "i" },
+    }
+
+    if (type) query.type = type;
+
+    const userTransactions = await Transaction.find(query)
+    .skip(skip)
+    .limit(limit);
+
+    const totalTransactions = await Transaction.countDocuments(query);
+
+    res.status(201).json({ transactions: userTransactions, totalTransactions });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
