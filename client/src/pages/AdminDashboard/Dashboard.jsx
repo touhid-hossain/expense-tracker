@@ -11,7 +11,6 @@ import { Link } from "react-router-dom";
 import Overview from "./components/OverviewBarChart";
 
 const Dashboard = () => {
-  
   return (
     <div className="text-gray-400">
       {/* 1st-part */}
