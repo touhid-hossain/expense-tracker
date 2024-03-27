@@ -35,26 +35,29 @@ const Transaction = () => {
 
   const totalPages = Math.ceil(totalTransactions / limit);
   const pagesToShow = totalPages > 5 ? 5 : totalPages;
-  const shouldShowStartEllipsis = currentPage > pagesToShow
-  const shouldShowEndEllipsis = currentPage < totalPages - pagesToShow + 1;
+  // console.log("totalPages", totalPages);
+  // console.log("how many page numbers i wanna show", pagesToShow);
+  // console.log("current page no", currentPage);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
   // Searching with the debounced value
   const debouncedSearch = async () => {
-    //Filtering the allexercises according to the searchTerm
-    const response = await axios.get("http://localhost:5000/api/v1/transaction", {
-      params: {
-        search,
-        type,
-        page: currentPage,
-        limit,
-      },
-    });
+    //Filtering the all exercises according to the searchTerm
+    const response = await axios.get(
+      "http://localhost:5000/api/v1/transaction",
+      {
+        params: {
+          search,
+          type,
+          page: currentPage,
+          limit,
+        },
+      }
+    );
 
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
-  }
+  };
 
   // HANDLING WHEN SEARCH TERM  CHANGES
   useEffect(() => {
@@ -63,12 +66,11 @@ const Transaction = () => {
     return () => clearTimeout(debouncedSearch);
   }, [debouncedValue, currentPage]);
 
-
   return (
     <Card className="mt-10 h-[85vh] flex flex-col justify-between">
       <div>
         <CardHeader>
-          <div className="flex justify-between items-end">
+          <div className="flex justify-between items-end mb-10">
             <div>
               <CardTitle className="mb-5">Transaction Page</CardTitle>
               <Button
@@ -80,11 +82,19 @@ const Transaction = () => {
             </div>
             <div className="w-[300px] relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input onChange={(e) => setSearch(e.target.value)} placeholder="Search" className="pl-8" />
+              <Input
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search"
+                className="pl-8"
+              />
               {/* Filter Transaction List */}
               <div className="flex justify-end gap-3 mt-3">
                 <Label>Sort By :</Label>
-                <RadioGroup onValueChange={(e) => setType(e.target.value)} defaultValue={type} className="flex">
+                <RadioGroup
+                  onValueChange={(e) => setType(e.target.value)}
+                  defaultValue={type}
+                  className="flex"
+                >
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="fd" id="r1" />
                     <Label htmlFor="r1">All</Label>
@@ -127,6 +137,7 @@ const Transaction = () => {
         pagesToShow={pagesToShow}
         className="mb-3 cursor-pointer"
       >
+        {/* MY CODES */}
         <PaginationContent>
           <PaginationItem>
             <PaginationPrevious
@@ -138,36 +149,29 @@ const Transaction = () => {
             />
           </PaginationItem>
 
-          {/* {shouldShowStartEllipsis && totalTransactions !== 0 && <PaginationEllipsis />} */}
+          {/* Render pagination links */}
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+            if (
+              page === 1 ||
+              page === totalPages ||
+              (page >= currentPage - Math.floor(pagesToShow / 2) &&
+                page <= currentPage + Math.floor(pagesToShow / 2))
+            ) {
+              return (
+                <PaginationItem key={page} active={page === currentPage}>
+                  <PaginationLink onClick={() => paginate(page)}>
+                    {page}
+                  </PaginationLink>
+                </PaginationItem>
+              );
+            }
 
-          {
+            if ((page === 2 && currentPage > 1) || page === totalPages - 1) {
+              return <PaginationEllipsis key={`ellipsis-${page}`} />;
+            }
 
-            [...Array(totalPages)].map((_, index) => {
-              if (
-                index + 1 === 1 ||
-                index + 1 === totalPages ||
-                (index + 1 >= currentPage - Math.floor(pagesToShow / 2) &&
-                  index + 1 <= currentPage + Math.floor(pagesToShow / 2))
-              ) {
-                return (
-                  <PaginationItem key={index}>
-                    <PaginationLink
-                      onClick={() => paginate(index + 1)}
-                      isActive={index + 1 === currentPage}
-                    >
-                      {index + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              }
-
-              return null
-            })
-
-          }
-
-
-          {/* {shouldShowEndEllipsis && totalTransactions !== 0 && <PaginationEllipsis />} */}
+            return null;
+          })}
 
           <PaginationItem>
             <PaginationNext

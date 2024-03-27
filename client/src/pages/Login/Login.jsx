@@ -35,7 +35,6 @@ const loginFormSchema = z.object({
 
 const Login = () => {
   const { toast } = useToast();
-
   const { token, setToken } = useAuth();
   const navigate = useNavigate();
 
