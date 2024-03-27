@@ -10,35 +10,25 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTransaction } from "@/provider/transactionProvider";
 import axios from "axios";
-import {
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-  PaginationContent,
-} from "@/components/ui/pagination";
 import { useDebounce } from "@/lib/utils";
+import TransactionPagination from "./components/TransactionPagination";
 
 const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const { transactionList, setTransactionList } = useTransaction([]);
-  const [type, setType] = useState("");
-
+  const [type, setType] = useState("all");
   const [totalTransactions, setTotalTransactions] = useState(0);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedValue = useDebounce(search, 300);
 
   const limit = 5;
-
   const totalPages = Math.ceil(totalTransactions / limit);
   const pagesToShow = totalPages > 5 ? 5 : totalPages;
   // console.log("totalPages", totalPages);
   // console.log("how many page numbers i wanna show", pagesToShow);
   // console.log("current page no", currentPage);
-
+  console.log("send type to backend", type);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   // Searching with the debounced value
   const debouncedSearch = async () => {
@@ -54,7 +44,7 @@ const Transaction = () => {
         },
       }
     );
-
+  console.log('Response of category', response.data)
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
   };
@@ -91,20 +81,32 @@ const Transaction = () => {
               <div className="flex justify-end gap-3 mt-3">
                 <Label>Sort By :</Label>
                 <RadioGroup
-                  onValueChange={(e) => setType(e.target.value)}
+                  onValueChange={setType}
                   defaultValue={type}
                   className="flex"
                 >
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="fd" id="r1" />
+                    <RadioGroupItem
+                      value="all"
+                      id="r1"
+                      checked={type === "all"}
+                    />
                     <Label htmlFor="r1">All</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="income" id="r2" />
+                    <RadioGroupItem
+                      value="income"
+                      id="r2"
+                      checked={type === "income"}
+                    />
                     <Label htmlFor="r2">Income</Label>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="expense" id="r3" />
+                    <RadioGroupItem
+                      value="expense"
+                      id="r3"
+                      checked={type === "expense"}
+                    />
                     <Label htmlFor="r3">Expense</Label>
                   </div>
                 </RadioGroup>
@@ -131,61 +133,12 @@ const Transaction = () => {
         </CardContent>
       </div>
       {/* Pagination */}
-      <Pagination
+      <TransactionPagination
         currentPage={currentPage}
-        totalPages={totalPages}
         pagesToShow={pagesToShow}
-        className="mb-3 cursor-pointer"
-      >
-        {/* MY CODES */}
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              disabled={currentPage === 1}
-              onClick={() => paginate(currentPage - 1)}
-              className={
-                currentPage === 1 ? "pointer-events-none opacity-50" : undefined
-              }
-            />
-          </PaginationItem>
-
-          {/* Render pagination links */}
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
-            if (
-              page === 1 ||
-              page === totalPages ||
-              (page >= currentPage - Math.floor(pagesToShow / 2) &&
-                page <= currentPage + Math.floor(pagesToShow / 2))
-            ) {
-              return (
-                <PaginationItem key={page} active={page === currentPage}>
-                  <PaginationLink onClick={() => paginate(page)}>
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              );
-            }
-
-            if ((page === 2 && currentPage > 1) || page === totalPages - 1) {
-              return <PaginationEllipsis key={`ellipsis-${page}`} />;
-            }
-
-            return null;
-          })}
-
-          <PaginationItem>
-            <PaginationNext
-              disabled={totalPages <= currentPage}
-              onClick={() => paginate(currentPage + 1)}
-              className={
-                totalPages <= currentPage
-                  ? "pointer-events-none opacity-50"
-                  : undefined
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+        totalPages={totalPages}
+        paginate={paginate}
+      />
     </Card>
   );
 };
