@@ -82,7 +82,7 @@ const TransactionForm = ({ setOpen }) => {
         amount: values.transactionAmount,
       }
     );
-    console.log("New TransactionList Created at Mongo", newData);
+    // console.log("New TransactionList Created at Mongo", newData);
     setTransactionList([newData?.transaction, ...transactionList]);
     setOpen(false);
   };
