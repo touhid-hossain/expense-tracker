@@ -28,9 +28,17 @@ const Transaction = () => {
   // console.log("totalPages", totalPages);
   // console.log("how many page numbers i wanna show", pagesToShow);
   // console.log("current page no", currentPage);
-  console.log("send type to backend", type);
+  // console.log("send type to backend", type);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
   // Searching with the debounced value
+
+  // HANDLING WHEN SEARCH TERM  CHANGES
+  useEffect(() => {
+    const handleSearch = debouncedSearch;
+    handleSearch();
+    return () => clearTimeout(debouncedSearch);
+  }, [debouncedValue, currentPage, type, totalTransactions]);
+
   const debouncedSearch = async () => {
     //Filtering the all exercises according to the searchTerm
     const response = await axios.get(
@@ -44,17 +52,10 @@ const Transaction = () => {
         },
       }
     );
-  console.log('Response of category', response.data)
+    // console.log("Response of category", response.data);
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
   };
-
-  // HANDLING WHEN SEARCH TERM  CHANGES
-  useEffect(() => {
-    const handleSearch = debouncedSearch;
-    handleSearch();
-    return () => clearTimeout(debouncedSearch);
-  }, [debouncedValue, currentPage]);
 
   return (
     <Card className="mt-10 h-[85vh] flex flex-col justify-between">

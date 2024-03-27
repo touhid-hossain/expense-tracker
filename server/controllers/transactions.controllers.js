@@ -22,8 +22,6 @@ exports.createTransaction = async (req, res) => {
 // Function for get all transactionList.
 exports.getAllTransaction = async (req, res) => {
   try {
-    console.log("Getting type query from client", req.query.type);
-
     // Cast search variable to string
     let search = req.query.search || "";
     search = typeof search === "string" ? search : "";
@@ -32,7 +30,7 @@ exports.getAllTransaction = async (req, res) => {
     const limit = req.query.limit || 10;
     const skip = (page - 1) * limit;
     const type = req.query?.type;
-
+    // find user based on user query
     const query = {
       creator: req.userId,
     };
@@ -41,6 +39,7 @@ exports.getAllTransaction = async (req, res) => {
       if (type === "all") {
         // if type === all then return all transactions
         await Transaction.find(query);
+        query.name = { $regex: search, $options: "i" };
       } else {
         // search & type together
         query.name = { $regex: search, $options: "i" };
