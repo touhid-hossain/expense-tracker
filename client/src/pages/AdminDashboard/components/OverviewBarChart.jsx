@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { useTransaction } from "@/provider/transactionProvider";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 
 const monthlyData = [
@@ -122,6 +124,24 @@ function aggregateDailyData(data) {
 }
 
 const Overview = () => {
+  const { transactionList } = useTransaction();
+  // console.log(transactionList)
+  // const [transactionList, setTransactionList] = useState([]);
+
+  // const getAllTransactionList = async () => {
+  //   //Filtering the all exercises according to the searchTerm
+  //   const response = await axios.get(
+  //     "http://localhost:5000/api/v1/transaction"
+  //   );
+  //   setTransactionList(response?.data?.transactions);
+  // };
+  
+  // useEffect(()=>{
+  //   // getAllTransactionList();
+  //   },[transactionList])
+
+  console.log(transactionList);
+
   const [interval, setInterval] = useState("monthly"); // Initial interval is monthly
   const [chartData, setChartData] = useState(monthlyData); // Initial data is monthly
 
