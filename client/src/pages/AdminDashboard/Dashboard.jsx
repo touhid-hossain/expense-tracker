@@ -15,7 +15,7 @@ const Dashboard = () => {
   return (
     <div className="text-gray-400">
       {/* 1st-part */}
-      <div className="flex gap-4">
+      <div className="flex flex-col xl:flex-row gap-4">
         <div className="flex flex-col">
           {/*Dashboard-Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-10">
