@@ -25,12 +25,7 @@ const Transaction = () => {
   const limit = 5;
   const totalPages = Math.ceil(totalTransactions / limit);
   const pagesToShow = totalPages > 5 ? 5 : totalPages;
-  // console.log("totalPages", totalPages);
-  // console.log("how many page numbers i wanna show", pagesToShow);
-  // console.log("current page no", currentPage);
-  // console.log("send type to backend", type);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
-  // Searching with the debounced value
 
   // HANDLING WHEN SEARCH TERM  CHANGES
   useEffect(() => {
@@ -52,7 +47,6 @@ const Transaction = () => {
         },
       }
     );
-    // console.log("Response of category", response.data);
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
   };

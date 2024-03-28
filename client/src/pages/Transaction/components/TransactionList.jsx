@@ -1,18 +1,19 @@
 import React from "react";
 import { useUser } from "@/provider/userProvider";
+import moment from "moment";
 
 const TransactionList = ({ transactionList }) => {
   const { user } = useUser();
   return (
     <div className="space-y-8">
-      {
-        transactionList.length === 0 && (
-          <div className="flex items-center justify-center  h-[50vh]">
-            <h6>No Transactions found</h6>
-          </div>
-        )
-      }
+      {transactionList.length === 0 && (
+        <div className="flex items-center justify-center  h-[50vh]">
+          <h6>No Transactions found</h6>
+        </div>
+      )}
       {transactionList?.map((transaction) => {
+        const date = moment(transaction?.createdAt);
+        const formattedTransactionDate = date.format("MMM D - h.mm a");
         return (
           <div key={transaction?._id} className="flex items-center">
             <div className="h-9 w-9 rounded-full overflow-hidden">
@@ -27,7 +28,7 @@ const TransactionList = ({ transactionList }) => {
                 {transaction?.name}
               </p>
               <p className="text-sm text-muted-foreground">
-                {transaction?.createdAt}
+                {formattedTransactionDate}
               </p>
             </div>
             <div className="ml-auto font-medium">
