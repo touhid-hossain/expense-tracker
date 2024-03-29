@@ -1,5 +1,4 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { useAuth } from "../provider/authProvider";
 import { ProtectedRoute } from "./ProtectedRoute";
 
 import Dashboard from "@/pages/AdminDashboard/Dashboard";
@@ -9,7 +8,6 @@ import SignUp from "@/pages/Signup/SignUp";
 import Transaction from "@/pages/Transaction/Transaction";
 
 const Routes = () => {
-    const { token } = useAuth();
     // Route configurations go here
 
     const routesForPublic = [

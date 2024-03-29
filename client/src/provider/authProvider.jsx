@@ -3,7 +3,6 @@ import {jwtDecode} from "jwt-decode";
 import {
   createContext,
   useContext,
-  useEffect,
   useLayoutEffect,
   useMemo,
   useState,
