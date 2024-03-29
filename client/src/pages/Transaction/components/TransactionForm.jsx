@@ -45,7 +45,7 @@ const TransactionForm = ({ setOpen }) => {
   const [transactionType, setTransactionType] = useState("income");
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
-  const { transactionList, setTransactionList } = useTransaction();
+  const { transactionList, setTransactionList, setTotalTransactions } = useTransaction();
 
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
@@ -73,7 +73,7 @@ const TransactionForm = ({ setOpen }) => {
 
   // Create New Transaction
   const createNewTransaction = async (values) => {
-    const { data: newData } = await axios.post(
+    const res = await axios.post(
       "http://localhost:5000/api/v1/transaction",
       {
         name: values.transactionName,
@@ -83,7 +83,8 @@ const TransactionForm = ({ setOpen }) => {
       }
     );
     // console.log("New TransactionList Created at Mongo", newData);
-    setTransactionList([newData?.transaction, ...transactionList]);
+    setTransactionList([res.data.transaction, ...transactionList]);
+    setTotalTransactions(res?.data?.totalTransactions);
     setOpen(false);
   };
 

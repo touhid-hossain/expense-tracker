@@ -15,27 +15,23 @@ import TransactionPagination from "./components/TransactionPagination";
 
 const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
-  const { transactionList, setTransactionList } = useTransaction([]);
+  const { transactionList, setTransactionList, updatedTotalTransaction } = useTransaction([]);
+  console.log('getting updatedTotalTransaction inside tranasction', updatedTotalTransaction)
   const [type, setType] = useState("all");
   const [totalTransactions, setTotalTransactions] = useState(0);
+  console.log('getting value inside tranasction', totalTransactions)
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedValue = useDebounce(search, 300);
 
   const limit = 5;
-  const totalPages = Math.ceil(totalTransactions / limit);
+  const totalPages = Math.ceil(  totalTransactions  / limit)
   const pagesToShow = totalPages > 5 ? 5 : totalPages;
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  // HANDLING WHEN SEARCH TERM  CHANGES
-  useEffect(() => {
-    const handleSearch = debouncedSearch;
-    handleSearch();
-    return () => clearTimeout(debouncedSearch);
-  }, [debouncedValue, currentPage, type, totalTransactions]);
-
   const debouncedSearch = async () => {
     //Filtering the all exercises according to the searchTerm
+    console.log("debounce function calling");
     const response = await axios.get(
       "http://localhost:5000/api/v1/transaction",
       {
@@ -50,6 +46,13 @@ const Transaction = () => {
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
   };
+
+  // HANDLING WHEN SEARCH TERM  CHANGES
+  useEffect(() => {
+    const handleSearch = debouncedSearch;
+    handleSearch();
+    return () => clearTimeout(debouncedSearch);
+  }, [debouncedValue, currentPage, type, updatedTotalTransaction]);
 
   return (
     <Card className="mt-10 h-[85vh] flex flex-col justify-between">

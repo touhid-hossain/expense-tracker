@@ -124,22 +124,23 @@ function aggregateDailyData(data) {
 }
 
 const Overview = () => {
-  const { transactionList } = useTransaction();
+  // const { transactionList } = useTransaction();
   // console.log(transactionList)
-  // const [transactionList, setTransactionList] = useState([]);
+  const [transactionList, setTransactionList] = useState([]);
 
-  // const getAllTransactionList = async () => {
-  //   //Filtering the all exercises according to the searchTerm
-  //   const response = await axios.get(
-  //     "http://localhost:5000/api/v1/transaction"
-  //   );
-  //   setTransactionList(response?.data?.transactions);
-  // };
+  const getAllTransactionList = async () => {
+    console.log('overview fnc calling')
+    //Filtering the all exercises according to the searchTerm
+    const response = await axios.get(
+      "http://localhost:5000/api/v1/transaction"
+    );
+    setTransactionList(response?.data?.transactions);
+  };
   
-  // useEffect(()=>{
-  //   // getAllTransactionList();
-  //   },[transactionList])
-
+  useEffect(()=>{
+    getAllTransactionList();
+    },[])
+  
   console.log(transactionList);
 
   const [interval, setInterval] = useState("monthly"); // Initial interval is monthly

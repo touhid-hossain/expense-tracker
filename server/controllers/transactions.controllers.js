@@ -1,5 +1,6 @@
 const Transaction = require("../models/transactions.models");
 
+
 // Function for creating a new user.
 exports.createTransaction = async (req, res) => {
   const { name, type, category, amount } = req.body;
@@ -13,24 +14,29 @@ exports.createTransaction = async (req, res) => {
       amount,
     });
 
-    res.status(201).json({ transaction: newTransaction });
-  } catch (error) {
-    res.status(400).json({ message: error.message });
+   // Update total transactions
+   updatedTotalTransactions = await Transaction.countDocuments({ creator: req.userId, }).exec();
+
+console.log("Updatinng totalTransactions in create function backend", updatedTotalTransactions);
+res.status(201).json({ transaction: newTransaction, totalTransactions:updatedTotalTransactions});
+} catch (error) {
+  res.status(400).json({ message: error.message });
   }
 };
 
 // Function for get all transactionList.
 exports.getAllTransaction = async (req, res) => {
+
   try {
     // Cast search variable to string
     let search = req.query.search || "";
     search = typeof search === "string" ? search : "";
 
     const page = req.query.page;
-    const limit = req.query.limit || 10;
+    const limit = req.query.limit;
     const skip = (page - 1) * limit;
     const type = req.query?.type;
-    // find user based on user query
+    // find user based on queryID
     const query = {
       creator: req.userId,
     };
@@ -52,11 +58,12 @@ exports.getAllTransaction = async (req, res) => {
     const userTransactions = await Transaction.find(query)
       .skip(skip)
       .limit(limit);
-
-    const totalTransactions = await Transaction.countDocuments(query);
-
-    res.status(201).json({ transactions: userTransactions, totalTransactions });
+      // Set totalTransactions
+      const totalTransactions = await Transaction.countDocuments(query);
+      console.log('sending transactions value in get function',totalTransactions)
+    res.status(201).json({ transactions: userTransactions, totalTransactions:totalTransactions });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+

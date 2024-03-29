@@ -6,18 +6,26 @@ const TransactionContext = createContext();
 // TransactionProvider Component
 const TransactionProvider = ({ children }) => {
   const [transactionList, setTransactionList] = useState([]);
+  const [updatedTotalTransaction, setTotalTransactions] = useState(0);
 
-  const updateTransaction = (newTransactionList) => {
-    setTransactionList(newTransactionList);
+  // const updateTransaction = (newTransactionList) => {
+  //   setTransactionList(newTransactionList);
+  // }
+
+  // // passing values in this value obj.
+  // const value = useMemo(
+  //   () => ({
+  //     transactionList,
+  //     setTransactionList: updateTransaction,
+  //   })
+  // );
+
+  const value= {
+    transactionList,
+    setTransactionList,
+    updatedTotalTransaction,
+    setTotalTransactions
   }
-
-  // passing values in this value obj.
-  const value = useMemo(
-    () => ({
-      transactionList,
-      setTransactionList: updateTransaction,
-    })
-  );
 
   return (
     <TransactionContext.Provider value={value}>
