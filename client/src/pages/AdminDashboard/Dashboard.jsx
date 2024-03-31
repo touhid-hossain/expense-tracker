@@ -18,12 +18,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import moment from "moment";
 
 const Dashboard = () => {
   const [time, setTime] = useState("monthly");
-  const [type, setType] = useState("all");
+
+  // let unit;
+  // if (time === "monthly") {
+  //   unit = "month";
+  // } else if (time === "weekly") {
+  //   unit = "week";
+  // } else if (time === "daily") {
+  //   unit = "day";
+  // }
+
+  // const startOfTime = moment().startOf(unit);
+  // const endOfTime = moment().endOf(unit);
+
+  // console.log('Checking time formation', startOfTime, endOfTime)
+
   // console.log(time, type)
   return (
     <div className="text-gray-400">
@@ -113,56 +126,23 @@ const Dashboard = () => {
           <Card className="mt-5">
             <CardHeader className="flex-row justify-between items-center">
               <CardTitle>Spending Summary</CardTitle>
-              <div className="flex items-center gap-2">
-                {/* Render barChart depends on selected type */}
-                <RadioGroup
-                  onValueChange={setType}
-                  defaultValue={type}
-                  className="flex"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="all"
-                      id="r1"
-                      checked={type === "all"}
-                    />
-                    <Label htmlFor="r1">All</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="income"
-                      id="r2"
-                      checked={type === "income"}
-                    />
-                    <Label htmlFor="r2">Income</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="expense"
-                      id="r3"
-                      checked={type === "expense"}
-                    />
-                    <Label htmlFor="r3">Expense</Label>
-                  </div>
-                </RadioGroup>
-                {/* Render barChart depends on selected time */}
-                <Select onValueChange={setTime} defaultValue={time}>
-                  <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="Select a time" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Select a time</SelectLabel>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                      <SelectItem value="weekly">Weekly</SelectItem>
-                      <SelectItem value="daily">Daily</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+              {/* Render barChart depends on selected time */}
+              <Select onValueChange={setTime} defaultValue={time}>
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="Select a time" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Select a time</SelectLabel>
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="daily">Daily</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </CardHeader>
             <CardContent className="pl-2">
-              <Overview time={time} type={type} />
+              <Overview time={time} /> 
             </CardContent>
           </Card>
         </div>

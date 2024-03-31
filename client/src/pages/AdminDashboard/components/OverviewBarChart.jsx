@@ -54,20 +54,60 @@ const monthlyData = [
   },
 ];
 
-// const data = [
-//   {
-//     amount: 800,
-//     createdAt: "2024-03-20T21:43:52.867Z",
-//     type: "Income",
-//   },
-//   {
-//     amount: 600,
-//     createdAt: "2024-03-21T21:43:52.867Z",
-//     type: "Expense",
-//   },
+const data = [
+  {
+    amount: 800,
+    createdAt: "2024-03-18T21:37:52.867Z",
+    type: "Income",
+  },
+  {
+    amount: 800,
+    createdAt: "2024-03-19T21:43:25.867Z",
+    type: "Income",
+  },
+  {
+    amount: 600,
+    createdAt: "2024-03-20T21:43:52.867Z",
+    type: "Expense",
+  },
+  {
+    amount: 600,
+    createdAt: "2024-03-22T21:43:55.867Z",
+    type: "Expense",
+  },
+  {
+    amount: 400,
+    createdAt: "2024-04-01T21:43:58.867Z",
+    type: "Income",
+  },
+  {
+    amount: 500,
+    createdAt: "2024-04-02T21:44:22.867Z",
+    type: "Expense",
+  },
+  {
+    amount: 500,
+    createdAt: "2024-04-03T21:45:25.867Z",
+    type: "Income",
+  },
+  {
+    amount: 900,
+    createdAt: "2024-05-11T21:46:32.867Z",
+    type: "Expense",
+  },
+  {
+    amount: 2000,
+    createdAt: "2024-05-12T21:47:45.867Z",
+    type: "Expense",
+  },
+  {
+    amount: 2000,
+    createdAt: "2024-05-1321:34:45.867Z",
+    type: "Expense",
+  },
 
-//   // ... more data for each day
-// ];
+  // ... more data for each day
+];
 
 // function handleIntervalChange(newInterval) {
 //   if (newInterval === "weekly") {
@@ -91,7 +131,7 @@ const monthlyData = [
 
 // }
 
-const Overview = ({ type, time }) => {
+const Overview = ({ time }) => {
   //  console.log(time, type)
   const [chartData, setChartData] = useState(monthlyData); // Initial data is monthly
   // const { transactionList } = useTransaction();
@@ -106,21 +146,20 @@ const Overview = ({ type, time }) => {
     // console.log('overview fnc calling')
     //Filtering the all exercises according to the searchTerm
     const res = await axios.get(
-      "http://localhost:5000/api/v1/transaction/aggTransactions/",
+      "http://localhost:5000/api/v1/transaction/aggtransactions/",
       {
         params: {
           time,
-          type,
         },
       }
     );
-      console.log('Getting response from server', res)
+    console.log("Getting response from server", res);
     // setTransactionList(response?.data?.transactions);
   };
 
   useEffect(() => {
     getAllTransactionList();
-  }, [type,time]);
+  }, [time]);
 
   // console.log(transactionList);
 
