@@ -1,113 +1,114 @@
 import { useTransaction } from "@/provider/transactionProvider";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
-
-const monthlyData = [
-  {
-    name: "Jan",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Feb",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Mar",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Apr",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "May",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Jun",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Jul",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Aug",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Sep",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Oct",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Nov",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-  {
-    name: "Dec",
-    total: Math.floor(Math.random() * 5000) + 1000,
-  },
-];
+import {
+  Bar,
+  BarChart,
+  LabelList,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 const data = [
   {
-    amount: 800,
-    createdAt: "2024-03-18T21:37:52.867Z",
-    type: "Income",
+    name: "Page A",
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
   },
   {
-    amount: 800,
-    createdAt: "2024-03-19T21:43:25.867Z",
-    type: "Income",
+    name: "Page B",
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
   },
   {
-    amount: 600,
-    createdAt: "2024-03-20T21:43:52.867Z",
-    type: "Expense",
+    name: "Page C",
+    uv: 2000,
+    pv: 8,
+    amt: 2290,
   },
   {
-    amount: 600,
-    createdAt: "2024-03-22T21:43:55.867Z",
-    type: "Expense",
+    name: "Page D",
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
   },
   {
-    amount: 400,
-    createdAt: "2024-04-01T21:43:58.867Z",
-    type: "Income",
+    name: "Page E",
+    uv: 18,
+    pv: 4800,
+    amt: 2181,
   },
   {
-    amount: 500,
-    createdAt: "2024-04-02T21:44:22.867Z",
-    type: "Expense",
+    name: "Page F",
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
   },
   {
-    amount: 500,
-    createdAt: "2024-04-03T21:45:25.867Z",
-    type: "Income",
+    name: "Page G",
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
   },
-  {
-    amount: 900,
-    createdAt: "2024-05-11T21:46:32.867Z",
-    type: "Expense",
-  },
-  {
-    amount: 2000,
-    createdAt: "2024-05-12T21:47:45.867Z",
-    type: "Expense",
-  },
-  {
-    amount: 2000,
-    createdAt: "2024-05-1321:34:45.867Z",
-    type: "Expense",
-  },
-
-  // ... more data for each day
 ];
+
+// const data = [
+//   {
+//     amount: 800,
+//     createdAt: "2024-03-18T21:37:52.867Z",
+//     type: "Income",
+//   },
+//   {
+//     amount: 800,
+//     createdAt: "2024-03-19T21:43:25.867Z",
+//     type: "Income",
+//   },
+//   {
+//     amount: 600,
+//     createdAt: "2024-03-20T21:43:52.867Z",
+//     type: "Expense",
+//   },
+//   {
+//     amount: 600,
+//     createdAt: "2024-03-22T21:43:55.867Z",
+//     type: "Expense",
+//   },
+//   {
+//     amount: 400,
+//     createdAt: "2024-04-01T21:43:58.867Z",
+//     type: "Income",
+//   },
+//   {
+//     amount: 500,
+//     createdAt: "2024-04-02T21:44:22.867Z",
+//     type: "Expense",
+//   },
+//   {
+//     amount: 500,
+//     createdAt: "2024-04-03T21:45:25.867Z",
+//     type: "Income",
+//   },
+//   {
+//     amount: 900,
+//     createdAt: "2024-05-11T21:46:32.867Z",
+//     type: "Expense",
+//   },
+//   {
+//     amount: 2000,
+//     createdAt: "2024-05-12T21:47:45.867Z",
+//     type: "Expense",
+//   },
+//   {
+//     amount: 2000,
+//     createdAt: "2024-05-1321:34:45.867Z",
+//     type: "Expense",
+//   },
+
+//   // ... more data for each day
+// ];
 
 // function handleIntervalChange(newInterval) {
 //   if (newInterval === "weekly") {
@@ -131,9 +132,9 @@ const data = [
 
 // }
 
-const Overview = ({ time }) => {
+const Overview = ({ time, type }) => {
   //  console.log(time, type)
-  const [chartData, setChartData] = useState(monthlyData); // Initial data is monthly
+  const [chartData, setChartData] = useState(data); // Initial data is monthly
   // const { transactionList } = useTransaction();
   // console.log(transactionList)
   const [transactionList, setTransactionList] = useState([]);
@@ -150,6 +151,7 @@ const Overview = ({ time }) => {
       {
         params: {
           time,
+          type,
         },
       }
     );
@@ -159,9 +161,28 @@ const Overview = ({ time }) => {
 
   useEffect(() => {
     getAllTransactionList();
-  }, [time]);
+  }, [time, type]);
 
   // console.log(transactionList);
+  const renderCustomizedLabel = (props) => {
+    const { x, y, width, height, value } = props;
+    const radius = 10;
+
+    return (
+      <g>
+        <circle cx={x + width / 2} cy={y - radius} r={radius} fill="#8884d8" />
+        <text
+          x={x + width / 2}
+          y={y - radius}
+          fill="#fff"
+          textAnchor="middle"
+          dominantBaseline="middle"
+        >
+          {value.split(" ")[1]}
+        </text>
+      </g>
+    );
+  };
 
   return (
     <div>
@@ -187,12 +208,16 @@ const Overview = ({ time }) => {
             axisLine={false}
             tickFormatter={(value) => `$${value}`}
           />
-          <Bar
+          {/* <Bar
             dataKey="total"
             fill="currentColor"
             radius={[4, 4, 0, 0]}
             className="fill-primary"
-          />
+          /> */}
+          <Bar dataKey="pv" fill="#8884d8" minPointSize={5}>
+            <LabelList dataKey="name" content={renderCustomizedLabel} />
+          </Bar>
+          <Bar dataKey="uv" fill="#82ca9d" minPointSize={10} />
         </BarChart>
       </ResponsiveContainer>
     </div>

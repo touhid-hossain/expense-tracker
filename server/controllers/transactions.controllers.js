@@ -73,23 +73,12 @@ exports.getAllTransaction = async (req, res) => {
   }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
 // Function for get aggregateTransactionList depends on query.
 exports.aggregateTransactionList = async (req, res) => {
   const validTimePeriods = ["daily", "weekly", "monthly"];
+  const type = req.query?.type;
   const time = req.query?.time;
-// console.log(time)
+  // console.log("Getting type and time in backend fnc", type, time);
   if (!validTimePeriods.includes(time)) {
     return res.status(400).json({ message: "Invalid time period" });
   }
@@ -102,14 +91,13 @@ exports.aggregateTransactionList = async (req, res) => {
     unit = "week";
   } else if (time === "daily") {
     unit = "day";
-  } 
-  // console.log(unit)
+  }
+  console.log(unit)
 
   const startOfTime = moment().startOf(unit);
   const endOfTime = moment().endOf(unit);
-  console.log('Checking time formation', startOfTime, endOfTime)
+  console.log("Checking time formation", startOfTime, endOfTime);
   try {
-
     // Checking the CreatedAt time formation
     const transactions = await Transaction.find({
       createdAt: {
@@ -117,8 +105,8 @@ exports.aggregateTransactionList = async (req, res) => {
         $lte: endOfTime,
       },
     });
-    
-    console.log("Checking the CreatedAt time formation: ", transactions);
+
+    // console.log("Checking the CreatedAt time formation: ", transactions);
 
     const result = await Transaction.aggregate([
       {
