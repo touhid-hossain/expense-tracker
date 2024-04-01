@@ -6,7 +6,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import React, { useState } from "react";
-import RecentSales from "./components/RecentSales";
 import { Link } from "react-router-dom";
 import Overview from "./components/OverviewBarChart";
 import {
@@ -19,29 +18,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import moment from "moment";
 import { Label } from "@/components/ui/label";
+import RecentTransactions from "./components/RecentTransactions";
 
 const Dashboard = () => {
   const [time, setTime] = useState("monthly");
   const [type, setType] = useState("all");
-  // console.log(time, type)
 
-  // let unit;
-  // if (time === "monthly") {
-  //   unit = "month";
-  // } else if (time === "weekly") {
-  //   unit = "week";
-  // } else if (time === "daily") {
-  //   unit = "day";
-  // }
-
-  // const startOfTime = moment().startOf(unit);
-  // const endOfTime = moment().endOf(unit);
-
-  // console.log('Checking time formation', startOfTime, endOfTime)
-
-  // console.log(time, type)
   return (
     <div className="text-gray-400">
       {/* 1st-part */}
@@ -194,7 +177,7 @@ const Dashboard = () => {
             <Link to="/transaction">View All.</Link>
           </CardHeader>
           <CardContent>
-            <RecentSales />
+            <RecentTransactions />
           </CardContent>
         </Card>
       </div>

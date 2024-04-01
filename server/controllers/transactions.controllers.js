@@ -92,39 +92,41 @@ exports.aggregateTransactionList = async (req, res) => {
   } else if (time === "daily") {
     unit = "day";
   }
-  console.log(unit)
+  console.log(unit);
 
   const startOfTime = moment().startOf(unit);
   const endOfTime = moment().endOf(unit);
   console.log("Checking time formation", startOfTime, endOfTime);
   try {
     // Checking the CreatedAt time formation
-    const transactions = await Transaction.find({
-      createdAt: {
-        $gte: startOfTime,
-        $lte: endOfTime,
-      },
-    });
+    // const transactions = await Transaction.find({
+    //   createdAt: {
+    //     $gte: startOfTime,
+    //     $lte: endOfTime,
+    //   },
+    // });
 
     // console.log("Checking the CreatedAt time formation: ", transactions);
 
     const result = await Transaction.aggregate([
       {
         $match: {
-          createdAt: {
-            $gte: startOfTime,
-            $lte: endOfTime,
-          },
+          // createdAt: {
+          //   $gte: startOfTime,
+          //   $lte: endOfTime,
+          // },
         },
       },
       {
         $group: {
-          _id: {
-            $dateTrunc: {
-              date: "$createdAt",
-              unit: unit,
-            },
-          },
+          _id: "kuchbhi"
+          // _id: {
+          //   $dateTrunc: {
+          //     date: "$createdAt",
+          //     unit: unit,
+          //     binSize: 1
+          //   },
+          // },
           // totalIncome: {
           //   $sum: {
           //     $cond: {
@@ -154,3 +156,73 @@ exports.aggregateTransactionList = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+// Function for getting transaction summary
+exports.getTransactionSummary = async (req, res) => {
+  // Define an empty array to store monthly data
+  const monthlyData = [];
+
+  // Function to calculate savings for a month
+  const calculateSavings = (income, expense) => {
+    const savings = parseFloat(income) - parseFloat(expense);
+    if(savings < 1) {
+      return 0;
+    }else {
+      return savings;
+    }
+  }
+
+  try {
+    // Find transactions for the user
+    const transactions = await Transaction.find({ creator: req.userId });
+
+    // Loop through each transaction
+    for (const transaction of transactions) {
+      // Extract month from transaction date (adjust based on your date format)
+      const month = transaction.createdAt.getMonth();
+
+      // Check if month object exists in monthlyData
+      let monthObject = monthlyData.find(data => data.month === month);
+
+      if (!monthObject) {
+        // Create a new object for the month
+        monthObject = {
+          month,
+          income: '0',
+          expense: '0',
+          savings: '0',
+          monthName: getMonthName(month) // Add a function to get month name (optional)
+        };
+
+        // Add the new object to the monthlyData array
+        monthlyData.push(monthObject);
+      }
+
+      // Update income or expense
+      if(transaction.type === 'income') {
+        monthObject.income = (parseFloat(monthObject.income) + parseFloat(transaction.amount)).toString();
+      }
+      if(transaction.type === 'expense') {
+        monthObject.expense = (parseFloat(monthObject.expense) + parseFloat(transaction.amount)).toString();
+      }
+
+      // Calculate savings 
+      monthObject.savings = calculateSavings(monthObject.income, monthObject.expense).toString();
+    }
+
+    
+
+    // Return the processed monthly data
+    res.status(200).json(monthlyData);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json(error);
+  }
+}
+
+function getMonthName(month) {
+  const monthNames = ["January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"];
+  return monthNames[month];
+}
