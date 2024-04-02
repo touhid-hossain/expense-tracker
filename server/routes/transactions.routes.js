@@ -8,6 +8,8 @@ router.post("/", verifyToken, transactionController.createTransaction);
 
 //Route for get all transaction List by user id and search keywords category and pagination
 router.get('/', verifyToken, transactionController.getAllTransaction)
+//Route for for get aggregateTransactionList depends on query.
+router.get('/aggtransactions', verifyToken, transactionController.aggregateTransactionList)
 
  
 module.exports = router;

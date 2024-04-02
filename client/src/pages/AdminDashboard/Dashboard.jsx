@@ -5,12 +5,42 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import React from "react";
+import React, { useState } from "react";
 import RecentSales from "./components/RecentSales";
 import { Link } from "react-router-dom";
 import Overview from "./components/OverviewBarChart";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import moment from "moment";
 
 const Dashboard = () => {
+<<<<<<< HEAD
+=======
+  const [time, setTime] = useState("monthly");
+
+  // let unit;
+  // if (time === "monthly") {
+  //   unit = "month";
+  // } else if (time === "weekly") {
+  //   unit = "week";
+  // } else if (time === "daily") {
+  //   unit = "day";
+  // }
+
+  // const startOfTime = moment().startOf(unit);
+  // const endOfTime = moment().endOf(unit);
+
+  // console.log('Checking time formation', startOfTime, endOfTime)
+
+  // console.log(time, type)
+>>>>>>> 2df7696b26ec3742fc9064973481881685423cdc
   return (
     <div className="text-gray-400">
       {/* 1st-part */}
@@ -94,55 +124,34 @@ const Dashboard = () => {
                 </p>
               </CardContent>
             </Card>
-            {/* <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Now</CardTitle>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              className="h-4 w-4 text-muted-foreground"
-            >
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-            </svg>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+573</div>
-            <p className="text-xs text-muted-foreground">
-              +201 since last hour
-            </p>
-          </CardContent>
-            </Card> */}
           </div>
-
           {/*Overview Bar-Chart */}
           <Card className="mt-5">
-            <CardHeader>
-              <CardTitle>Overview Bar Chart</CardTitle>
+            <CardHeader className="flex-row justify-between items-center">
+              <CardTitle>Spending Summary</CardTitle>
+              {/* Render barChart depends on selected time */}
+              <Select onValueChange={setTime} defaultValue={time}>
+                <SelectTrigger className="w-[150px]">
+                  <SelectValue placeholder="Select a time" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Select a time</SelectLabel>
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="daily">Daily</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </CardHeader>
             <CardContent className="pl-2">
-              <Overview />
+              <Overview time={time} /> 
             </CardContent>
           </Card>
         </div>
-        {/* Overview Pie-Chart */}
-
-        {/* <Card className="mt-5">
-          <CardHeader>
-            <CardTitle>Overview Pie Chart</CardTitle>
-          </CardHeader>
-          <CardContent className="pl-2">
-            <OverviewPieChart />
-          </CardContent>
-        </Card> */}
-
         {/* 2nd-part */}
         {/* Recent Transaction List */}
-        <Card className="w-2/4 mt-10">
+        <Card className="w-full xl:w-2/4 mt-10">
           <CardHeader className="flex flex-row justify-between items-center">
             <div>
               <CardTitle className="mb-2">Recent Sales</CardTitle>

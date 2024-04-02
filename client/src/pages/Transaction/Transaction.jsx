@@ -16,10 +16,10 @@ import TransactionPagination from "./components/TransactionPagination";
 const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const { transactionList, setTransactionList, updatedTotalTransaction } = useTransaction([]);
-  console.log('getting updatedTotalTransaction inside tranasction', updatedTotalTransaction)
+  // console.log('getting updatedTotalTransaction inside tranasction', updatedTotalTransaction)
   const [type, setType] = useState("all");
   const [totalTransactions, setTotalTransactions] = useState(0);
-  console.log('getting value inside tranasction', totalTransactions)
+  // console.log('getting value inside tranasction', totalTransactions)
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedValue = useDebounce(search, 300);
@@ -31,7 +31,6 @@ const Transaction = () => {
 
   const debouncedSearch = async () => {
     //Filtering the all exercises according to the searchTerm
-    console.log("debounce function calling");
     const response = await axios.get(
       "http://localhost:5000/api/v1/transaction",
       {
