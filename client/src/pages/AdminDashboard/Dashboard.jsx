@@ -19,11 +19,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import moment from "moment";
+import axios from "axios";
+import { useEffect } from "react";
 
 const Dashboard = () => {
-<<<<<<< HEAD
-=======
   const [time, setTime] = useState("monthly");
+  const [yearData, setYearData] = useState([]);
+
+  const getAndSetYearData = async (url) => {
+    const { data } = await axios.get(url);
+    setYearData(data);
+  };
+  // component life-cycle hook.
+  // when this component load first time, then immediately called this useEffect hook.
+  useEffect(() => {
+    getAndSetYearData(
+      "http://localhost:5000/api/v1/transaction/aggtransactions/?time=weekly"
+    );
+  }, []);
 
   // let unit;
   // if (time === "monthly") {
@@ -40,7 +53,6 @@ const Dashboard = () => {
   // console.log('Checking time formation', startOfTime, endOfTime)
 
   // console.log(time, type)
->>>>>>> 2df7696b26ec3742fc9064973481881685423cdc
   return (
     <div className="text-gray-400">
       {/* 1st-part */}
@@ -145,7 +157,7 @@ const Dashboard = () => {
               </Select>
             </CardHeader>
             <CardContent className="pl-2">
-              <Overview time={time} /> 
+              <Overview time={time} />
             </CardContent>
           </Card>
         </div>
