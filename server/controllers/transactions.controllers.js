@@ -77,11 +77,10 @@ exports.getAllTransaction = async (req, res) => {
 exports.getTransactionSummary = async (req, res) => {
   const type = req.query?.type;
   const time = req.query?.time;
-  console.log("Getting type and time in backend fnc", type, time);
+  
 
-  const startOfTime = moment().startOf(time);
-  const endOfTime = moment().endOf(time);
-
+  const startOfTime = moment().startOf(unit);
+  const endOfTime = moment().endOf(unit);
   console.log("Checking time formation", startOfTime, endOfTime);
   try {
     // Checking the CreatedAt time formation
@@ -282,3 +281,5 @@ exports.getTransactionSummary = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
