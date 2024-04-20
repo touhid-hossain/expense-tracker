@@ -20,10 +20,24 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import RecentTransactions from "./components/RecentTransactions";
+import { useEffect } from "react";
 
 const Dashboard = () => {
   const [time, setTime] = useState("monthly");
+  const [yearData, setYearData] = useState([]);
   const [type, setType] = useState("all");
+
+  const getAndSetYearData = async (url) => {
+    const { data } = await axios.get(url);
+    setYearData(data);
+  };
+  // component life-cycle hook.
+  // when this component load first time, then immediately called this useEffect hook.
+  useEffect(() => {
+    getAndSetYearData(
+      "http://localhost:5000/api/v1/transaction/aggtransactions/?time=weekly"
+    );
+  }, []);
 
   return (
     <div className="text-gray-400">
