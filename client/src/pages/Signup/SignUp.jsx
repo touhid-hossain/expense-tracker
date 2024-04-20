@@ -18,6 +18,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { useToast } from "@/components/ui/use-toast"
+import { useAuth } from "@/provider/authProvider";
 
 const signUpFormSchema = z.object({
   name: z

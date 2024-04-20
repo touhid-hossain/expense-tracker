@@ -22,16 +22,16 @@ import { Label } from "@/components/ui/label";
 import RecentTransactions from "./components/RecentTransactions";
 
 const Dashboard = () => {
-  const [time, setTime] = useState("monthly");
+  const [time, setTime] = useState("month");
   const [type, setType] = useState("all");
 
   return (
     <div className="text-gray-400">
-      {/* 1st-part */}
       <div className="flex flex-col xl:flex-row gap-4">
-        <div className="flex flex-col">
+      {/* 1st-part */}
+        <div className="flex flex-col xl:w-[60%]">
           {/*Dashboard-Cards */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-10">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3  mt-10">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -111,9 +111,9 @@ const Dashboard = () => {
           </div>
           {/*Overview Bar-Chart */}
           <Card className="mt-5">
-            <CardHeader className="flex-row justify-between items-center">
-              <CardTitle>Spending Summary</CardTitle>
-              <div className="flex items-center xl:flex-col-reverse xl:items-end gap-2">
+            <CardHeader className="flex justify-center md:flex-row md:justify-between items-center">
+              <CardTitle className='text-[20px] mb-2 md:mb-0 md:text-2xl'>Spending Summary</CardTitle>
+              <div className="flex flex-col-reverse items-center md:items-end gap-4">
                 {/* Render barChart depends on selected type */}
                 <RadioGroup
                   onValueChange={setType}
@@ -125,6 +125,7 @@ const Dashboard = () => {
                       value="all"
                       id="r1"
                       checked={type === "all"}
+                     
                     />
                     <Label htmlFor="r1">All</Label>
                   </div>
@@ -153,9 +154,10 @@ const Dashboard = () => {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Select a time</SelectLabel>
-                      <SelectItem value="monthly">Monthly</SelectItem>
-                      <SelectItem value="weekly">Weekly</SelectItem>
-                      <SelectItem value="daily">Daily</SelectItem>
+                      <SelectItem value="year">This Year</SelectItem>
+                      <SelectItem value="month">This Month</SelectItem>
+                      <SelectItem value="week">This Week</SelectItem>
+                      <SelectItem value="day">Last 24 hours</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -168,7 +170,7 @@ const Dashboard = () => {
         </div>
         {/* 2nd-part */}
         {/* Recent Transaction List */}
-        <Card className="w-full xl:w-2/4 mt-10">
+        <Card className="w-full xl:w-[40%] mt-10">
           <CardHeader className="flex flex-row justify-between items-center">
             <div>
               <CardTitle className="mb-2">Recent Sales</CardTitle>

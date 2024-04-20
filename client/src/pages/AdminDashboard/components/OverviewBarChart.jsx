@@ -9,25 +9,33 @@ import {
   YAxis,
 } from "recharts";
 
-
 const Overview = ({ time, type }) => {
-  console.log(type)
+  console.log(time,type);
   const [chartData, setChartData] = useState([]); // Initial data is monthly
+  console.log(chartData);
   const [option, setOption] = useState("savings");
 
   const getTransactionSummary = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/v1/transaction/summary");
+      const response = await axios.get(
+        "http://localhost:5000/api/v1/transaction/summary",
+        {
+          params: {
+            time,
+            type,
+          },
+        }
+      );
 
       setChartData(response?.data);
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     getTransactionSummary();
-  }, []);
+  }, [time, type]);
 
   const renderCustomizedLabel = (props) => {
     const { x, y, width, height, value } = props;
@@ -68,22 +76,26 @@ const Overview = ({ time, type }) => {
             axisLine={false}
             tickFormatter={(value) => `$${value}`}
           />
+          {/* <Bar
+            dataKey="total"
+            fill="currentColor"
+            radius={[4, 4, 0, 0]}
+            className="fill-primary"
+          /> */}
 
-          {
-            type === "all" && (
-              <>
-                <Bar dataKey="income" fill="green" minPointSize={2}>
-                  {/* <LabelList dataKey="income" content={renderCustomizedLabel} /> */}
-                </Bar>
-                <Bar dataKey="expense" fill="red" minPointSize={2} >
-                  {/* <LabelList dataKey="expense" content={renderCustomizedLabel} /> */}
-                </Bar>
-                <Bar dataKey="savings" fill="#8884d8" minPointSize={2} >
-                  {/* <LabelList dataKey="expense" content={renderCustomizedLabel} /> */}
-                </Bar>
-              </>
-            )
-          }
+          {type === "all" && (
+            <>
+              <Bar dataKey="income" fill="green" minPointSize={1}>
+                {/* <LabelList dataKey="income" content={renderCustomizedLabel} /> */}
+              </Bar>
+              <Bar dataKey="expense" fill="red" minPointSize={2}>
+                {/* <LabelList dataKey="expense" content={renderCustomizedLabel} /> */}
+              </Bar>
+              <Bar dataKey="savings" fill="#8884d8" minPointSize={2}>
+                {/* <LabelList dataKey="expense" content={renderCustomizedLabel} /> */}
+              </Bar>
+            </>
+          )}
 
           {type === "income" && (
             <Bar dataKey="income" fill="green" minPointSize={2}>
@@ -102,7 +114,6 @@ const Overview = ({ time, type }) => {
               {/* <LabelList dataKey="income" content={renderCustomizedLabel} /> */}
             </Bar>
           )}
-
         </BarChart>
       </ResponsiveContainer>
     </div>
