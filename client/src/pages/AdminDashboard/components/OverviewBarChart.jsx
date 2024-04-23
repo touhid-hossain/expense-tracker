@@ -1,41 +1,28 @@
-import axios from "axios";
+import axios from "@/lib/axios";
 import React, { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
+  CartesianGrid,
   LabelList,
+  Legend,
   ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 
-const Overview = ({ time, type }) => {
-  console.log(time,type);
-  const [chartData, setChartData] = useState([]); // Initial data is monthly
-  console.log(chartData);
-  const [option, setOption] = useState("savings");
+const Overview = ({ time }) => {
+  const [summaryData, setSummaryData] = useState([]);
 
-  const getTransactionSummary = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/api/v1/transaction/summary",
-        {
-          params: {
-            time,
-            type,
-          },
-        }
-      );
-
-      setChartData(response?.data);
-    } catch (error) {
-      console.log(error);
-    }
+  const getAndSetYearData = async (url) => {
+    const { data } = await axios.get(url);
+    setSummaryData(data?.data);
   };
 
   useEffect(() => {
-    getTransactionSummary();
-  }, [time, type]);
+    getAndSetYearData(`/transaction/summary/${time}`);
+  }, [time]);
 
   const renderCustomizedLabel = (props) => {
     const { x, y, width, height, value } = props;
@@ -61,59 +48,21 @@ const Overview = ({ time, type }) => {
     <div>
       {/* Chart component */}
       <ResponsiveContainer width="100%" height={350}>
-        <BarChart data={chartData}>
+        <BarChart barGap={2} barSize={60} data={summaryData}>
           <XAxis
-            dataKey="monthName"
+            dataKey={time === "yearly" ? "month" : "day"}
             stroke="#888888"
             fontSize={12}
             tickLine={false}
             axisLine={false}
           />
-          <YAxis
-            stroke="#888888"
-            fontSize={12}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={(value) => `$${value}`}
-          />
-          {/* <Bar
-            dataKey="total"
-            fill="currentColor"
-            radius={[4, 4, 0, 0]}
-            className="fill-primary"
-          /> */}
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <CartesianGrid strokeDasharray="3 3" />
 
-          {type === "all" && (
-            <>
-              <Bar dataKey="income" fill="green" minPointSize={1}>
-                {/* <LabelList dataKey="income" content={renderCustomizedLabel} /> */}
-              </Bar>
-              <Bar dataKey="expense" fill="red" minPointSize={2}>
-                {/* <LabelList dataKey="expense" content={renderCustomizedLabel} /> */}
-              </Bar>
-              <Bar dataKey="savings" fill="#8884d8" minPointSize={2}>
-                {/* <LabelList dataKey="expense" content={renderCustomizedLabel} /> */}
-              </Bar>
-            </>
-          )}
-
-          {type === "income" && (
-            <Bar dataKey="income" fill="green" minPointSize={2}>
-              {/* <LabelList dataKey="income" content={renderCustomizedLabel} /> */}
-            </Bar>
-          )}
-
-          {type === "expense" && (
-            <Bar dataKey="expense" fill="red" minPointSize={2}>
-              {/* <LabelList dataKey="income" content={renderCustomizedLabel} /> */}
-            </Bar>
-          )}
-
-          {type === "savings" && (
-            <Bar dataKey="savings" fill="#8884d8" minPointSize={2}>
-              {/* <LabelList dataKey="income" content={renderCustomizedLabel} /> */}
-            </Bar>
-          )}
+          <Bar dataKey="income" />
+          <Bar dataKey="expense" />
         </BarChart>
       </ResponsiveContainer>
     </div>

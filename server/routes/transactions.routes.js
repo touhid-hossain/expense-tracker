@@ -9,9 +9,15 @@ router.post("/", verifyToken, transactionController.createTransaction);
 //Route for get all transaction List by user id and search keywords category and pagination
 router.get("/", verifyToken, transactionController.getAllTransaction);
 //Route for for get aggregateTransactionList depends on query.
+
+router.get("/summary", transactionController.getYearlyTransactionSummary);
+
 router.get(
-  "/summary",
-  verifyToken,
-  transactionController.getTransactionSummary
+  "/summary/yearly",
+  transactionController.getYearlyTransactionSummary
+);
+router.get(
+  "/summary/monthly",
+  transactionController.getMonthyTransactionSummary
 );
 module.exports = router;

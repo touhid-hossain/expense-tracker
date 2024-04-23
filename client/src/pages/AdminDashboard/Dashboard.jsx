@@ -20,29 +20,17 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import RecentTransactions from "./components/RecentTransactions";
-import { useEffect } from "react";
+import { useUser } from "@/provider/userProvider";
 
 const Dashboard = () => {
-  const [time, setTime] = useState("month");
-  const [yearData, setYearData] = useState([]);
+  const { handleTimeChange, time } = useUser();
   const [type, setType] = useState("all");
-
-  const getAndSetYearData = async (url) => {
-    const { data } = await axios.get(url);
-    setYearData(data);
-  };
-  // component life-cycle hook.
-  // when this component load first time, then immediately called this useEffect hook.
-  useEffect(() => {
-    getAndSetYearData(
-      "http://localhost:5000/api/v1/transaction/aggtransactions/?time=weekly"
-    );
-  }, []);
+  console.log(time);
 
   return (
     <div className="text-gray-400">
       <div className="flex flex-col xl:flex-row gap-4">
-      {/* 1st-part */}
+        {/* 1st-part */}
         <div className="flex flex-col xl:w-[60%]">
           {/*Dashboard-Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3  mt-10">
@@ -126,7 +114,9 @@ const Dashboard = () => {
           {/*Overview Bar-Chart */}
           <Card className="mt-5">
             <CardHeader className="flex justify-center md:flex-row md:justify-between items-center">
-              <CardTitle className='text-[20px] mb-2 md:mb-0 md:text-2xl'>Spending Summary</CardTitle>
+              <CardTitle className="text-[20px] mb-2 md:mb-0 md:text-2xl">
+                Spending Summary
+              </CardTitle>
               <div className="flex flex-col-reverse items-center md:items-end gap-4">
                 {/* Render barChart depends on selected type */}
                 <RadioGroup
@@ -139,7 +129,6 @@ const Dashboard = () => {
                       value="all"
                       id="r1"
                       checked={type === "all"}
-                     
                     />
                     <Label htmlFor="r1">All</Label>
                   </div>
@@ -161,17 +150,22 @@ const Dashboard = () => {
                   </div>
                 </RadioGroup>
                 {/* Render barChart depends on selected time */}
-                <Select onValueChange={setTime} defaultValue={time}>
+                <Select
+                  onValueChange={(e) => {
+                    handleTimeChange(e);
+                  }}
+                  value={time}
+                >
                   <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Select a time" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Select a time</SelectLabel>
-                      <SelectItem value="year">This Year</SelectItem>
-                      <SelectItem value="month">This Month</SelectItem>
-                      <SelectItem value="week">This Week</SelectItem>
-                      <SelectItem value="day">Last 24 hours</SelectItem>
+                      <SelectItem value="yearly">This Year</SelectItem>
+                      <SelectItem value="monthly">This Month</SelectItem>
+                      <SelectItem value="weekly">This Week</SelectItem>
+                      <SelectItem value="daily">Last 24 hours</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
