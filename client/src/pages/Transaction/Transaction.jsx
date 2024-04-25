@@ -24,7 +24,7 @@ const Transaction = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedValue = useDebounce(search, 300);
 
-  const limit = 5;
+  const limit = 8;
   const totalPages = Math.ceil(  totalTransactions  / limit)
   const pagesToShow = totalPages > 5 ? 5 : totalPages;
   const paginate = (pageNumber) => setCurrentPage(pageNumber);

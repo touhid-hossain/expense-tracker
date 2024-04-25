@@ -1,5 +1,6 @@
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import myaxios from "../lib/axios";
+import { jwtDecode } from "jwt-decode";
 import {
   createContext,
   useContext,
@@ -30,6 +31,7 @@ const AuthProvider = ({ children }) => {
         delete axios.defaults.headers.common["Authorization"]; // Remove Authorization token from axios headers
       } else {
         axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+        myaxios.defaults.headers.common["Authorization"] = "Bearer " + token;
         localStorage.setItem("token", token);
       }
     } else {

@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Overview from "./components/OverviewBarChart";
 import {
@@ -20,15 +20,30 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import RecentTransactions from "./components/RecentTransactions";
+import { useTransaction } from "@/provider/transactionProvider";
+import axios from "@/lib/axios";
 
 const Dashboard = () => {
-  const [time, setTime] = useState("month");
-  const [type, setType] = useState("all");
+  const { handleTimeChange, handleTypeChange, type, time } = useTransaction();
+  const [currentTransactions, setCurrentTransactions] = useState(0);
+
+  const CurrentMonthTransactions = async () => {
+    //Filtering the all exercises according to the searchTerm
+    const response = await axios.get(
+      "http://localhost:5000/api/v1/transaction/currentMonth/transactions"
+    );
+    console.log("Checking response", response);
+    setCurrentTransactions(response?.data);
+  };
+
+  useEffect(() => {
+    CurrentMonthTransactions();
+  }, []);
 
   return (
     <div className="text-gray-400">
       <div className="flex flex-col xl:flex-row gap-4">
-      {/* 1st-part */}
+        {/* 1st-part */}
         <div className="flex flex-col xl:w-[60%]">
           {/*Dashboard-Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3  mt-10">
@@ -112,11 +127,13 @@ const Dashboard = () => {
           {/*Overview Bar-Chart */}
           <Card className="mt-5">
             <CardHeader className="flex justify-center md:flex-row md:justify-between items-center">
-              <CardTitle className='text-[20px] mb-2 md:mb-0 md:text-2xl'>Spending Summary</CardTitle>
+              <CardTitle className="text-[20px] mb-2 md:mb-0 md:text-2xl">
+                Spending Summary
+              </CardTitle>
               <div className="flex flex-col-reverse items-center md:items-end gap-4">
                 {/* Render barChart depends on selected type */}
                 <RadioGroup
-                  onValueChange={setType}
+                  onValueChange={handleTypeChange}
                   defaultValue={type}
                   className="flex"
                 >
@@ -125,7 +142,6 @@ const Dashboard = () => {
                       value="all"
                       id="r1"
                       checked={type === "all"}
-                     
                     />
                     <Label htmlFor="r1">All</Label>
                   </div>
@@ -147,24 +163,24 @@ const Dashboard = () => {
                   </div>
                 </RadioGroup>
                 {/* Render barChart depends on selected time */}
-                <Select onValueChange={setTime} defaultValue={time}>
+                <Select onValueChange={handleTimeChange} value={time}>
                   <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Select a time" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Select a time</SelectLabel>
-                      <SelectItem value="year">This Year</SelectItem>
-                      <SelectItem value="month">This Month</SelectItem>
-                      <SelectItem value="week">This Week</SelectItem>
-                      <SelectItem value="day">Last 24 hours</SelectItem>
+                      <SelectItem value="yearly">This Year</SelectItem>
+                      <SelectItem value="monthly">This Month</SelectItem>
+                      <SelectItem value="weekly">This Week</SelectItem>
+                      <SelectItem value="daily">Last 24 hours</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
             </CardHeader>
             <CardContent className="pl-2">
-              <Overview time={time} type={type} />
+              <Overview />
             </CardContent>
           </Card>
         </div>
@@ -174,7 +190,9 @@ const Dashboard = () => {
           <CardHeader className="flex flex-row justify-between items-center">
             <div>
               <CardTitle className="mb-2">Recent Sales</CardTitle>
-              <CardDescription>You made 265 sales this month.</CardDescription>
+              <CardDescription>
+                You made {currentTransactions} transactions this month.
+              </CardDescription>
             </div>
             <Link to="/transaction">View All.</Link>
           </CardHeader>
