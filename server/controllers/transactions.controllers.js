@@ -76,14 +76,14 @@ exports.getAllTransaction = async (req, res) => {
 
 exports.getMonthyTransactionSummary = async (req, res) => {
   try {
-    return res.status(200).json({ data: await getMonthyData() });
+    return res.status(200).json({ data: await getMonthyData(req.userId) });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 exports.getYearlyTransactionSummary = async (req, res) => {
   try {
-    return res.status(200).json({ data: await getYearlyData() });
+    return res.status(200).json({ data: await getYearlyData(req.userId) });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

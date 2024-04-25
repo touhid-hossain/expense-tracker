@@ -1,63 +1,42 @@
 const Transaction = require("../models/transactions.models");
-const { monthArr } = require("./aggregation.utils");
+const {
+  monthArr,
+  groupByYear,
+  matchCurrentYear,
+  unwindItemsArr,
+  matchUser,
+} = require("./aggregation.utils");
+// mongoose.Types.ObjectId(user_id)
 
 const currentMonth = monthArr[new Date().getMonth()].monthName;
-const info = {
-  year: "$$this.year",
-  userId: "$$this.creator",
-  day: "$$this.day",
-};
 
-module.exports = async () => {
-  const [{ items: data }] = await Transaction.aggregate([
-    {
-      $group: {
-        _id: {
-          $year: "$createdAt",
-        },
-        items: {
-          $push: {
-            type: "$type",
-            year: {
-              $year: "$createdAt",
-            },
-            day: {
-              $dayOfMonth: "$createdAt",
-            },
-            amount: {
-              $toInt: "$amount",
-            },
-            month: {
-              $arrayElemAt: [
-                monthArr,
-                {
-                  $subtract: [{ $month: "$createdAt" }, 1],
-                },
-              ],
-            },
-          },
-        },
-      },
-    },
-    {
-      $match: {
-        _id: new Date().getFullYear(),
-      },
-    },
-    {
-      $unwind: "$items", // Unwind the items array
-    },
+module.exports = async (userId) => {
+  const [{ items }] = await Transaction.aggregate([
+    matchUser(userId),
+    groupByYear,
+    matchCurrentYear,
+    unwindItemsArr,
+
     {
       $group: {
         _id: {
           month: "$items.month.monthName",
           day: "$items.day",
         },
-
-        // Group by month
         items: {
-          $push: "$items",
-        }, // Push items into an array for each month
+          $push: {
+            type: "$items.type",
+            amount: "$items.amount",
+            day: "$items.day",
+            month: "$items.month.monthName",
+            // year: 2024,
+            // creator: "65f61d912b25fc2f294080d7",
+            // month: {
+            //   "monthName": "Mar",
+            //   "monthIndex": 2
+            // }
+          },
+        },
       },
     },
 
@@ -69,7 +48,9 @@ module.exports = async () => {
             initialValue: {
               income: 0,
               expense: 0,
-              currency: "BDT",
+              dailyTotalTransactions: 0,
+              day: null,
+              month: null,
             },
             in: {
               $cond: {
@@ -79,7 +60,14 @@ module.exports = async () => {
                 then: {
                   $mergeObjects: [
                     "$$value",
-                    info,
+                    {
+                      dailyTotalTransactions: {
+                        $add: ["$$value.dailyTotalTransactions", 1],
+                      },
+                      day: "$$this.day",
+                      month: "$$this.month",
+                    },
+
                     {
                       income: {
                         $add: ["$$value.income", "$$this.amount"],
@@ -90,7 +78,13 @@ module.exports = async () => {
                 else: {
                   $mergeObjects: [
                     "$$value",
-                    info,
+                    {
+                      dailyTotalTransactions: {
+                        $add: ["$$value.dailyTotalTransactions", 1],
+                      },
+                      day: "$$this.day",
+                      month: "$$this.month",
+                    },
                     {
                       expense: {
                         $add: ["$$value.expense", "$$this.amount"],
@@ -120,12 +114,11 @@ module.exports = async () => {
     {
       $project: {
         _id: 0,
-        month: "$_id",
         items: 1,
       },
     },
   ]);
   // sort this data
-  data.sort((a, b) => a.day - b.day);
-  return data;
+  items.sort((a, b) => a.day - b.day);
+  return items;
 };

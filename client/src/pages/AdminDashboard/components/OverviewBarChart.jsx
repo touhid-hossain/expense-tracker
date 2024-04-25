@@ -1,4 +1,5 @@
 import axios from "@/lib/axios";
+import { useTransaction } from "@/provider/transactionProvider";
 import React, { useEffect, useState } from "react";
 import {
   Bar,
@@ -12,17 +13,8 @@ import {
   YAxis,
 } from "recharts";
 
-const Overview = ({ time }) => {
-  const [summaryData, setSummaryData] = useState([]);
-
-  const getAndSetYearData = async (url) => {
-    const { data } = await axios.get(url);
-    setSummaryData(data?.data);
-  };
-
-  useEffect(() => {
-    getAndSetYearData(`/transaction/summary/${time}`);
-  }, [time]);
+const Overview = () => {
+  const { summaryData, time, type } = useTransaction();
 
   const renderCustomizedLabel = (props) => {
     const { x, y, width, height, value } = props;
@@ -44,6 +36,23 @@ const Overview = ({ time }) => {
     );
   };
 
+  function renderBar() {
+    switch (type) {
+      case "all":
+        return (
+          <>
+            <Bar dataKey="income" />
+            <Bar dataKey="expense" />
+          </>
+        );
+      case "income":
+      case "expense":
+        return <Bar dataKey={type} />;
+      default:
+        return null;
+    }
+  }
+
   return (
     <div>
       {/* Chart component */}
@@ -60,9 +69,7 @@ const Overview = ({ time }) => {
           <Tooltip />
           <Legend />
           <CartesianGrid strokeDasharray="3 3" />
-
-          <Bar dataKey="income" />
-          <Bar dataKey="expense" />
+          {renderBar()}
         </BarChart>
       </ResponsiveContainer>
     </div>

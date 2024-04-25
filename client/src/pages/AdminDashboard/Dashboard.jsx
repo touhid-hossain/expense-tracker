@@ -20,12 +20,10 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import RecentTransactions from "./components/RecentTransactions";
-import { useUser } from "@/provider/userProvider";
+import { useTransaction } from "@/provider/transactionProvider";
 
 const Dashboard = () => {
-  const { handleTimeChange, time } = useUser();
-  const [type, setType] = useState("all");
-  console.log(time);
+  const { handleTimeChange, handleTypeChange, type, time } = useTransaction();
 
   return (
     <div className="text-gray-400">
@@ -120,7 +118,7 @@ const Dashboard = () => {
               <div className="flex flex-col-reverse items-center md:items-end gap-4">
                 {/* Render barChart depends on selected type */}
                 <RadioGroup
-                  onValueChange={setType}
+                  onValueChange={handleTypeChange}
                   defaultValue={type}
                   className="flex"
                 >
@@ -150,12 +148,7 @@ const Dashboard = () => {
                   </div>
                 </RadioGroup>
                 {/* Render barChart depends on selected time */}
-                <Select
-                  onValueChange={(e) => {
-                    handleTimeChange(e);
-                  }}
-                  value={time}
-                >
+                <Select onValueChange={handleTimeChange} value={time}>
                   <SelectTrigger className="w-[150px]">
                     <SelectValue placeholder="Select a time" />
                   </SelectTrigger>
@@ -172,7 +165,7 @@ const Dashboard = () => {
               </div>
             </CardHeader>
             <CardContent className="pl-2">
-              <Overview time={time} type={type} />
+              <Overview />
             </CardContent>
           </Card>
         </div>

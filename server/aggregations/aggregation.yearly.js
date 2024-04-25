@@ -1,43 +1,17 @@
 const Transaction = require("../models/transactions.models");
-const { monthArr } = require("./aggregation.utils");
+const {
+  groupByYear,
+  matchCurrentYear,
+  unwindItemsArr,
+  matchUser,
+} = require("./aggregation.utils");
 
-module.exports = async () => {
+module.exports = async (userId) => {
   return await Transaction.aggregate([
-    {
-      $group: {
-        _id: {
-          $year: "$createdAt",
-        },
-        items: {
-          $push: {
-            type: "$type",
-            year: {
-              $year: "$createdAt",
-            },
-            amount: {
-              $toInt: "$amount",
-            },
-            creator: "$creator",
-            month: {
-              $arrayElemAt: [
-                monthArr,
-                {
-                  $subtract: [{ $month: "$createdAt" }, 1],
-                },
-              ],
-            },
-          },
-        },
-      },
-    },
-    {
-      $match: {
-        _id: new Date().getFullYear(),
-      },
-    },
-    {
-      $unwind: "$items", // Unwind the items array
-    },
+    matchUser(userId),
+    groupByYear,
+    matchCurrentYear,
+    unwindItemsArr,
     {
       $group: {
         _id: "$items.month",

@@ -14,10 +14,12 @@ router.get("/summary", transactionController.getYearlyTransactionSummary);
 
 router.get(
   "/summary/yearly",
+  verifyToken,
   transactionController.getYearlyTransactionSummary
 );
 router.get(
   "/summary/monthly",
+  verifyToken,
   transactionController.getMonthyTransactionSummary
 );
 module.exports = router;
