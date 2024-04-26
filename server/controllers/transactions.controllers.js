@@ -26,7 +26,7 @@ const createTransaction = async (req, res) => {
     updatedTotalTransactions = await Transaction.countDocuments({
       creator: req.userId,
     }).exec();
-    // console.log("Updatinng totalTransactions in create function backend", updatedTotalTransactions);
+    // console.log("Updating totalTransactions in create function backend", updatedTotalTransactions);
     res.status(201).json({
       transaction: newTransaction,
       totalTransactions: updatedTotalTransactions,
@@ -81,7 +81,7 @@ const getAllTransaction = async (req, res) => {
   }
 };
 
-const getMonthyTransactionSummary = async (req, res) => {
+const getMonthlyTransactionSummary = async (req, res) => {
   try {
     const userId = req.userId;
     return res
@@ -208,7 +208,7 @@ const getCurrentMonthlyTransactionSummary = async (req, res) => {
 module.exports = {
   createTransaction,
   getAllTransaction,
-  getMonthyTransactionSummary,
+  getMonthlyTransactionSummary,
   getYearlyTransactionSummary,
   getTotalIncome,
   getTotalExpense,
