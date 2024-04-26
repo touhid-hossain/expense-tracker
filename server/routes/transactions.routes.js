@@ -5,7 +5,7 @@ const {
   createTransaction,
   getAllTransaction,
   getYearlyTransactionSummary,
-  getMonthyTransactionSummary,
+  getMonthlyTransactionSummary,
   getTotalIncome,
   getTotalExpense,
   getTotalSaved,
@@ -22,7 +22,7 @@ router.get("/", verifyToken, getAllTransaction);
 router.get("/summary", getYearlyTransactionSummary);
 
 router.get("/summary/yearly", verifyToken, getYearlyTransactionSummary);
-router.get("/summary/monthly", verifyToken, getMonthyTransactionSummary);
+router.get("/summary/monthly", verifyToken, getMonthlyTransactionSummary);
 router.get(
   "/currentMonth/transactions",
   verifyToken,
