@@ -1,7 +1,6 @@
 const Transaction = require("../models/transactions.models");
 const getMonthlyData = require("../aggregations/aggregation.monthly");
 const getYearlyData = require("../aggregations/aggregation.yearly");
-const { monthArr } = require("../aggregations/aggregation.utils");
 const {
   calculatePercentage,
   incomeCalculate,
@@ -104,8 +103,8 @@ const getTotalIncome = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const currentMonthData = await getMonthyData(userId, currentMonth);
-    const lastMonthData = await getMonthyData(userId, lastMonth);
+    const currentMonthData = await getMonthlyData(userId, currentMonth);
+    const lastMonthData = await getMonthlyData(userId, lastMonth);
 
     let currentTotalIncome = 0;
     let lastTotalIncome = 0;
@@ -132,8 +131,8 @@ const getTotalExpense = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const currentMonthData = await getMonthyData(userId, currentMonth);
-    const lastMonthData = await getMonthyData(userId, lastMonth);
+    const currentMonthData = await getMonthlyData(userId, currentMonth);
+    const lastMonthData = await getMonthlyData(userId, lastMonth);
 
     let currentTotalExpense = 0;
     let lastTotalExpense = 0;
@@ -160,8 +159,8 @@ const getTotalSaved = async (req, res) => {
   try {
     const userId = req.userId;
 
-    const currentMonthData = await getMonthyData(userId, currentMonth);
-    const lastMonthData = await getMonthyData(userId, lastMonth);
+    const currentMonthData = await getMonthlyData(userId, currentMonth);
+    const lastMonthData = await getMonthlyData(userId, lastMonth);
     let currentTotalSaved = 0;
     let lastTotalSaved = 0;
 
