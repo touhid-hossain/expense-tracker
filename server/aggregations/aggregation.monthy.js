@@ -8,10 +8,10 @@ const {
 } = require("./aggregation.utils");
 // mongoose.Types.ObjectId(user_id)
 
-const currentMonth = monthArr[new Date().getMonth()].monthName;
+module.exports = async (userId, monthName) => {
+  // const [{ items }] =
 
-module.exports = async (userId) => {
-  const [{ items }] = await Transaction.aggregate([
+  const result = await Transaction.aggregate([
     matchUser(userId),
     groupByYear,
     matchCurrentYear,
@@ -107,18 +107,29 @@ module.exports = async (userId) => {
     },
     {
       $match: {
-        _id: currentMonth,
+        _id: monthName,
       },
     },
+
+    // {
+    //   $addFields: {
+    //     currentData: "$$ROOT.items",
+    //   },
+    // },
 
     {
       $project: {
         _id: 0,
         items: 1,
+        // isEmpty: { $eq: [{ $size: "$currentData" }, 0] }, // Check if data array is empty
       },
     },
   ]);
-  // sort this data
-  items.sort((a, b) => a.day - b.day);
-  return items;
+  if (result.length !== 0) {
+    const [{ items }] = result;
+    // sort this data
+    items.sort((a, b) => a.day - b.day);
+    return items;
+  }
+  return result;
 };

@@ -1,9 +1,17 @@
 const Transaction = require("../models/transactions.models");
 const getMonthyData = require("../aggregations/aggregation.monthy");
 const getYearlyData = require("../aggregations/aggregation.yearly");
+const { monthArr } = require("../aggregations/aggregation.utils");
+const {
+  calculatePercentage,
+  incomeCalculate,
+  expenseCalculate,
+  currentMonth,
+  lastMonth,
+} = require("../utils/income-expense-calculate");
 
 // Function for creating a new user.
-exports.createTransaction = async (req, res) => {
+const createTransaction = async (req, res) => {
   const { name, type, category, amount } = req.body;
 
   try {
@@ -30,7 +38,7 @@ exports.createTransaction = async (req, res) => {
 };
 
 // Function for get transactionList depends on query.
-exports.getAllTransaction = async (req, res) => {
+const getAllTransaction = async (req, res) => {
   try {
     // Cast search variable to string
     let search = req.query.search || "";
@@ -74,17 +82,118 @@ exports.getAllTransaction = async (req, res) => {
   }
 };
 
-exports.getMonthyTransactionSummary = async (req, res) => {
+const getMonthyTransactionSummary = async (req, res) => {
   try {
-    return res.status(200).json({ data: await getMonthyData(req.userId) });
+    const userId = req.userId;
+    const currentMonth = monthArr[new Date().getMonth()].monthName;
+
+    return res
+      .status(200)
+      .json({ data: await getMonthyData(userId, currentMonth) });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
-exports.getYearlyTransactionSummary = async (req, res) => {
+const getYearlyTransactionSummary = async (req, res) => {
   try {
     return res.status(200).json({ data: await getYearlyData(req.userId) });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
+};
+
+const getTotalIncome = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const currentMonthData = await getMonthyData(userId, currentMonth);
+    const lastMonthData = await getMonthyData(userId, lastMonth);
+
+    let currentTotalIncome = 0;
+    let lastTotalIncome = 0;
+
+    if (currentMonthData.length > 0) {
+      const current_total_income = incomeCalculate(currentMonthData);
+      currentTotalIncome = currentTotalIncome + current_total_income;
+    }
+    if (lastMonthData.length > 0) {
+      const last_total_income = incomeCalculate(lastMonthData);
+      lastTotalIncome += last_total_income;
+    }
+
+    return res.status(200).json({
+      income: currentTotalIncome,
+      percentage: calculatePercentage(lastTotalIncome, currentTotalIncome),
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const getTotalExpense = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const currentMonthData = await getMonthyData(userId, currentMonth);
+    const lastMonthData = await getMonthyData(userId, lastMonth);
+
+    let currentTotalExpense = 0;
+    let lastTotalExpense = 0;
+
+    if (currentMonthData.length > 0) {
+      const current_total_expense = expenseCalculate(currentMonthData);
+      currentTotalExpense += current_total_expense;
+    }
+    if (lastMonthData.length > 0) {
+      const last_total_expense = expenseCalculate(lastMonthData);
+      lastTotalExpense += last_total_expense;
+    }
+
+    return res.status(200).json({
+      expense: currentTotalExpense,
+      percentage: calculatePercentage(lastTotalExpense, currentTotalExpense),
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const getTotalSaved = async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    const currentMonthData = await getMonthyData(userId, currentMonth);
+    const lastMonthData = await getMonthyData(userId, lastMonth);
+    let currentTotalSaved = 0;
+    let lastTotalSaved = 0;
+
+    if (currentMonthData.length > 0) {
+      const currentIncome = incomeCalculate(currentMonthData);
+      const currentExpense = expenseCalculate(currentMonthData);
+      // always Income >> Expense, ensure that from client-side
+      currentTotalSaved += currentIncome - currentExpense;
+    }
+    if (lastMonthData.length > 0) {
+      const lastIncome = incomeCalculate(lastMonthData);
+      const lastExpense = expenseCalculate(lastMonthData);
+      lastTotalSaved += lastIncome - lastExpense;
+    }
+
+    return res.status(200).json({
+      totalSaved: currentTotalSaved,
+      percentage: calculatePercentage(lastTotalSaved, currentTotalSaved),
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+module.exports = {
+  createTransaction,
+  getAllTransaction,
+  getMonthyTransactionSummary,
+  getYearlyTransactionSummary,
+  getTotalIncome,
+  getTotalExpense,
+  getTotalSaved,
 };
