@@ -1,72 +1,68 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import React from "react";
+import { useUser } from "@/provider/userProvider";
+import axios from "axios";
+import moment from "moment";
+
+import React, { useEffect, useState } from "react";
 
 const RecentTransactions = () => {
+  const [transactionList, setTransactionList] = useState([]);
+  const { user } = useUser();
+
+  const limit = 5;
+  const recentTransactions = async () => {
+    //Filtering the all exercises according to the searchTerm
+    const response = await axios.get(
+      "http://localhost:5000/api/v1/transaction",
+      {
+        params: {
+          limit,
+        },
+      }
+    );
+    setTransactionList(response?.data?.transactions);
+  };
+
+  useEffect(() => {
+    recentTransactions();
+  }, []);
+
+  // console.log("checking recent transactions", transactionList);
+
   return (
     <div className="space-y-8">
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/01.png" alt="Avatar" />
-          <AvatarFallback>OM</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Salary</p>
-          <p className="text-sm text-muted-foreground">
-           oct 1 - 01.00pm
-          </p>
+      {transactionList.length === 0 && (
+        <div className="flex items-center justify-center  h-[50vh]">
+          <h6>No Transactions found</h6>
         </div>
-        <div className="ml-auto font-medium">+$1,999.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="flex h-9 w-9 items-center justify-center space-y-0 border">
-          <AvatarImage src="/avatars/02.png" alt="Avatar" />
-          <AvatarFallback>JL</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">House Rent</p>
-          <p className="text-sm text-muted-foreground">oct 2 - 03.00pm</p>
-        </div>
-        <div className="ml-auto font-medium">+$39.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/03.png" alt="Avatar" />
-          <AvatarFallback>IN</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Gas Bill</p>
-          <p className="text-sm text-muted-foreground">
-          oct 5 - 05.00pm
-          </p>
-        </div>
-        <div className="ml-auto font-medium">+$299.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/03.png" alt="Avatar" />
-          <AvatarFallback>IN</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Gas Bill</p>
-          <p className="text-sm text-muted-foreground">
-          oct 5 - 05.00pm
-          </p>
-        </div>
-        <div className="ml-auto font-medium">+$299.00</div>
-      </div>
-      <div className="flex items-center">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src="/avatars/03.png" alt="Avatar" />
-          <AvatarFallback>IN</AvatarFallback>
-        </Avatar>
-        <div className="ml-4 space-y-1">
-          <p className="text-sm font-medium leading-none">Gas Bill</p>
-          <p className="text-sm text-muted-foreground">
-          oct 5 - 05.00pm
-          </p>
-        </div>
-        <div className="ml-auto font-medium">+$299.00</div>
-      </div>
+      )}
+      {transactionList?.map((transaction) => {
+        const date = moment(transaction?.createdAt);
+        const formattedTransactionDate = date.format("MMM D - h.mm a");
+        return (
+          <div key={transaction?._id} className="flex items-center">
+            <div className="h-9 w-9 rounded-full overflow-hidden">
+              <img
+                className="h-full w-full object-cover"
+                src={`http://localhost:5000/${user?.image_url}`}
+                alt="Avatar"
+              />
+            </div>
+            <div className="ml-4 space-y-1">
+              <p className="text-sm font-medium leading-none">
+                {transaction?.name}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {formattedTransactionDate}
+              </p>
+            </div>
+            <div className="ml-auto font-medium">
+              {transaction?.type === "income" ? "+" : "-"} $
+              {transaction?.amount}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };

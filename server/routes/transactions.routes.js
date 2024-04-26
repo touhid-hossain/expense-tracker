@@ -9,6 +9,7 @@ const {
   getTotalIncome,
   getTotalExpense,
   getTotalSaved,
+  getCurrentMonthlyTransactionSummary,
 } = require("../controllers/transactions.controllers");
 
 // Route for creating a new transaction
@@ -22,6 +23,11 @@ router.get("/summary", getYearlyTransactionSummary);
 
 router.get("/summary/yearly", verifyToken, getYearlyTransactionSummary);
 router.get("/summary/monthly", verifyToken, getMonthyTransactionSummary);
+router.get(
+  "/currentMonth/transactions",
+  verifyToken,
+  getCurrentMonthlyTransactionSummary
+);
 
 router.get("/total-income", verifyToken, getTotalIncome);
 router.get("/total-expense", verifyToken, getTotalExpense);

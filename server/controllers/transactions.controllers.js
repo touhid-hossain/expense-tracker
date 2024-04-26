@@ -1,5 +1,5 @@
 const Transaction = require("../models/transactions.models");
-const getMonthyData = require("../aggregations/aggregation.monthy");
+const getMonthlyData = require("../aggregations/aggregation.monthly");
 const getYearlyData = require("../aggregations/aggregation.yearly");
 const { monthArr } = require("../aggregations/aggregation.utils");
 const {
@@ -85,11 +85,9 @@ const getAllTransaction = async (req, res) => {
 const getMonthyTransactionSummary = async (req, res) => {
   try {
     const userId = req.userId;
-    const currentMonth = monthArr[new Date().getMonth()].monthName;
-
     return res
       .status(200)
-      .json({ data: await getMonthyData(userId, currentMonth) });
+      .json({ data: await getMonthlyData(userId, currentMonth) });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -188,6 +186,20 @@ const getTotalSaved = async (req, res) => {
   }
 };
 
+const getCurrentMonthlyTransactionSummary = async (req, res) => {
+  try {
+    const monthlyData = await getMonthlyData(req.userId, currentMonth);
+
+    const totalDailyTotalTransactions = monthlyData.reduce((acc, curr) => {
+      return acc + curr.dailyTotalTransactions;
+    }, 0);
+
+    return res.status(200).json(totalDailyTotalTransactions);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createTransaction,
   getAllTransaction,
@@ -196,4 +208,5 @@ module.exports = {
   getTotalIncome,
   getTotalExpense,
   getTotalSaved,
+  getCurrentMonthlyTransactionSummary,
 };

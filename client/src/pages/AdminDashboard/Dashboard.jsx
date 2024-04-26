@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Overview from "./components/OverviewBarChart";
 import {
@@ -21,9 +21,24 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import RecentTransactions from "./components/RecentTransactions";
 import { useTransaction } from "@/provider/transactionProvider";
+import axios from "@/lib/axios";
 
 const Dashboard = () => {
   const { handleTimeChange, handleTypeChange, type, time } = useTransaction();
+  const [currentTransactions, setCurrentTransactions] = useState(0);
+
+  const CurrentMonthTransactions = async () => {
+    //Filtering the all exercises according to the searchTerm
+    const response = await axios.get(
+      "http://localhost:5000/api/v1/transaction/currentMonth/transactions"
+    );
+    console.log("Checking response", response);
+    setCurrentTransactions(response?.data);
+  };
+
+  useEffect(() => {
+    CurrentMonthTransactions();
+  }, []);
 
   return (
     <div className="text-gray-400">
@@ -175,7 +190,9 @@ const Dashboard = () => {
           <CardHeader className="flex flex-row justify-between items-center">
             <div>
               <CardTitle className="mb-2">Recent Sales</CardTitle>
-              <CardDescription>You made 265 sales this month.</CardDescription>
+              <CardDescription>
+                You made {currentTransactions} transactions this month.
+              </CardDescription>
             </div>
             <Link to="/transaction">View All.</Link>
           </CardHeader>

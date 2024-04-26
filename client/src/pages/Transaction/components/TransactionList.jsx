@@ -32,7 +32,7 @@ const TransactionList = ({ transactionList }) => {
               </p>
             </div>
             <div className="ml-auto font-medium">
-              {transaction?.type === "income" ? "+" : "-"} {transaction?.amount}
+              {transaction?.type === "income" ? "+" : "-"} ${transaction?.amount}
             </div>
           </div>
         );
