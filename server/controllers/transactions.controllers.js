@@ -109,14 +109,20 @@ const getTotalIncome = async (req, res) => {
     let currentTotalIncome = 0;
     let lastTotalIncome = 0;
 
-    if (currentMonthData.length > 0) {
-      const current_total_income = incomeCalculate(currentMonthData);
-      currentTotalIncome = currentTotalIncome + current_total_income;
+    // verification start ==>
+    if (currentMonthData.length <= 0) {
+      // some staff..
     }
-    if (lastMonthData.length > 0) {
-      const last_total_income = incomeCalculate(lastMonthData);
-      lastTotalIncome += last_total_income;
+    if (lastMonthData.length <= 0) {
+      // some staff..
     }
+    // verification end ==>
+
+    const current_total_income = incomeCalculate(currentMonthData);
+    const last_total_income = incomeCalculate(lastMonthData);
+
+    currentTotalIncome = currentTotalIncome + current_total_income;
+    lastTotalIncome += last_total_income;
 
     return res.status(200).json({
       income: currentTotalIncome,

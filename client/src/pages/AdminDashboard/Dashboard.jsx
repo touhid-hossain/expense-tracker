@@ -29,10 +29,7 @@ const Dashboard = () => {
 
   const CurrentMonthTransactions = async () => {
     //Filtering the all exercises according to the searchTerm
-    const response = await axios.get(
-      "http://localhost:5000/api/v1/transaction/currentMonth/transactions"
-    );
-    console.log("Checking response", response);
+    const response = await axios.get("/transaction/currentMonth/transactions");
     setCurrentTransactions(response?.data);
   };
 

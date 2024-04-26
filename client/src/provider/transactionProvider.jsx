@@ -8,19 +8,20 @@ const TransactionContext = createContext();
 // TransactionProvider Component
 const TransactionProvider = ({ children }) => {
   const [transactionList, setTransactionList] = useState([]);
-  const [summaryData, setSummaryData] = useState([]);
+  // const [summaryData, setSummaryData] = useState([]);
   const [updatedTotalTransaction, setTotalTransactions] = useState(0);
   const [time, setTime] = useState("yearly");
   const [type, setType] = useState("all");
 
-  const getAndSetYearData = async (url) => {
-    const { data } = await axios.get(url);
-    setSummaryData(data?.data);
-  };
+  // const getAndSetYearData = async (url) => {
+  //   const { data } = await axios.get(url);
+  //   setSummaryData(data?.data);
+  // };
 
-  useEffect(() => {
-    getAndSetYearData(`/transaction/summary/${time}`);
-  }, [time]);
+  // useEffect(() => {
+  //   getAndSetYearData(`/transaction/summary/${time}`);
+  //   console.log("run");
+  // }, [time]);
 
   const handleTimeChange = (e) => {
     setTime(e);
@@ -51,7 +52,7 @@ const TransactionProvider = ({ children }) => {
     type,
     handleTimeChange,
     handleTypeChange,
-    summaryData,
+    // summaryData,
   };
 
   return (

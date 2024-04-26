@@ -14,7 +14,17 @@ import {
 } from "recharts";
 
 const Overview = () => {
-  const { summaryData, time, type } = useTransaction();
+  const { time, type } = useTransaction();
+  const [summaryData, setSummaryData] = useState([]);
+
+  const getAndSetYearData = async (url) => {
+    const { data } = await axios.get(url);
+    setSummaryData(data?.data);
+  };
+
+  useEffect(() => {
+    getAndSetYearData(`/transaction/summary/${time}`);
+  }, [time]);
 
   const renderCustomizedLabel = (props) => {
     const { x, y, width, height, value } = props;
