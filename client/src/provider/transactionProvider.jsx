@@ -8,20 +8,15 @@ const TransactionContext = createContext();
 // TransactionProvider Component
 const TransactionProvider = ({ children }) => {
   const [transactionList, setTransactionList] = useState([]);
-  // const [summaryData, setSummaryData] = useState([]);
+  const [summaryData, setSummaryData] = useState([]);
   const [updatedTotalTransaction, setTotalTransactions] = useState(0);
   const [time, setTime] = useState("yearly");
   const [type, setType] = useState("all");
 
-  // const getAndSetYearData = async (url) => {
-  //   const { data } = await axios.get(url);
-  //   setSummaryData(data?.data);
-  // };
-
-  // useEffect(() => {
-  //   getAndSetYearData(`/transaction/summary/${time}`);
-  //   console.log("run");
-  // }, [time]);
+  const fetchSummary = async () => {
+    const { data } = await axios.get(`/transaction/summary/${time}`);
+    setSummaryData(data?.data);
+  };
 
   const handleTimeChange = (e) => {
     setTime(e);
@@ -30,18 +25,6 @@ const TransactionProvider = ({ children }) => {
   const handleTypeChange = (type) => {
     setType(type);
   };
-
-  // const updateTransaction = (newTransactionList) => {
-  //   setTransactionList(newTransactionList);
-  // }
-
-  // // passing values in this value obj.
-  // const value = useMemo(
-  //   () => ({
-  //     transactionList,
-  //     setTransactionList: updateTransaction,
-  //   })
-  // );
 
   const value = {
     transactionList,
@@ -52,7 +35,8 @@ const TransactionProvider = ({ children }) => {
     type,
     handleTimeChange,
     handleTypeChange,
-    // summaryData,
+    summaryData,
+    fetchSummary,
   };
 
   return (

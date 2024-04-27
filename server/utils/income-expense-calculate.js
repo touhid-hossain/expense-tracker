@@ -16,7 +16,7 @@ function calculatePercentage(last, current) {
     throw new Error("Inputs must be numbers");
   }
   if (last === 0) {
-    return "Last month have not transactions";
+    return "Last month total amount can't zero";
   }
 
   if (current > last) {

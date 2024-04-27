@@ -1,6 +1,7 @@
 const Transaction = require("../models/transactions.models");
 const getMonthlyData = require("../aggregations/aggregation.monthly");
 const getYearlyData = require("../aggregations/aggregation.yearly");
+const responseHandler = require("../utils/responseHandler");
 const {
   calculatePercentage,
   incomeCalculate,
@@ -106,30 +107,47 @@ const getTotalIncome = async (req, res) => {
     const currentMonthData = await getMonthlyData(userId, currentMonth);
     const lastMonthData = await getMonthlyData(userId, lastMonth);
 
-    let currentTotalIncome = 0;
-    let lastTotalIncome = 0;
-
-    // verification start ==>
+    // validation ==>
     if (currentMonthData.length <= 0) {
       // some staff..
+      return responseHandler({
+        res,
+        message: "You have not transaction in this month",
+        code: 500,
+      });
     }
+
+    const currentTotalIncome = incomeCalculate(currentMonthData);
+
+    // validation ==>
     if (lastMonthData.length <= 0) {
       // some staff..
+      return responseHandler({
+        res,
+        message: {
+          income: currentTotalIncome,
+          percentage: "You have not transaction in last month",
+        },
+        code: 200,
+      });
     }
-    // verification end ==>
 
-    const current_total_income = incomeCalculate(currentMonthData);
-    const last_total_income = incomeCalculate(lastMonthData);
+    const lastTotalIncome = incomeCalculate(lastMonthData);
 
-    currentTotalIncome = currentTotalIncome + current_total_income;
-    lastTotalIncome += last_total_income;
-
-    return res.status(200).json({
-      income: currentTotalIncome,
-      percentage: calculatePercentage(lastTotalIncome, currentTotalIncome),
+    return responseHandler({
+      res,
+      message: {
+        income: currentTotalIncome,
+        percentage: calculatePercentage(lastTotalIncome, currentTotalIncome),
+      },
+      code: 200,
     });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    responseHandler({
+      res,
+      message: error.message,
+      code: 400,
+    });
   }
 };
 
@@ -140,21 +158,39 @@ const getTotalExpense = async (req, res) => {
     const currentMonthData = await getMonthlyData(userId, currentMonth);
     const lastMonthData = await getMonthlyData(userId, lastMonth);
 
-    let currentTotalExpense = 0;
-    let lastTotalExpense = 0;
-
-    if (currentMonthData.length > 0) {
-      const current_total_expense = expenseCalculate(currentMonthData);
-      currentTotalExpense += current_total_expense;
-    }
-    if (lastMonthData.length > 0) {
-      const last_total_expense = expenseCalculate(lastMonthData);
-      lastTotalExpense += last_total_expense;
+    // validation ==>
+    if (currentMonthData.length <= 0) {
+      // some staff..
+      return responseHandler({
+        res,
+        message: "You have not transaction in this month",
+        code: 500,
+      });
     }
 
-    return res.status(200).json({
-      expense: currentTotalExpense,
-      percentage: calculatePercentage(lastTotalExpense, currentTotalExpense),
+    const currentTotalExpense = expenseCalculate(currentMonthData);
+
+    // validation ==>
+    if (lastMonthData.length <= 0) {
+      // some staff..
+      return responseHandler({
+        res,
+        message: {
+          expense: currentTotalExpense,
+          percentage: "You have not transaction in last month",
+        },
+        code: 200,
+      });
+    }
+    const lastTotalExpense = expenseCalculate(lastMonthData);
+
+    return responseHandler({
+      res,
+      message: {
+        expense: currentTotalExpense,
+        percentage: calculatePercentage(lastTotalExpense, currentTotalExpense),
+      },
+      code: 200,
     });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -167,24 +203,44 @@ const getTotalSaved = async (req, res) => {
 
     const currentMonthData = await getMonthlyData(userId, currentMonth);
     const lastMonthData = await getMonthlyData(userId, lastMonth);
-    let currentTotalSaved = 0;
-    let lastTotalSaved = 0;
 
-    if (currentMonthData.length > 0) {
-      const currentIncome = incomeCalculate(currentMonthData);
-      const currentExpense = expenseCalculate(currentMonthData);
-      // always Income >> Expense, ensure that from client-side
-      currentTotalSaved += currentIncome - currentExpense;
-    }
-    if (lastMonthData.length > 0) {
-      const lastIncome = incomeCalculate(lastMonthData);
-      const lastExpense = expenseCalculate(lastMonthData);
-      lastTotalSaved += lastIncome - lastExpense;
+    // validation ==>
+    if (currentMonthData.length <= 0) {
+      // some staff..
+      return responseHandler({
+        res,
+        message: "You have not transaction in this month",
+        code: 500,
+      });
     }
 
-    return res.status(200).json({
-      totalSaved: currentTotalSaved,
-      percentage: calculatePercentage(lastTotalSaved, currentTotalSaved),
+    // always Income >> Expense, ensure that from client-side
+    const currentTotalSaved =
+      incomeCalculate(currentMonthData) - expenseCalculate(currentMonthData);
+
+    // validation ==>
+    if (lastMonthData.length <= 0) {
+      // some staff..
+      return responseHandler({
+        res,
+        message: {
+          totalSaved: currentTotalSaved,
+          percentage: "You have not transaction in last month",
+        },
+        code: 200,
+      });
+    }
+
+    const lastTotalSaved = incomeCalculate(lastMonthData);
+    -expenseCalculate(lastMonthData);
+
+    return responseHandler({
+      res,
+      message: {
+        totalSaved: currentTotalSaved,
+        percentage: calculatePercentage(lastTotalSaved, currentTotalExpense),
+      },
+      code: 200,
     });
   } catch (error) {
     res.status(400).json({ message: error.message });

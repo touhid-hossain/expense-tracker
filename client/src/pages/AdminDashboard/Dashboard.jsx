@@ -26,11 +26,16 @@ import axios from "@/lib/axios";
 const Dashboard = () => {
   const { handleTimeChange, handleTypeChange, type, time } = useTransaction();
   const [currentTransactions, setCurrentTransactions] = useState(0);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [incomePercentage, setIncomePercentage] = useState(null);
 
   const CurrentMonthTransactions = async () => {
     //Filtering the all exercises according to the searchTerm
     const response = await axios.get("/transaction/currentMonth/transactions");
     setCurrentTransactions(response?.data);
+    const { data } = await axios.get("/transaction/total-income");
+    setTotalIncome(data?.income);
+    setIncomePercentage(data?.percentage);
   };
 
   useEffect(() => {
@@ -63,9 +68,9 @@ const Dashboard = () => {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">$5240.21</div>
+                <div className="text-2xl font-bold">${totalIncome}</div>
                 <p className="text-xs text-muted-foreground">
-                  +20.1% from last month
+                  {incomePercentage}
                 </p>
               </CardContent>
             </Card>
