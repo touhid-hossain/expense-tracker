@@ -27,7 +27,6 @@ const Settings = () => {
       <CardContent className="flex flex-col gap-5">
         {/* Setting Form */}
         <SettingForm isEditing={isEditing} setIsEditing={setIsEditing} />
-
       </CardContent>
     </Card>
   );
