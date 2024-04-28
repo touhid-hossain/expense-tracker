@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Overview from "./components/OverviewBarChart";
 import {
   Select,
@@ -21,26 +21,18 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import RecentTransactions from "./components/RecentTransactions";
 import { useTransaction } from "@/provider/transactionProvider";
-import axios from "@/lib/axios";
+import TCard from "./components/TCard";
 
 const Dashboard = () => {
-  const { handleTimeChange, handleTypeChange, type, time } = useTransaction();
-  const [currentTransactions, setCurrentTransactions] = useState(0);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [incomePercentage, setIncomePercentage] = useState(null);
-
-  const CurrentMonthTransactions = async () => {
-    //Filtering the all exercises according to the searchTerm
-    const response = await axios.get("/transaction/currentMonth/transactions");
-    setCurrentTransactions(response?.data);
-    const { data } = await axios.get("/transaction/total-income");
-    setTotalIncome(data?.income);
-    setIncomePercentage(data?.percentage);
-  };
-
-  useEffect(() => {
-    CurrentMonthTransactions();
-  }, []);
+  const {
+    handleTimeChange,
+    handleTypeChange,
+    type,
+    time,
+    totalIncomeDetails,
+    totalExpenseDetails,
+    totalSavedDetails,
+  } = useTransaction();
 
   return (
     <div className="text-gray-400">
@@ -49,7 +41,23 @@ const Dashboard = () => {
         <div className="flex flex-col xl:w-[60%]">
           {/*Dashboard-Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3  mt-10">
-            <Card>
+            <TCard
+              title="Total Income"
+              type="income"
+              details={totalIncomeDetails}
+            />
+            <TCard
+              title="Total Expense"
+              type="expense"
+              details={totalExpenseDetails}
+            />
+            <TCard
+              title="Total Saved"
+              type="saved"
+              details={totalSavedDetails}
+            />
+
+            {/* <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Total balance
@@ -68,9 +76,11 @@ const Dashboard = () => {
                 </svg>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${totalIncome}</div>
+                <div className="text-2xl font-bold">
+                  ${totalIncomeDetails.totalIncome}
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  {incomePercentage}
+                  {totalIncomeDetails.percentage}
                 </p>
               </CardContent>
             </Card>
@@ -124,7 +134,7 @@ const Dashboard = () => {
                   +19% from last month
                 </p>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
           {/*Overview Bar-Chart */}
           <Card className="mt-5">
@@ -188,20 +198,7 @@ const Dashboard = () => {
         </div>
         {/* 2nd-part */}
         {/* Recent Transaction List */}
-        <Card className="w-full xl:w-[40%] mt-10">
-          <CardHeader className="flex flex-row justify-between items-center">
-            <div>
-              <CardTitle className="mb-2">Recent Sales</CardTitle>
-              <CardDescription>
-                You made {currentTransactions} transactions this month.
-              </CardDescription>
-            </div>
-            <Link to="/transaction">View All.</Link>
-          </CardHeader>
-          <CardContent>
-            <RecentTransactions />
-          </CardContent>
-        </Card>
+        <RecentTransactions />
       </div>
     </div>
   );
