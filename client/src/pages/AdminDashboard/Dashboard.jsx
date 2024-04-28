@@ -33,9 +33,9 @@ const Dashboard = () => {
     //Filtering the all exercises according to the searchTerm
     const response = await axios.get("/transaction/currentMonth/transactions");
     setCurrentTransactions(response?.data);
-    const { data } = await axios.get("/transaction/total-income");
-    setTotalIncome(data?.income);
-    setIncomePercentage(data?.percentage);
+    // const { data } = await axios.get("/transaction/total-income");
+    // setTotalIncome(data?.income);
+    // setIncomePercentage(data?.percentage);
   };
 
   useEffect(() => {
