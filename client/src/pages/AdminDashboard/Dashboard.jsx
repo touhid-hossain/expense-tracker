@@ -32,26 +32,31 @@ const Dashboard = () => {
     totalIncomeDetails,
     totalExpenseDetails,
     totalSavedDetails,
-    fetchIncomeDetials,
-    fetchExpenseDetials,
-    fetchSavedDetials,
+    fetchIncomeDetails,
+    fetchExpenseDetails,
+    fetchSavedDetails,
   } = useTransaction();
 
   useEffect(() => {
     function fetchAllCredits() {
-      fetchIncomeDetials();
-      fetchExpenseDetials();
-      fetchSavedDetials();
+      fetchIncomeDetails();
+      fetchExpenseDetails();
+      fetchSavedDetails();
     }
     fetchAllCredits();
   }, []);
 
   function makePercentageText(percentageObj) {
-    const { value, isLastNone, increse } = percentageObj;
+    const isLastNone = percentageObj?.isLastNone;
+    const increse = percentageObj?.increse;
+    const value = percentageObj?.value;
+
     if (isLastNone) {
       return value;
     }
-    return increse ? `+${value} from last month` : `-${value} from last month`;
+    return increse
+      ? `+${value}% from last month`
+      : `-${value}% from last month`;
   }
 
   return (
