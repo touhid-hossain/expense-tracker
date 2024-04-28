@@ -16,7 +16,7 @@ import { useTransaction } from "@/provider/transactionProvider";
 const RecentTransactions = () => {
   const [transactionList, setTransactionList] = useState([]);
   const { user } = useUser();
-  const { fetchcurrentMonthTransactions, currentTotalTransactions } =
+  const { fetchCurrentMonthTransactions, currentTotalTransactions } =
     useTransaction();
 
   const limit = 5;
@@ -35,7 +35,7 @@ const RecentTransactions = () => {
 
   useEffect(() => {
     recentTransactions();
-    fetchcurrentMonthTransactions();
+    fetchCurrentMonthTransactions();
   }, []);
 
   return (

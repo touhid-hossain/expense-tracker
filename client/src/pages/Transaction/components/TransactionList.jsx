@@ -7,7 +7,7 @@ const TransactionList = ({ transactionList }) => {
   return (
     <div className="space-y-8">
       {transactionList.length === 0 && (
-        <div className="flex items-center justify-center  h-[50vh]">
+        <div className="flex items-center justify-center h-[50vh]">
           <h6>No Transactions found</h6>
         </div>
       )}

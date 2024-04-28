@@ -69,7 +69,8 @@ const getAllTransaction = async (req, res) => {
     }
     const userTransactions = await Transaction.find(query)
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ createdAt: -1 }) // sort by createdAt in descending order
     // Set totalTransactions
     const totalTransactions = await Transaction.countDocuments(query);
     // console.log('sending transactions value in get function',totalTransactions)
@@ -247,7 +248,7 @@ const getTotalSaved = async (req, res) => {
       res,
       message: {
         totalSaved: currentTotalSaved,
-        percentage: calculatePercentage(lastTotalSaved, currentTotalExpense),
+        percentage: calculatePercentage(lastTotalSaved, currentTotalSaved),
       },
       code: 200,
     });

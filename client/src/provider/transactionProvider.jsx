@@ -1,5 +1,4 @@
 import axios from "@/lib/axios";
-import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 
 // Create Transaction Context
@@ -10,7 +9,7 @@ const TransactionProvider = ({ children }) => {
   const [transactionList, setTransactionList] = useState([]);
   const [summaryData, setSummaryData] = useState([]);
   const [updatedTotalTransaction, setTotalTransactions] = useState(0);
-  const [currentTotalTransactions, setcurrentTotalTransactions] = useState(0);
+  const [currentTotalTransactions, setCurrentTotalTransactions] = useState(0);
 
   const [totalIncomeDetails, setTotalIncomeDetails] = useState(null);
   const [totalExpenseDetails, setTotalExpenseDetails] = useState(null);
@@ -24,26 +23,26 @@ const TransactionProvider = ({ children }) => {
     setSummaryData(data?.data);
   };
 
-  const fetchIncomeDetials = async () => {
+  const fetchIncomeDetails = async () => {
     console.log("income called");
     const { data } = await axios.get("/transaction/total-income");
     setTotalIncomeDetails(data);
   };
-  const fetchExpenseDetials = async () => {
+  const fetchExpenseDetails = async () => {
     console.log("expense called");
     const { data } = await axios.get("/transaction/total-expense");
     setTotalExpenseDetails(data);
   };
 
-  const fetchSavedDetials = async () => {
+  const fetchSavedDetails = async () => {
     console.log("saved called");
     const { data } = await axios.get("/transaction/total-saved");
     setTotalSavedDetails(data);
   };
 
-  const fetchcurrentMonthTransactions = async () => {
+  const fetchCurrentMonthTransactions = async () => {
     const { data } = await axios.get("/transaction/currentMonth/transactions");
-    setcurrentTotalTransactions(data);
+    setCurrentTotalTransactions(data);
   };
   const handleTimeChange = (e) => {
     setTime(e);
@@ -67,10 +66,10 @@ const TransactionProvider = ({ children }) => {
     totalIncomeDetails,
     totalExpenseDetails,
     totalSavedDetails,
-    fetchIncomeDetials,
-    fetchExpenseDetials,
-    fetchSavedDetials,
-    fetchcurrentMonthTransactions,
+    fetchIncomeDetails,
+    fetchExpenseDetails,
+    fetchSavedDetails,
+    fetchCurrentMonthTransactions,
     currentTotalTransactions,
   };
 
