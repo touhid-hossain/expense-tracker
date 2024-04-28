@@ -44,8 +44,7 @@ const RecentTransactions = () => {
         <div>
           <CardTitle className="mb-2">Recent Sales</CardTitle>
           <CardDescription>
-            You made {currentTotalTransactions} transactions this month. You
-            made 0 transactions this month.
+            You made {currentTotalTransactions} transactions this month.
           </CardDescription>
         </div>
         <Link to="/transaction">View All.</Link>

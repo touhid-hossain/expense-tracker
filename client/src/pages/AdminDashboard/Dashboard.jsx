@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Overview from "./components/OverviewBarChart";
 import {
   Select,
@@ -32,7 +32,27 @@ const Dashboard = () => {
     totalIncomeDetails,
     totalExpenseDetails,
     totalSavedDetails,
+    fetchIncomeDetials,
+    fetchExpenseDetials,
+    fetchSavedDetials,
   } = useTransaction();
+
+  useEffect(() => {
+    function fetchAllCredits() {
+      fetchIncomeDetials();
+      fetchExpenseDetials();
+      fetchSavedDetials();
+    }
+    fetchAllCredits();
+  }, []);
+
+  function makePercentageText(percentageObj) {
+    const { value, isLastNone, increse } = percentageObj;
+    if (isLastNone) {
+      return value;
+    }
+    return increse ? `+${value} from last month` : `-${value} from last month`;
+  }
 
   return (
     <div className="text-gray-400">
@@ -43,98 +63,25 @@ const Dashboard = () => {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3  mt-10">
             <TCard
               title="Total Income"
-              type="income"
-              details={totalIncomeDetails}
+              details={{
+                value: totalIncomeDetails?.income,
+                percentage: makePercentageText(totalIncomeDetails?.percentage),
+              }}
             />
             <TCard
               title="Total Expense"
-              type="expense"
-              details={totalExpenseDetails}
+              details={{
+                value: totalExpenseDetails?.expense,
+                percentage: makePercentageText(totalExpenseDetails?.percentage),
+              }}
             />
             <TCard
               title="Total Saved"
-              type="saved"
-              details={totalSavedDetails}
+              details={{
+                value: totalSavedDetails?.totalSaved,
+                percentage: makePercentageText(totalSavedDetails?.percentage),
+              }}
             />
-
-            {/* <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total balance
-                </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">
-                  ${totalIncomeDetails.totalIncome}
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {totalIncomeDetails.percentage}
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total spending
-                </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+250.80</div>
-                <p className="text-xs text-muted-foreground">
-                  +180.1% from last month
-                </p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Total saved
-                </CardTitle>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  className="h-4 w-4 text-muted-foreground"
-                >
-                  <rect width="20" height="14" x="2" y="5" rx="2" />
-                  <path d="M2 10h20" />
-                </svg>
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">+550.25</div>
-                <p className="text-xs text-muted-foreground">
-                  +19% from last month
-                </p>
-              </CardContent>
-            </Card> */}
           </div>
           {/*Overview Bar-Chart */}
           <Card className="mt-5">

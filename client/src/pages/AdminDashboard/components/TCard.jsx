@@ -1,38 +1,8 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTransaction } from "@/provider/transactionProvider";
-import { useEffect } from "react";
-function TCard({ title, type, details }) {
-  const { fetchIncomeDetials, fetchExpenseDetials, fetchSavedDetials } =
-    useTransaction();
-  const { value = details?.value, percentage } = details;
 
-  function makePercentageText() {
-    if (!percentage?.value) {
-      return percentage;
-    } else {
-      return percentage.increse
-        ? `+${percentage.value} from last month`
-        : `-${percentage.value} from last month`;
-    }
-  }
-
-  useEffect(() => {
-    switch (type) {
-      case "income":
-        fetchIncomeDetials();
-        break;
-      case "expense":
-        fetchExpenseDetials();
-        break;
-      case "saved":
-        fetchSavedDetials();
-        break;
-      default:
-        // Handle invalid type (optional)
-        console.error("Invalid type:", type);
-    }
-  }, []);
+function TCard({ title, details }) {
+  const { value, percentage } = details;
 
   return (
     <Card>
@@ -54,7 +24,7 @@ function TCard({ title, type, details }) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">${value}</div>
-        <p className="text-xs text-muted-foreground">{makePercentageText()}</p>
+        <p className="text-xs text-muted-foreground">{percentage}</p>
       </CardContent>
     </Card>
   );

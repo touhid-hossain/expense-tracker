@@ -126,7 +126,10 @@ const getTotalIncome = async (req, res) => {
         res,
         message: {
           income: currentTotalIncome,
-          percentage: "You didn't have any transaction in last month",
+          percentage: {
+            value: "You didn't have any transaction in last month",
+            isLastNone: true,
+          },
         },
         code: 200,
       });
@@ -177,7 +180,10 @@ const getTotalExpense = async (req, res) => {
         res,
         message: {
           expense: currentTotalExpense,
-          percentage: "You didn't have any transaction in last month",
+          percentage: {
+            value: "You didn't have any transaction in last month",
+            isLastNone: true,
+          },
         },
         code: 200,
       });
@@ -225,7 +231,10 @@ const getTotalSaved = async (req, res) => {
         res,
         message: {
           totalSaved: currentTotalSaved,
-          percentage: "You didn't have any transaction in last month",
+          percentage: {
+            value: "You didn't have any transaction in last month",
+            isLastNone: true,
+          },
         },
         code: 200,
       });

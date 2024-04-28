@@ -12,19 +12,9 @@ const TransactionProvider = ({ children }) => {
   const [updatedTotalTransaction, setTotalTransactions] = useState(0);
   const [currentTotalTransactions, setcurrentTotalTransactions] = useState(0);
 
-  const [totalIncomeDetails, setTotalIncomeDetails] = useState({
-    value: 0,
-    percentage: null,
-  });
-  const [totalExpenseDetails, setTotalExpenseDetails] = useState({
-    value: 0,
-    percentage: null,
-  });
-
-  const [totalSavedDetails, setTotalSavedDetails] = useState({
-    value: 0,
-    percentage: null,
-  });
+  const [totalIncomeDetails, setTotalIncomeDetails] = useState(null);
+  const [totalExpenseDetails, setTotalExpenseDetails] = useState(null);
+  const [totalSavedDetails, setTotalSavedDetails] = useState(null);
 
   const [time, setTime] = useState("yearly");
   const [type, setType] = useState("all");
@@ -37,27 +27,18 @@ const TransactionProvider = ({ children }) => {
   const fetchIncomeDetials = async () => {
     console.log("income called");
     const { data } = await axios.get("/transaction/total-income");
-    setTotalIncomeDetails({
-      value: data?.income,
-      percentage: data?.percentage,
-    });
+    setTotalIncomeDetails(data);
   };
   const fetchExpenseDetials = async () => {
     console.log("expense called");
     const { data } = await axios.get("/transaction/total-expense");
-    setTotalExpenseDetails({
-      value: data?.expense,
-      percentage: data?.percentage,
-    });
+    setTotalExpenseDetails(data);
   };
 
   const fetchSavedDetials = async () => {
     console.log("saved called");
     const { data } = await axios.get("/transaction/total-saved");
-    setTotalSavedDetails({
-      value: data?.totalSaved,
-      percentage: data?.percentage,
-    });
+    setTotalSavedDetails(data);
   };
 
   const fetchcurrentMonthTransactions = async () => {
