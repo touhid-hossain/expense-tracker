@@ -24,7 +24,6 @@ const TransactionProvider = ({ children }) => {
   };
 
   const fetchIncomeDetails = async () => {
-    console.log("income called");
     const { data } = await axios.get("/transaction/total-income");
     setTotalIncomeDetails(data);
   };

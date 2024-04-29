@@ -70,7 +70,7 @@ const getAllTransaction = async (req, res) => {
     const userTransactions = await Transaction.find(query)
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 }) // sort by createdAt in descending order
+      .sort({ createdAt: -1 }); // sort by createdAt in descending order
     // Set totalTransactions
     const totalTransactions = await Transaction.countDocuments(query);
     // console.log('sending transactions value in get function',totalTransactions)
@@ -126,7 +126,7 @@ const getTotalIncome = async (req, res) => {
       return responseHandler({
         res,
         message: {
-          income: currentTotalIncome,
+          value: currentTotalIncome,
           percentage: {
             value: "You didn't have any transaction in last month",
             isLastNone: true,
@@ -141,7 +141,7 @@ const getTotalIncome = async (req, res) => {
     return responseHandler({
       res,
       message: {
-        income: currentTotalIncome,
+        value: currentTotalIncome,
         percentage: calculatePercentage(lastTotalIncome, currentTotalIncome),
       },
       code: 200,
@@ -180,7 +180,7 @@ const getTotalExpense = async (req, res) => {
       return responseHandler({
         res,
         message: {
-          expense: currentTotalExpense,
+          value: currentTotalExpense,
           percentage: {
             value: "You didn't have any transaction in last month",
             isLastNone: true,
@@ -194,7 +194,7 @@ const getTotalExpense = async (req, res) => {
     return responseHandler({
       res,
       message: {
-        expense: currentTotalExpense,
+        value: currentTotalExpense,
         percentage: calculatePercentage(lastTotalExpense, currentTotalExpense),
       },
       code: 200,
@@ -231,7 +231,7 @@ const getTotalSaved = async (req, res) => {
       return responseHandler({
         res,
         message: {
-          totalSaved: currentTotalSaved,
+          value: currentTotalSaved,
           percentage: {
             value: "You didn't have any transaction in last month",
             isLastNone: true,
@@ -247,7 +247,7 @@ const getTotalSaved = async (req, res) => {
     return responseHandler({
       res,
       message: {
-        totalSaved: currentTotalSaved,
+        value: currentTotalSaved,
         percentage: calculatePercentage(lastTotalSaved, currentTotalSaved),
       },
       code: 200,

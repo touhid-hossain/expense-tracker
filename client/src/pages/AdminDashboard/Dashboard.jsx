@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import React, { useEffect } from "react";
+import React from "react";
 import Overview from "./components/OverviewBarChart";
 import {
   Select,
@@ -24,40 +24,7 @@ import { useTransaction } from "@/provider/transactionProvider";
 import TCard from "./components/TCard";
 
 const Dashboard = () => {
-  const {
-    handleTimeChange,
-    handleTypeChange,
-    type,
-    time,
-    totalIncomeDetails,
-    totalExpenseDetails,
-    totalSavedDetails,
-    fetchIncomeDetails,
-    fetchExpenseDetails,
-    fetchSavedDetails,
-  } = useTransaction();
-
-  useEffect(() => {
-    function fetchAllCredits() {
-      fetchIncomeDetails();
-      fetchExpenseDetails();
-      fetchSavedDetails();
-    }
-    fetchAllCredits();
-  }, []);
-
-  function makePercentageText(percentageObj) {
-    const isLastNone = percentageObj?.isLastNone;
-    const increse = percentageObj?.increse;
-    const value = percentageObj?.value;
-
-    if (isLastNone) {
-      return value;
-    }
-    return increse
-      ? `+${value}% from last month`
-      : `-${value}% from last month`;
-  }
+  const { handleTimeChange, handleTypeChange, type, time } = useTransaction();
 
   return (
     <div className="text-gray-400">
@@ -66,27 +33,9 @@ const Dashboard = () => {
         <div className="flex flex-col xl:w-[60%]">
           {/*Dashboard-Cards */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3  mt-10">
-            <TCard
-              title="Total Income"
-              details={{
-                value: totalIncomeDetails?.income,
-                percentage: makePercentageText(totalIncomeDetails?.percentage),
-              }}
-            />
-            <TCard
-              title="Total Expense"
-              details={{
-                value: totalExpenseDetails?.expense,
-                percentage: makePercentageText(totalExpenseDetails?.percentage),
-              }}
-            />
-            <TCard
-              title="Total Saved"
-              details={{
-                value: totalSavedDetails?.totalSaved,
-                percentage: makePercentageText(totalSavedDetails?.percentage),
-              }}
-            />
+            <TCard title="Total Income" endPoint="total-income" />
+            <TCard title="Total Expense" endPoint="total-expense" />
+            <TCard title="Total Saved" endPoint="total-saved" />
           </div>
           {/*Overview Bar-Chart */}
           <Card className="mt-5">
