@@ -16,7 +16,10 @@ function calculatePercentage(last, current) {
     throw new Error("Inputs must be numbers");
   }
   if (last === 0) {
-    return "Last month total amount can't zero";
+    return {
+      value: "Last Month Have not any value",
+      increase: false,
+    };
   }
 
   if (current > last) {
@@ -30,6 +33,7 @@ function calculatePercentage(last, current) {
     };
   } else {
     const diff = last - current;
+
     const percentage = (diff / last) * 100;
     // Round the percentage to two decimal places (optional)
     const roundedPercentage = Math.round(percentage * 100) / 100;
