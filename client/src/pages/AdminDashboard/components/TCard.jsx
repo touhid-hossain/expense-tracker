@@ -1,21 +1,32 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import useSWR from "swr";
+import { useEffect } from "react";
+import { useState } from "react";
 
 function TCard({ title, endPoint }) {
+  //  const [data, setData] = useState([])
+
   const { data, error, isLoading } = useSWR(`/transaction/${endPoint}`);
   console.log("Checking TCard Swr Points --", 'data-', data, 'error-',error, 'isLoading-',isLoading, )
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>An error occured</p>;
+
+  if (error) return <p>{error.response.data.message}</p>;
 
   function makePercentageText(percentageObj) {
-    const { isLastNone, increse, value } = percentageObj;
+    const { isLastNone, increase, value } = percentageObj;
     if (isLastNone) {
       return value;
     }
-    return increse
-      ? `+${value}% from last month`
-      : `-${value}% from last month`;
+    if (increase) {
+      return `+${value}% from last month`;
+    }
+    if (!increase && value) {
+      return `-${value}% from last month`;
+    }
+    if (!increase && !value) {
+      return `${value}% from last month`;
+    }
   }
 
   return (
