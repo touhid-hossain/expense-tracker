@@ -4,6 +4,7 @@ import useSWR from "swr";
 
 function TCard({ title, endPoint }) {
   const { data, error, isLoading } = useSWR(`/transaction/${endPoint}`);
+  console.log("Checking TCard Swr Points --", 'data-', data, 'error-',error, 'isLoading-',isLoading, )
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>An error occured</p>;
 
@@ -16,6 +17,7 @@ function TCard({ title, endPoint }) {
       ? `+${value}% from last month`
       : `-${value}% from last month`;
   }
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

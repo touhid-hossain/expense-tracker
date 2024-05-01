@@ -41,7 +41,7 @@ const Transaction = () => {
           limit,
         },
       }
-    );
+    )
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
   };

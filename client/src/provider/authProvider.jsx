@@ -4,6 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import {
   createContext,
   useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useState,
@@ -18,7 +19,7 @@ const AuthProvider = ({ children }) => {
     setToken_(newToken);
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (token) {
       const decodedToken = jwtDecode(token);
       const expirationTime = decodedToken.exp * 1000; // Convert In Milliseconds
