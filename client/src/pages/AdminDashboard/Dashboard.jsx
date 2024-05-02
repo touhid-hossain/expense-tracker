@@ -21,7 +21,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import RecentTransactions from "./components/RecentTransactions";
 import { useTransaction } from "@/provider/transactionProvider";
-import TCard from "./components/TCard";
+import TotalOverview from "./components/TotalOverview";
 
 const Dashboard = () => {
   const { handleTimeChange, handleTypeChange, type, time } = useTransaction();
@@ -32,11 +32,7 @@ const Dashboard = () => {
         {/* 1st-part */}
         <div className="flex flex-col xl:w-[60%]">
           {/*Dashboard-Cards */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3  mt-10">
-            <TCard title="Total Income" endPoint="total-income" />
-            <TCard title="Total Expense" endPoint="total-expense" />
-            <TCard title="Total Saved" endPoint="total-saved" />
-          </div>
+          <TotalOverview />
           {/*Overview Bar-Chart */}
           <Card className="mt-5">
             <CardHeader className="flex justify-center md:flex-row md:justify-between items-center">

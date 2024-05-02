@@ -8,58 +8,58 @@ import SignUp from "@/pages/Signup/SignUp";
 import Transaction from "@/pages/Transaction/Transaction";
 
 const Routes = () => {
-    // Route configurations go here
+  // Route configurations go here
 
-    const routesForPublic = [
+  const routesForPublic = [
+    {
+      path: "/service",
+      element: <div>Service Page</div>,
+    },
+    {
+      path: "/about-us",
+      element: <div>About Us</div>,
+    },
+  ];
+
+  const routesForAuthenticatedOnly = [
+    {
+      path: "/",
+      element: <ProtectedRoute />,
+      children: [
         {
-            path: "/service",
-            element: <div>Service Page</div>,
+          path: "/",
+          element: <Dashboard />,
         },
         {
-            path: "/about-us",
-            element: <div>About Us</div>,
-        },
-    ];
-
-    const routesForAuthenticatedOnly = [
-        {
-            path: "/",
-            element: <ProtectedRoute />,
-            children: [
-                {
-                    path: "/",
-                    element: <Dashboard />,
-                },
-                {
-                    path: "/transaction",
-                    element: <Transaction />,
-                },
-                {
-                    path: "/settings",
-                    element: <Settings />,
-                },
-            ],
-        },
-    ];
-
-    const routesForNotAuthenticatedOnly = [
-        {
-            path: "/login",
-            element: <Login />,
+          path: "/transaction",
+          element: <Transaction />,
         },
         {
-            path: "/signup",
-            element: <SignUp />,
-        }
-    ];
+          path: "/settings",
+          element: <Settings />,
+        },
+      ],
+    },
+  ];
 
-    const router = createBrowserRouter([
-        ...routesForPublic,
-        ...routesForNotAuthenticatedOnly,
-        ...routesForAuthenticatedOnly,
-    ]);
+  const routesForNotAuthenticatedOnly = [
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/signup",
+      element: <SignUp />,
+    },
+  ];
 
-    return <RouterProvider router={router} />;
+  const router = createBrowserRouter([
+    ...routesForPublic,
+    ...routesForNotAuthenticatedOnly,
+    ...routesForAuthenticatedOnly,
+  ]);
+
+  return <RouterProvider router={router} />;
 };
 
 export default Routes;

@@ -15,15 +15,19 @@ const Sidebar = () => {
     setToken();
     toast({
       title: "Logged Out Successfully",
-      variant: 'success'
-    })
-  }
+      variant: "success",
+    });
+  };
 
   return (
     <div className="flex flex-shrink-0 flex-col items-center justify-between gap-20 w-[320px] px-5 py-8 h-screen sticky top-0 bg-zinc-800">
       {/* User */}
       <div className="flex flex-col gap-3 items-center">
-        <img src={`http://localhost:5000/${user?.image_url}` || UserImg} className="max-w-[140px]  rounded-lg" alt="" />
+        <img
+          src={`http://localhost:5000/${user?.image_url}` || UserImg}
+          className="max-w-[140px]  rounded-lg"
+          alt=""
+        />
         <p className="text-white">Hello, {user?.name.split(" ")[0]}</p>
       </div>
 
@@ -41,7 +45,6 @@ const Sidebar = () => {
       >
         Logout
       </Button>
-
     </div>
   );
 };

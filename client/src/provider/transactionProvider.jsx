@@ -12,8 +12,11 @@ const TransactionProvider = ({ children }) => {
   const [currentTotalTransactions, setCurrentTotalTransactions] = useState(0);
 
   const [totalIncomeDetails, setTotalIncomeDetails] = useState(null);
+  const [totalIncomeLoading, setTotalIncomeLoading] = useState(true);
   const [totalExpenseDetails, setTotalExpenseDetails] = useState(null);
+  const [totalExpenseLoading, setTotalExpenseLoading] = useState(true);
   const [totalSavedDetails, setTotalSavedDetails] = useState(null);
+  const [totalSavedLoading, setTotalSavedLoading] = useState(true);
 
   const [time, setTime] = useState("yearly");
   const [type, setType] = useState("all");
@@ -24,19 +27,44 @@ const TransactionProvider = ({ children }) => {
   };
 
   const fetchIncomeDetails = async () => {
-    const { data } = await axios.get("/transaction/total-income");
-    setTotalIncomeDetails(data);
+    try {
+      //  loading flag on
+      setTotalIncomeLoading(true);
+      // fetch data
+      const { data } = await axios.get("/transaction/total-income");
+      setTotalIncomeDetails(data);
+      setTotalIncomeLoading(false);
+      setTimeout(() => {}, 2000);
+    } catch (err) {
+      setTotalIncomeLoading(true);
+      setTotalIncomeDetails(null);
+    }
   };
   const fetchExpenseDetails = async () => {
-    console.log("expense called");
-    const { data } = await axios.get("/transaction/total-expense");
-    setTotalExpenseDetails(data);
+    try {
+      //  loading flag on
+      setTotalExpenseLoading(true);
+      // fetch data
+      const { data } = await axios.get("/transaction/total-expense");
+      setTotalExpenseDetails(data);
+      setTotalExpenseLoading(false);
+    } catch (err) {
+      setTotalExpenseLoading(true);
+      setTotalExpenseDetails(null);
+    }
   };
-
   const fetchSavedDetails = async () => {
-    console.log("saved called");
-    const { data } = await axios.get("/transaction/total-saved");
-    setTotalSavedDetails(data);
+    try {
+      //  loading flag on
+      setTotalSavedLoading(true);
+      // fetch data
+      const { data } = await axios.get("/transaction/total-saved");
+      setTotalSavedDetails(data);
+      setTotalSavedLoading(false);
+    } catch (err) {
+      setTotalSavedLoading(true);
+      setTotalSavedDetails(null);
+    }
   };
 
   const fetchCurrentMonthTransactions = async () => {
@@ -62,12 +90,15 @@ const TransactionProvider = ({ children }) => {
     handleTypeChange,
     summaryData,
     fetchSummary,
-    totalIncomeDetails,
-    totalExpenseDetails,
-    totalSavedDetails,
     fetchIncomeDetails,
     fetchExpenseDetails,
     fetchSavedDetails,
+    totalIncomeDetails,
+    totalExpenseDetails,
+    totalSavedDetails,
+    totalExpenseLoading,
+    totalIncomeLoading,
+    totalSavedLoading,
     fetchCurrentMonthTransactions,
     currentTotalTransactions,
   };
