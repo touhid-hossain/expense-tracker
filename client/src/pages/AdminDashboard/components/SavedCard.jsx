@@ -2,6 +2,8 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTransaction } from "@/provider/transactionProvider";
 import { useEffect } from "react";
+import { makePercentageText } from "../../../lib/utils";
+
 function SavedCard() {
   const { fetchSavedDetails, totalSavedDetails, totalSavedLoading } =
     useTransaction();
@@ -9,23 +11,6 @@ function SavedCard() {
   useEffect(() => {
     fetchSavedDetails();
   }, []);
-
-  // utils function
-  function makePercentageText(percentageObj) {
-    const { isLastNone, increase, value } = percentageObj;
-    if (isLastNone) {
-      return value;
-    }
-    if (increase) {
-      return `+${value}% from last month`;
-    }
-    if (!increase && value) {
-      return `-${value}% from last month`;
-    }
-    if (!increase && !value) {
-      return `${value}% from last month`;
-    }
-  }
 
   if (totalSavedLoading) return <>Loading...</>;
 

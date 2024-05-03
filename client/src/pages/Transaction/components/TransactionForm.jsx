@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Search, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -45,7 +47,14 @@ const TransactionForm = ({ setOpen }) => {
   const [transactionType, setTransactionType] = useState("income");
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
-  const { transactionList, setTransactionList, setTotalTransactions } = useTransaction();
+  const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
+  const {
+    transactionList,
+    setTransactionList,
+    setTotalTransactions,
+    totalIncomeDetails,
+    totalExpenseDetails,
+  } = useTransaction();
 
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
@@ -73,15 +82,24 @@ const TransactionForm = ({ setOpen }) => {
 
   // Create New Transaction
   const createNewTransaction = async (values) => {
-    const res = await axios.post(
-      "http://localhost:5000/api/v1/transaction",
-      {
-        name: values.transactionName,
-        type: transactionType,
-        category: values.transactionCategories,
-        amount: values.transactionAmount,
+    // Checking things
+    if (transactionType === "expense") {
+      const currentIncome = totalIncomeDetails?.value;
+      const currentExpense = totalExpenseDetails?.value;
+      const availableBal = currentIncome - currentExpense;
+
+      if (values.transactionAmount > availableBal) {
+        setIsOpenErrorPopUp(true);
+        return;
       }
-    );
+    }
+
+    const res = await axios.post("http://localhost:5000/api/v1/transaction", {
+      name: values.transactionName,
+      type: transactionType,
+      category: values.transactionCategories,
+      amount: values.transactionAmount,
+    });
     // console.log("New TransactionList Created at Mongo", newData);
     setTransactionList([res.data.transaction, ...transactionList]);
     setTotalTransactions(res?.data?.totalTransactions);
@@ -225,6 +243,20 @@ const TransactionForm = ({ setOpen }) => {
             </Button>
           </form>
         </Form>
+
+        {isOpenErrorPopUp && (
+          <Dialog open={isOpenErrorPopUp}>
+            <DialogContent>
+              <div
+                onClick={() => setIsOpenErrorPopUp(false)}
+                className="cursor-pointer relative rounded-sm opacity-60 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none  focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+              >
+                <X className="absolute right-[-15px] top-[-15px] h-5 w-5 rounded-md bg-rose-600 p-[2px] text-white " />
+              </div>
+              <p>Unsufficient fund!</p>
+            </DialogContent>
+          </Dialog>
+        )}
       </CardContent>
     </Card>
   );

@@ -81,8 +81,8 @@ const Dashboard = () => {
                       <SelectLabel>Select a time</SelectLabel>
                       <SelectItem value="yearly">This Year</SelectItem>
                       <SelectItem value="monthly">This Month</SelectItem>
-                      <SelectItem value="weekly">This Week</SelectItem>
-                      <SelectItem value="daily">Last 24 hours</SelectItem>
+                      {/* <SelectItem value="weekly">This Week</SelectItem>
+                      <SelectItem value="daily">Last 24 hours</SelectItem> */}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
