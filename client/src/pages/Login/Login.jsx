@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/provider/authProvider";
 
@@ -52,19 +52,17 @@ const Login = () => {
 
   async function handleLogin(values) {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/user/authenticate",
-        {
-          email: values.email,
-          password: values.password,
-        }
-      );
+      const response = await axios.post("/user/authenticate", {
+        email: values.email,
+        password: values.password,
+      });
       if (response.status === 200) {
         toast({
           title: "Successfully Logged In",
           variant: "success",
         });
-
+        const token = response.data.token;
+        localStorage.setItem("token", token);
         setToken(response.data.token);
         navigate("/", { replace: true });
       }

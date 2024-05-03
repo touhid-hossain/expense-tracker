@@ -2,17 +2,15 @@ import React from "react";
 import UserImg from "../../assets/demoUser.jpg";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
-import { useAuth } from "@/provider/authProvider";
 import { useToast } from "../ui/use-toast";
 import { useUser } from "@/provider/userProvider";
 
 const Sidebar = () => {
-  const { setToken } = useAuth();
   const { user } = useUser();
   const { toast } = useToast();
 
   const handleLogout = () => {
-    setToken();
+    localStorage.removeItem("token");
     toast({
       title: "Logged Out Successfully",
       variant: "success",

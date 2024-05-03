@@ -20,7 +20,7 @@ import { useForm } from "react-hook-form";
 import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
+import axios from "@/lib/axios";
 
 // Transaction form schema
 const newTransactionFormSchema = z.object({
@@ -46,13 +46,10 @@ const CustomCategory = ({
   const customTransaction = async (values) => {
     console.log("Created New Category", values);
 
-    const { data: newData } = await axios.post(
-      "http://localhost:5000/api/v1/category/create",
-      {
-        name: values.transactionName,
-        type: transactionType,
-      }
-    );
+    const { data: newData } = await axios.post("/category/create", {
+      name: values.transactionName,
+      type: transactionType,
+    });
 
     setCategoryList([newData?.category, ...categoryList]);
     setOpen(false);

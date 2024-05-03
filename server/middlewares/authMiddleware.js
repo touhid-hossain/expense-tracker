@@ -9,8 +9,11 @@ function verifyToken(req, res, next) {
       return res.status(401).json({ message: "Invalid token format" });
     }
     const tokenString = parts[1];
-    
-    const decoded = jwt.verify(tokenString, process.env.JWT_ACCESS_TOKEN_SECRET);
+
+    const decoded = jwt.verify(
+      tokenString,
+      process.env.JWT_ACCESS_TOKEN_SECRET
+    );
     req.userId = decoded.userId;
     next();
   } catch (error) {

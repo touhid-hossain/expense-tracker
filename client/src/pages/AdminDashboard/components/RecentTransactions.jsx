@@ -1,5 +1,5 @@
 import { useUser } from "@/provider/userProvider";
-import axios from "axios";
+import axios from "@/lib/axios";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import {
@@ -22,14 +22,11 @@ const RecentTransactions = () => {
   const limit = 7;
   const recentTransactions = async () => {
     //Filtering the all exercises according to the searchTerm
-    const response = await axios.get(
-      "http://localhost:5000/api/v1/transaction",
-      {
-        params: {
-          limit,
-        },
-      }
-    );
+    const response = await axios.get("/transaction", {
+      params: {
+        limit,
+      },
+    });
     setTransactionList(response?.data?.transactions);
   };
 

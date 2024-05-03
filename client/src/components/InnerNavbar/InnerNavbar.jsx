@@ -13,21 +13,24 @@ import { useAuth } from "@/provider/authProvider";
 import { useUser } from "@/provider/userProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useToast } from "../ui/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getInitials } from "@/lib/utils";
 
 const InnerNavbar = () => {
-  const { setToken } = useAuth();
   const { user } = useUser();
   const { toast } = useToast();
+  const { setToken } = useAuth();
 
+  const navigate = useNavigate();
   const handleLogout = () => {
-    setToken();
+    localStorage.removeItem("token");
+    setToken(null);
+    navigate("/login");
     toast({
       title: "Logged Out Successfully",
-      variant: 'success'
-    })
-  }
+      variant: "success",
+    });
+  };
   return (
     <div className="flex justify-between items-center">
       <div>
@@ -47,7 +50,7 @@ const InnerNavbar = () => {
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent  className="w-56" align="end" forceMount>
+        <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal cursor-pointer">
             <div className="flex flex-col space-y-1">
               <p className="text-sm font-medium leading-none">{user?.name}</p>
@@ -58,17 +61,17 @@ const InnerNavbar = () => {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
-          <Link to="/">
-            <DropdownMenuItem className="cursor-pointer">
-              Profile
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
+            <Link to="/">
+              <DropdownMenuItem className="cursor-pointer">
+                Profile
+                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              </DropdownMenuItem>
             </Link>
             <Link to="/transaction">
-            <DropdownMenuItem className="cursor-pointer">
-              Transaction
-              <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-            </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                Transaction
+                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+              </DropdownMenuItem>
             </Link>
             <Link to="/settings">
               <DropdownMenuItem className="cursor-pointer">

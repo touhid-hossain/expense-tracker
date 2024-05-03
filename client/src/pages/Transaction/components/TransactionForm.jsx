@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import CustomCategory from "./CustomCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { useTransaction } from "@/provider/transactionProvider";
 
 const transactionFormSchema = z.object({
@@ -68,9 +68,7 @@ const TransactionForm = ({ setOpen }) => {
 
   // Fetch all category by query
   const getCategoryListByType = async () => {
-    const res = await axios.get(
-      `http://localhost:5000/api/v1/category/?type=${transactionType}`
-    );
+    const res = await axios.get(`/category/?type=${transactionType}`);
 
     setCategoryList(res?.data.categories);
   };
@@ -94,7 +92,7 @@ const TransactionForm = ({ setOpen }) => {
       }
     }
 
-    const res = await axios.post("http://localhost:5000/api/v1/transaction", {
+    const res = await axios.post("/transaction", {
       name: values.transactionName,
       type: transactionType,
       category: values.transactionCategories,
