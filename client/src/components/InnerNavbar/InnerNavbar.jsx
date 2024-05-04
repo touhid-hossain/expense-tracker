@@ -10,20 +10,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/provider/authProvider";
-import { useUser } from "@/provider/userProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { useToast } from "../ui/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { getInitials } from "@/lib/utils";
 
 const InnerNavbar = () => {
-  const { user } = useUser();
   const { toast } = useToast();
-  const { setToken } = useAuth();
+  const { setToken, user } = useAuth();
 
   const navigate = useNavigate();
   const handleLogout = () => {
-    localStorage.removeItem("token");
     setToken(null);
     navigate("/login");
     toast({

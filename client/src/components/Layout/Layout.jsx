@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import Sidebar from "../Sidebar/Sidebar";
 import InnerNavbar from "../InnerNavbar/InnerNavbar";
-import { useUser } from "@/provider/userProvider";
 import axios from "@/lib/axios";
+import { useAuth } from "@/provider/authProvider";
 
 const Layout = ({ children }) => {
-  const { user, setUser } = useUser();
+  const { user, setUser } = useAuth();
 
   const getUserData = async () => {
     try {

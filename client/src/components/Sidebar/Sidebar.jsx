@@ -3,10 +3,10 @@ import UserImg from "../../assets/demoUser.jpg";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
-import { useUser } from "@/provider/userProvider";
+import { useAuth } from "@/provider/authProvider";
 
 const Sidebar = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { toast } = useToast();
 
   const handleLogout = () => {

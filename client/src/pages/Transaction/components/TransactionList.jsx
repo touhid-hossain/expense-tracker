@@ -1,9 +1,9 @@
 import React from "react";
-import { useUser } from "@/provider/userProvider";
 import moment from "moment";
+import { useAuth } from "@/provider/authProvider";
 
 const TransactionList = ({ transactionList }) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   return (
     <div className="space-y-8">
       {transactionList.length === 0 && (
@@ -32,7 +32,8 @@ const TransactionList = ({ transactionList }) => {
               </p>
             </div>
             <div className="ml-auto font-medium">
-              {transaction?.type === "income" ? "+" : "-"} ${transaction?.amount}
+              {transaction?.type === "income" ? "+" : "-"} $
+              {transaction?.amount}
             </div>
           </div>
         );

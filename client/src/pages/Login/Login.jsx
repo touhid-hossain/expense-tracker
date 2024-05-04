@@ -62,7 +62,6 @@ const Login = () => {
           variant: "success",
         });
         const token = response.data.token;
-        localStorage.setItem("token", token);
         setToken(response.data.token);
         navigate("/", { replace: true });
       }

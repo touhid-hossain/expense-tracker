@@ -1,23 +1,17 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTransaction } from "@/provider/transactionProvider";
-import { useEffect } from "react";
-import { makePercentageText } from "../../../lib/utils";
+import { makePercentageText } from "@/lib/utils";
+import useSWR from "swr";
 
-function ExpenseCard() {
-  const { fetchExpenseDetails, totalExpenseDetails, totalExpenseLoading } =
-    useTransaction();
-
-  useEffect(() => {
-    fetchExpenseDetails();
-  }, []);
-
-  if (totalExpenseLoading) return <>Loading...</>;
+function TCard({ title, endPoint }) {
+  const { data, error, isLoading } = useSWR(`/transaction/${endPoint}`);
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>An error occured</p>;
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">Total Expense</CardTitle>
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -33,13 +27,13 @@ function ExpenseCard() {
         </svg>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">${totalExpenseDetails.value}</div>
+        <div className="text-2xl font-bold">${data.value}</div>
         <p className="text-xs text-muted-foreground">
-          {makePercentageText(totalExpenseDetails.percentage)}
+          {makePercentageText(data.percentage)}
         </p>
       </CardContent>
     </Card>
   );
 }
 
-export default ExpenseCard;
+export default TCard;

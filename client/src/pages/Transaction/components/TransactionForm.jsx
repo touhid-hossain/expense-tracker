@@ -27,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import axios from "@/lib/axios";
 import { useTransaction } from "@/provider/transactionProvider";
+import useGetTotal from "@/hooks/useGetTotal";
 
 const transactionFormSchema = z.object({
   transactionName: z.string().min(4, {
@@ -48,13 +49,10 @@ const TransactionForm = ({ setOpen }) => {
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
-  const {
-    transactionList,
-    setTransactionList,
-    setTotalTransactions,
-    totalIncomeDetails,
-    totalExpenseDetails,
-  } = useTransaction();
+  const { transactionList, setTransactionList, setTotalTransactions } =
+    useTransaction();
+
+  const { available } = useGetTotal();
 
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
@@ -82,11 +80,7 @@ const TransactionForm = ({ setOpen }) => {
   const createNewTransaction = async (values) => {
     // Checking things
     if (transactionType === "expense") {
-      const currentIncome = totalIncomeDetails?.value;
-      const currentExpense = totalExpenseDetails?.value;
-      const availableBal = currentIncome - currentExpense;
-
-      if (values.transactionAmount > availableBal) {
+      if (values.transactionAmount > available) {
         setIsOpenErrorPopUp(true);
         return;
       }

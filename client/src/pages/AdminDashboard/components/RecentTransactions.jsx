@@ -1,4 +1,3 @@
-import { useUser } from "@/provider/userProvider";
 import axios from "@/lib/axios";
 import moment from "moment";
 import { Link } from "react-router-dom";
@@ -12,10 +11,11 @@ import {
 
 import React, { useEffect, useState } from "react";
 import { useTransaction } from "@/provider/transactionProvider";
+import { useAuth } from "@/provider/authProvider";
 
 const RecentTransactions = () => {
   const [transactionList, setTransactionList] = useState([]);
-  const { user } = useUser();
+  const { user } = useAuth();
   const { fetchCurrentMonthTransactions, currentTotalTransactions } =
     useTransaction();
 

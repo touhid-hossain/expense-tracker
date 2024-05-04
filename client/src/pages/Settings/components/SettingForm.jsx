@@ -17,9 +17,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useUser } from "@/provider/userProvider";
 import { getInitials } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
+import { useAuth } from "@/provider/authProvider";
 
 const profileUpdateFormSchema = z
   .object({
@@ -56,7 +56,7 @@ const profileUpdateFormSchema = z
 
 const SettingForm = ({ isEditing, setIsEditing }) => {
   const [imageFile, setImageFile] = useState(null);
-  const { user, setUser } = useUser();
+  const { user, setUser } = useAuth();
 
   const form = useForm({
     resolver: zodResolver(profileUpdateFormSchema),
