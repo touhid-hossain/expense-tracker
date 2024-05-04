@@ -8,9 +8,8 @@ function TCard({ title, endPoint }) {
   //  const [data, setData] = useState([])
 
   const { data, error, isLoading } = useSWR(`/transaction/${endPoint}`);
-  console.log("Checking TCard Swr Points --", 'data-', data, 'error-',error, 'isLoading-',isLoading, )
+  // console.log("Checking TCard Swr Points --", 'data-', data, 'error-',error, 'isLoading-',isLoading, )
   if (isLoading) return <p>Loading...</p>;
-
   if (error) return <p>{error.response.data.message}</p>;
 
   function makePercentageText(percentageObj) {

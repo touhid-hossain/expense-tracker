@@ -381,6 +381,40 @@ const getCurrentMonthlyTransactionSummary = async (req, res) => {
   }
 };
 
+const editTransaction = async (req, res) => {
+  console.log('backend Edit fn calling') 
+  try {
+    const { id } = req.params;
+    const updateIncomingTransactionValues = req.body
+
+    console.log('Checking update fn', id, updateIncomingTransactionValues)
+
+    // const transaction = await Transaction.findByIdAndUpdate(id);
+
+    // if (!transaction) {
+    //   return res.status(404).json({ message: "Transaction not found" });
+    // }
+
+    res.status(200).json({ updatedTransaction: "Transaction updated successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+const deleteTransaction = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const transaction = await Transaction.findByIdAndDelete(id);
+
+    if (!transaction) {
+      return res.status(404).json({ message: "Transaction not found" });
+    }
+    res.status(200).json({ message: "Transaction deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 module.exports = {
   createTransaction,
   getAllTransaction,
@@ -390,4 +424,6 @@ module.exports = {
   getTotalExpense,
   getTotalSaved,
   getCurrentMonthlyTransactionSummary,
+  editTransaction,
+  deleteTransaction,
 };

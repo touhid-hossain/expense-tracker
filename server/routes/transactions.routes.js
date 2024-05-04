@@ -10,6 +10,8 @@ const {
   getTotalExpense,
   getTotalSaved,
   getCurrentMonthlyTransactionSummary,
+  deleteTransaction,
+  editTransaction,
 } = require("../controllers/transactions.controllers");
 
 // Route for creating a new transaction
@@ -32,5 +34,7 @@ router.get(
 router.get("/total-income", verifyToken, getTotalIncome);
 router.get("/total-expense", verifyToken, getTotalExpense);
 router.get("/total-saved", verifyToken, getTotalSaved);
+router.put("/edit-transaction/:id", editTransaction);
+router.delete("/delete-transaction/:id", deleteTransaction);
 
 module.exports = router;

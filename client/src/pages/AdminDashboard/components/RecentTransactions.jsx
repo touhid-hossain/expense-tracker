@@ -1,5 +1,5 @@
 import { useUser } from "@/provider/userProvider";
-import axios from "axios";
+// import axios from "axios";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import {
@@ -12,6 +12,7 @@ import {
 
 import React, { useEffect, useState } from "react";
 import { useTransaction } from "@/provider/transactionProvider";
+import axios from "@/lib/axios";
 
 const RecentTransactions = () => {
   const [transactionList, setTransactionList] = useState([]);
@@ -23,7 +24,7 @@ const RecentTransactions = () => {
   const recentTransactions = async () => {
     //Filtering the all exercises according to the searchTerm
     const response = await axios.get(
-      "http://localhost:5000/api/v1/transaction",
+      "/transaction",
       {
         params: {
           limit,

@@ -15,8 +15,29 @@ const TransactionProvider = ({ children }) => {
   const [totalExpenseDetails, setTotalExpenseDetails] = useState(null);
   const [totalSavedDetails, setTotalSavedDetails] = useState(null);
 
+  const [updateId, setUpdateId] = useState("");
+  const [updateMode, setUpdateMode] = useState(false);
+  const [updateTransactionValues, setUpdateTransactionValues] = useState("");
+
   const [time, setTime] = useState("yearly");
   const [type, setType] = useState("all");
+
+  // Update transaction-list
+ const editForm = (transactionId, values) => {
+    setUpdateId(transactionId);
+    setUpdateTransactionValues(values);
+    setUpdateMode(true)
+  };
+
+  // Delete transaction-list
+  const deleteTransaction = async (id) => {
+    try {
+      await axios.delete(`/transaction/delete-transaction/${id}`);
+      setTransactionList(transactionList.filter((t) => t._id !== id));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchSummary = async () => {
     const { data } = await axios.get(`/transaction/summary/${time}`);
@@ -70,6 +91,11 @@ const TransactionProvider = ({ children }) => {
     fetchSavedDetails,
     fetchCurrentMonthTransactions,
     currentTotalTransactions,
+    deleteTransaction,
+    editForm,
+    updateId,
+    updateMode,
+    updateTransactionValues,
   };
 
   return (

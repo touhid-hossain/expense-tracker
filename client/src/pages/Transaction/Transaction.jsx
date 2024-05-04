@@ -9,30 +9,31 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTransaction } from "@/provider/transactionProvider";
-import axios from "axios";
 import { useDebounce } from "@/lib/utils";
 import TransactionPagination from "./components/TransactionPagination";
+import axios from "@/lib/axios";
 
 const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
-  const { transactionList, setTransactionList, updatedTotalTransaction } = useTransaction([]);
-  // console.log('getting updatedTotalTransaction inside tranasction', updatedTotalTransaction)
+  const { transactionList, setTransactionList, updatedTotalTransaction } =
+    useTransaction([]);
+  // console.log('getting updatedTotalTransaction inside transaction', updatedTotalTransaction)
   const [type, setType] = useState("all");
   const [totalTransactions, setTotalTransactions] = useState(0);
-  // console.log('getting value inside tranasction', totalTransactions)
+  // console.log('getting value inside transaction', totalTransactions)
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedValue = useDebounce(search, 300);
 
   const limit = 8;
-  const totalPages = Math.ceil(  totalTransactions  / limit)
+  const totalPages = Math.ceil(totalTransactions / limit);
   const pagesToShow = totalPages > 5 ? 5 : totalPages;
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const debouncedSearch = async () => {
     //Filtering the all exercises according to the searchTerm
     const response = await axios.get(
-      "http://localhost:5000/api/v1/transaction",
+      "transaction",
       {
         params: {
           search,
@@ -41,7 +42,7 @@ const Transaction = () => {
           limit,
         },
       }
-    )
+    );
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
   };
@@ -126,7 +127,11 @@ const Transaction = () => {
               />
             </DialogContent>
           </Dialog>
-          <TransactionList transactionList={transactionList} />
+          <TransactionList
+            // setTransactionList={setTransactionList}
+            // transactionList={transactionList}
+            setOpen={setTransactionFormOpen}
+          />
         </CardContent>
       </div>
       {/* Pagination */}
