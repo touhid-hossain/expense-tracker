@@ -49,6 +49,8 @@ const Transaction = () => {
     return () => clearTimeout(debouncedSearch);
   }, [debouncedValue, currentPage, type, updatedTotalTransaction]);
 
+  // modal close function
+
   return (
     <Card className="mt-10 h-[85vh] flex flex-col justify-between">
       <div>

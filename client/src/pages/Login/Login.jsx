@@ -17,7 +17,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/provider/authProvider";
 
 const loginFormSchema = z.object({
