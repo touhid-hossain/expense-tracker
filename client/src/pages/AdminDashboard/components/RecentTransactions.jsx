@@ -1,5 +1,4 @@
-import { useUser } from "@/provider/userProvider";
-// import axios from "axios";
+import axios from "@/lib/axios";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import {
@@ -12,15 +11,15 @@ import {
 
 import React, { useEffect, useState } from "react";
 import { useTransaction } from "@/provider/transactionProvider";
-import axios from "@/lib/axios";
+import { useAuth } from "@/provider/authProvider";
 
 const RecentTransactions = () => {
   const [transactionList, setTransactionList] = useState([]);
-  const { user } = useUser();
+  const { user } = useAuth();
   const { fetchCurrentMonthTransactions, currentTotalTransactions } =
     useTransaction();
 
-  const limit = 5;
+  const limit = 7;
   const recentTransactions = async () => {
     //Filtering the all exercises according to the searchTerm
     const response = await axios.get(
@@ -40,10 +39,10 @@ const RecentTransactions = () => {
   }, []);
 
   return (
-    <Card className="w-full xl:w-[40%] mt-10">
+    <Card className="w-full flex flex-col xl:w-[40%] mt-10">
       <CardHeader className="flex flex-row justify-between items-center">
         <div>
-          <CardTitle className="mb-2">Recent Sales</CardTitle>
+          <CardTitle className="mb-2">Recent Transactions</CardTitle>
           <CardDescription>
             You made {currentTotalTransactions} transactions this month.
           </CardDescription>

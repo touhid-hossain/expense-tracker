@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Search, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -23,8 +25,9 @@ import { Button } from "@/components/ui/button";
 import CustomCategory from "./CustomCategory";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useTransaction } from "@/provider/transactionProvider";
 import axios from "@/lib/axios";
+import { useTransaction } from "@/provider/transactionProvider";
+import useGetTotal from "@/hooks/useGetTotal";
 
 const transactionFormSchema = z.object({
   transactionName: z.string().min(4, {
@@ -45,6 +48,7 @@ const TransactionForm = ({ setOpen }) => {
   const [transactionType, setTransactionType] = useState("income");
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
+  const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
   const {
     transactionList,
     setTransactionList,
@@ -52,7 +56,10 @@ const TransactionForm = ({ setOpen }) => {
     updateMode,
     updateId,
     updateTransactionValues,
-  } = useTransaction();
+  } =
+    useTransaction();
+
+  const { available } = useGetTotal();
 
   // const [formValues, setFormValues] = useState({
   //   transactionName: "",
@@ -92,6 +99,7 @@ const TransactionForm = ({ setOpen }) => {
   // Fetch all category by query
   const getCategoryListByType = async () => {
     const res = await axios.get(`/category/?type=${transactionType}`);
+
     setCategoryList(res?.data.categories);
   };
 
@@ -102,6 +110,14 @@ const TransactionForm = ({ setOpen }) => {
 
   // Create New Transaction
   const createNewTransaction = async (values) => {
+    // Checking things
+    if (transactionType === "expense") {
+      if (values.transactionAmount > available) {
+        setIsOpenErrorPopUp(true);
+        return;
+      }
+    }
+
     const res = await axios.post("/transaction", {
       name: values.transactionName,
       type: transactionType,
@@ -274,6 +290,20 @@ const TransactionForm = ({ setOpen }) => {
             </Button>
           </form>
         </Form>
+
+        {isOpenErrorPopUp && (
+          <Dialog open={isOpenErrorPopUp}>
+            <DialogContent>
+              <div
+                onClick={() => setIsOpenErrorPopUp(false)}
+                className="cursor-pointer relative rounded-sm opacity-60 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none  focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+              >
+                <X className="absolute right-[-15px] top-[-15px] h-5 w-5 rounded-md bg-rose-600 p-[2px] text-white " />
+              </div>
+              <p>Unsufficient fund!</p>
+            </DialogContent>
+          </Dialog>
+        )}
       </CardContent>
     </Card>
   );

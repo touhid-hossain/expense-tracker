@@ -1,22 +1,28 @@
-import axios from "axios";
-import myAxios from "../lib/axios";
+import { useToast } from "@/components/ui/use-toast";
+import axios from "@/lib/axios";
 import { jwtDecode } from "jwt-decode";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from "react";
+import { useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-  const [token, setToken_] = useState(localStorage.getItem("token"));
+  const [token, setToken_] = useState(localStorage.getItem("token") || null);
+  const [user, setUser] = useState(null); // Initial user state is null
+  const { toast } = useToast();
+
+  const updateUser = (newUser) => {
+    setUser(newUser);
+  };
 
   const setToken = (newToken) => {
-    setToken_(newToken);
+    if (newToken) {
+      localStorage.setItem("token", newToken);
+      setToken_(newToken);
+    } else {
+      localStorage.removeItem("token");
+      setToken_(newToken);
+    }
   };
 
   useEffect(() => {
@@ -27,30 +33,79 @@ const AuthProvider = ({ children }) => {
       const isExpired = now >= expirationTime;
 
       if (isExpired) {
-        console.log("Token expired! Clearing token and headers.");
-        setToken(null); // Clear the token from context state
-        delete axios.defaults.headers.common["Authorization"]; // Remove Authorization token from axios headers
-      } else {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-        myAxios.defaults.headers.common["Authorization"] = "Bearer " + token;
-        localStorage.setItem("token", token);
+        setToken(null);
       }
-    } else {
-      delete axios.defaults.headers.common["Authorization"];
-      localStorage.removeItem("token");
     }
   }, [token]);
 
-  const contextValue = useMemo(
-    () => ({
-      token,
-      setToken,
-    }),
-    [token]
-  );
-  return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
-  );
+  const login = async (values, cb) => {
+    try {
+      const response = await axios.post("/user/authenticate", {
+        email: values.email,
+        password: values.password,
+      });
+      if (response.status === 200) {
+        toast({
+          title: "Successfully Logged In",
+          variant: "success",
+        });
+        const token = response.data.token;
+        setToken(token);
+        cb();
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: error.response.data.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const signUp = async (values, cb) => {
+    try {
+      const response = await axios.post("/user/", {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      });
+
+      if (response.status === 201) {
+        toast({
+          title: "User created Successfully",
+          variant: "success",
+        });
+        cb();
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: error.response.data.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const logout = (cb) => {
+    setToken(null);
+    cb();
+    toast({
+      title: "Logged Out Successfully",
+      variant: "success",
+    });
+  };
+
+  const value = {
+    token,
+    setToken,
+    user,
+    setUser: updateUser,
+    login,
+    signUp,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {

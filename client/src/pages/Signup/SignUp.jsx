@@ -16,67 +16,39 @@ import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/provider/authProvider";
+import axios from "@/lib/axios";
 
 const signUpFormSchema = z.object({
-  name: z
-    .string()
-    .min('1', { message: "This field has to be filled." }),
+  name: z.string().min("1", { message: "This field has to be filled." }),
   email: z
     .string()
     .min(1, { message: "This field has to be filled." })
     .email("This is not a valid email."),
   password: z
     .string()
-    .min(6, { message: "Password has to be at least 6 characters long." })
+    .min(6, { message: "Password has to be at least 6 characters long." }),
 });
 
 const SignUp = () => {
-
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, signUp } = useAuth();
 
   useEffect(() => {
     if (token) {
-      navigate('/'); // Redirect to home page if already logged in
+      navigate("/"); // Redirect to home page if already logged in
     }
   }, [token, navigate]);
 
   const form = useForm({
     resolver: zodResolver(signUpFormSchema),
     defaultValues: {
-      name: '',
-      email: '',
-      password: ''
-    }
+      name: "",
+      email: "",
+      password: "",
+    },
   });
-
-  async function handleSignup(values) {
-    try {
-      const response = await axios.post('http://localhost:5000/api/v1/user/', {
-        name: values.name,
-        email: values.email,
-        password: values.password
-      });
-
-      if (response.status === 201) {
-        toast({
-          title: "User created Successfully",
-          variant: 'success'
-        })
-        navigate("/login", { replace: true });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: error.response.data.message,
-        variant: "destructive"
-      })
-    }
-  }
 
   return (
     <div className="flex items-center h-screen">
@@ -86,7 +58,11 @@ const SignUp = () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSignup)}>
+            <form
+              onSubmit={form.handleSubmit((values) =>
+                signUp(values, () => navigate("/login", { replace: true }))
+              )}
+            >
               <FormField
                 control={form.control}
                 name="name"

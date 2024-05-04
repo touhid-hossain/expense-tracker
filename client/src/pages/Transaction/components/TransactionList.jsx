@@ -1,12 +1,12 @@
 import React from "react";
-import { useUser } from "@/provider/userProvider";
 import moment from "moment";
+import { useAuth } from "@/provider/authProvider";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
 import { useTransaction } from "@/provider/transactionProvider";
 
 const TransactionList = ({setOpen}) => {
-  const { user } = useUser();
+  const { user } = useAuth();
   const { transactionList, editForm, deleteTransaction } = useTransaction();
 
   // edit-transaction function

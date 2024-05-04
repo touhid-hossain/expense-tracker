@@ -1,32 +1,13 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { makePercentageText } from "@/lib/utils";
 import useSWR from "swr";
-import { useEffect } from "react";
-import { useState } from "react";
 
 function TCard({ title, endPoint }) {
-  //  const [data, setData] = useState([])
-
   const { data, error, isLoading } = useSWR(`/transaction/${endPoint}`);
   // console.log("Checking TCard Swr Points --", 'data-', data, 'error-',error, 'isLoading-',isLoading, )
   if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>{error.response.data.message}</p>;
-
-  function makePercentageText(percentageObj) {
-    const { isLastNone, increase, value } = percentageObj;
-    if (isLastNone) {
-      return value;
-    }
-    if (increase) {
-      return `+${value}% from last month`;
-    }
-    if (!increase && value) {
-      return `-${value}% from last month`;
-    }
-    if (!increase && !value) {
-      return `${value}% from last month`;
-    }
-  }
+  if (error) return <p>An error occured</p>;
 
   return (
     <Card>
@@ -47,9 +28,9 @@ function TCard({ title, endPoint }) {
         </svg>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">${data?.value}</div>
+        <div className="text-2xl font-bold">${data.value}</div>
         <p className="text-xs text-muted-foreground">
-          {makePercentageText(data?.percentage)}
+          {makePercentageText(data.percentage)}
         </p>
       </CardContent>
     </Card>

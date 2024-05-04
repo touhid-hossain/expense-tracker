@@ -9,18 +9,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTransaction } from "@/provider/transactionProvider";
+import axios from "@/lib/axios";
 import { useDebounce } from "@/lib/utils";
 import TransactionPagination from "./components/TransactionPagination";
-import axios from "@/lib/axios";
 
 const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const { transactionList, setTransactionList, updatedTotalTransaction } =
     useTransaction([]);
-  // console.log('getting updatedTotalTransaction inside transaction', updatedTotalTransaction)
   const [type, setType] = useState("all");
   const [totalTransactions, setTotalTransactions] = useState(0);
-  // console.log('getting value inside transaction', totalTransactions)
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedValue = useDebounce(search, 300);
@@ -33,7 +31,7 @@ const Transaction = () => {
   const debouncedSearch = async () => {
     //Filtering the all exercises according to the searchTerm
     const response = await axios.get(
-      "transaction",
+      "/transaction",
       {
         params: {
           search,

@@ -17,10 +17,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/provider/authProvider";
-
 
 const loginFormSchema = z.object({
   email: z
@@ -28,54 +26,27 @@ const loginFormSchema = z.object({
     .min(1, { message: "This field has to be filled." })
     .email("This is not a valid email."),
   password: z
-  .string()
-  .min(6, { message: "Password has to be at least 6 characters long."})
+    .string()
+    .min(6, { message: "Password has to be at least 6 characters long." }),
 });
 
-
 const Login = () => {
-  const { toast } = useToast();
-  const { token, setToken } = useAuth();
+  const { token, login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (token) {
-      navigate('/'); // Redirect to home page if already logged in
+      navigate("/"); // Redirect to home page if already logged in
     }
   }, [token, navigate]);
 
   const form = useForm({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      email: '',
-      password: ''
-    }
+      email: "",
+      password: "",
+    },
   });
-
-  async function handleLogin(values) {
-    try {
-      const response = await axios.post('http://localhost:5000/api/v1/user/authenticate', {
-        email: values.email,
-        password: values.password
-      });
-      console.log(response)
-      if (response.status === 200) {
-        toast({
-          title: "Successfully Logged In",
-          variant: 'success'
-        })
-
-       setToken(response.data.token);
-       navigate("/", { replace: true });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: error.response.data.message,
-        variant: "destructive"
-      })
-    }
-  }
 
   return (
     <div className="flex items-center h-screen">
@@ -85,7 +56,11 @@ const Login = () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleLogin)}>
+            <form
+              onSubmit={form.handleSubmit((values) =>
+                login(values, () => navigate("/", { replace: true }))
+              )}
+            >
               <FormField
                 control={form.control}
                 name="email"
@@ -123,7 +98,9 @@ const Login = () => {
                   <Label htmlFor="terms">Remember for 30 days</Label>
                 </div>
                 <div>
-                  <Link to="#" className="text-sm">Forget password?</Link>
+                  <Link to="#" className="text-sm">
+                    Forget password?
+                  </Link>
                 </div>
               </div>
 
@@ -137,7 +114,12 @@ const Login = () => {
           </Form>
 
           <div className="mt-8 text-center">
-            <p className="text-slate-400">Don't have an account? <Link to='/signup' className="text-black">Sign In</Link> </p>
+            <p className="text-slate-400">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-black">
+                Sign In
+              </Link>{" "}
+            </p>
           </div>
         </CardContent>
       </Card>
