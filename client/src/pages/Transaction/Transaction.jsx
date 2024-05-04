@@ -17,10 +17,8 @@ const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const { transactionList, setTransactionList, updatedTotalTransaction } =
     useTransaction([]);
-  // console.log('getting updatedTotalTransaction inside tranasction', updatedTotalTransaction)
   const [type, setType] = useState("all");
   const [totalTransactions, setTotalTransactions] = useState(0);
-  // console.log('getting value inside tranasction', totalTransactions)
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedValue = useDebounce(search, 300);

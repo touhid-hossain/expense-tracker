@@ -1,4 +1,7 @@
+import { useToast } from "@/components/ui/use-toast";
+import axios from "@/lib/axios";
 import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 
 const AuthContext = createContext();
@@ -6,6 +9,7 @@ const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
   const [token, setToken_] = useState(localStorage.getItem("token") || null);
   const [user, setUser] = useState(null); // Initial user state is null
+  const { toast } = useToast();
 
   const updateUser = (newUser) => {
     setUser(newUser);
@@ -21,33 +25,84 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // useLayoutEffect(() => {
-  //   if (token) {
-  //     const decodedToken = jwtDecode(token);
-  //     const expirationTime = decodedToken.exp * 1000; // Convert In Milliseconds
-  //     const now = Date.now();
-  //     const isExpired = now >= expirationTime;
+  useEffect(() => {
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const expirationTime = decodedToken.exp * 1000; // Convert In Milliseconds
+      const now = Date.now();
+      const isExpired = now >= expirationTime;
 
-  //     if (isExpired) {
-  //       console.log("Token expired! Clearing token and headers.");
-  //       setToken(null); // Clear the token from context state
-  //       delete axios.defaults.headers.common["Authorization"]; // Remove Authorization token from axios headers
-  //     } else {
-  //       axios.defaults.headers.common["Authorization"] = "Bearer " + token;
-  //       myAxios.defaults.headers.common["Authorization"] = "Bearer " + token;
-  //       localStorage.setItem("token", token);
-  //     }
-  //   } else {
-  //     delete axios.defaults.headers.common["Authorization"];
-  //     localStorage.removeItem("token");
-  //   }
-  // }, [token]);
+      if (isExpired) {
+        setToken(null);
+      }
+    }
+  }, [token]);
+
+  const login = async (values, cb) => {
+    try {
+      const response = await axios.post("/user/authenticate", {
+        email: values.email,
+        password: values.password,
+      });
+      if (response.status === 200) {
+        toast({
+          title: "Successfully Logged In",
+          variant: "success",
+        });
+        const token = response.data.token;
+        setToken(token);
+        cb();
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: error.response.data.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const signUp = async (values, cb) => {
+    try {
+      const response = await axios.post("/user/", {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      });
+
+      if (response.status === 201) {
+        toast({
+          title: "User created Successfully",
+          variant: "success",
+        });
+        cb();
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: error.response.data.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const logout = (cb) => {
+    setToken(null);
+    cb();
+    toast({
+      title: "Logged Out Successfully",
+      variant: "success",
+    });
+  };
 
   const value = {
     token,
     setToken,
     user,
     setUser: updateUser,
+    login,
+    signUp,
+    logout,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

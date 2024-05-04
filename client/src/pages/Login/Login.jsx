@@ -17,7 +17,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import axios from "@/lib/axios";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/provider/authProvider";
 
@@ -32,8 +31,7 @@ const loginFormSchema = z.object({
 });
 
 const Login = () => {
-  const { toast } = useToast();
-  const { token, setToken } = useAuth();
+  const { token, login } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,30 +48,6 @@ const Login = () => {
     },
   });
 
-  async function handleLogin(values) {
-    try {
-      const response = await axios.post("/user/authenticate", {
-        email: values.email,
-        password: values.password,
-      });
-      if (response.status === 200) {
-        toast({
-          title: "Successfully Logged In",
-          variant: "success",
-        });
-        const token = response.data.token;
-        setToken(response.data.token);
-        navigate("/", { replace: true });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: error.response.data.message,
-        variant: "destructive",
-      });
-    }
-  }
-
   return (
     <div className="flex items-center h-screen">
       <Card className="w-[90%] sm:w-[450px] m-auto">
@@ -82,7 +56,11 @@ const Login = () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleLogin)}>
+            <form
+              onSubmit={form.handleSubmit((values) =>
+                login(values, () => navigate("/", { replace: true }))
+              )}
+            >
               <FormField
                 control={form.control}
                 name="email"

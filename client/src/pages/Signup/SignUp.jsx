@@ -32,9 +32,8 @@ const signUpFormSchema = z.object({
 });
 
 const SignUp = () => {
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { token, signUp } = useAuth();
 
   useEffect(() => {
     if (token) {
@@ -51,30 +50,6 @@ const SignUp = () => {
     },
   });
 
-  async function handleSignup(values) {
-    try {
-      const response = await axios.post("/user/", {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      });
-
-      if (response.status === 201) {
-        toast({
-          title: "User created Successfully",
-          variant: "success",
-        });
-        navigate("/login", { replace: true });
-      }
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: error.response.data.message,
-        variant: "destructive",
-      });
-    }
-  }
-
   return (
     <div className="flex items-center h-screen">
       <Card className="w-[90%] sm:w-[450px] m-auto">
@@ -83,7 +58,11 @@ const SignUp = () => {
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSignup)}>
+            <form
+              onSubmit={form.handleSubmit((values) =>
+                signUp(values, () => navigate("/login", { replace: true }))
+              )}
+            >
               <FormField
                 control={form.control}
                 name="name"

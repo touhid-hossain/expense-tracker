@@ -11,23 +11,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/provider/authProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { useToast } from "../ui/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { getInitials } from "@/lib/utils";
 
 const InnerNavbar = () => {
-  const { toast } = useToast();
-  const { setToken, user } = useAuth();
-
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const handleLogout = () => {
-    setToken(null);
-    navigate("/login");
-    toast({
-      title: "Logged Out Successfully",
-      variant: "success",
-    });
-  };
+
   return (
     <div className="flex justify-between items-center">
       <div>
@@ -78,7 +68,10 @@ const InnerNavbar = () => {
             </Link>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => logout(() => navigate("/login"))}
+          >
             Log out
             <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
           </DropdownMenuItem>
