@@ -22,11 +22,14 @@ const RecentTransactions = () => {
   const limit = 7;
   const recentTransactions = async () => {
     //Filtering the all exercises according to the searchTerm
-    const response = await axios.get("/transaction", {
-      params: {
-        limit,
-      },
-    });
+    const response = await axios.get(
+      "/transaction",
+      {
+        params: {
+          limit,
+        },
+      }
+    );
     setTransactionList(response?.data?.transactions);
   };
 

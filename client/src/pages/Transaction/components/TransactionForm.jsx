@@ -49,10 +49,26 @@ const TransactionForm = ({ setOpen }) => {
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
-  const { transactionList, setTransactionList, setTotalTransactions } =
+  const {
+    transactionList,
+    setTransactionList,
+    setTotalTransactions,
+    updateMode,
+    updateId,
+    updateTransactionValues,
+  } =
     useTransaction();
 
   const { available } = useGetTotal();
+
+  // const [formValues, setFormValues] = useState({
+  //   transactionName: "",
+  //   transactionType: "income",
+  //   transactionCategories: "",
+  //   transactionAmount: "",
+  // });
+
+  console.log(updateTransactionValues);
 
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
@@ -63,6 +79,22 @@ const TransactionForm = ({ setOpen }) => {
       transactionAmount: "",
     },
   });
+
+  useEffect(() => {
+    if (updateMode && updateId && updateTransactionValues) {
+      form.setValue("transactionName", updateTransactionValues.name);
+      form.setValue("transactionType", updateTransactionValues.type);
+      form.setValue("transactionCategories", updateTransactionValues.category);
+      form.setValue("transactionAmount", updateTransactionValues.amount);
+
+      // form.setValue({
+      //   transactionName: updateTransactionValues.name,
+      //   transactionType: updateTransactionValues.type,
+      //   transactionCategories: updateTransactionValues.category,
+      //   transactionAmount: updateTransactionValues.amount,
+      // });
+    }
+  }, [updateMode, updateId, updateTransactionValues]);
 
   // Fetch all category by query
   const getCategoryListByType = async () => {
@@ -98,17 +130,40 @@ const TransactionForm = ({ setOpen }) => {
     setOpen(false);
   };
 
+  // Edit Transaction
+  const updateTransaction = async (values) => {
+    setOpen(true);
+    const res = await axios.put(`/edit-transaction/${updateId}`, {
+      name: values.transactionName,
+      type: transactionType,
+      category: values.transactionCategories,
+      amount: values.transactionAmount,
+    });
+    // // console.log("New TransactionList Created at Mongo", newData);
+    // const updatedTransactionList = transactionList.map((transaction) =>
+    //   transaction._id === transactionId
+    //     ? { ...transaction, ...values }
+    //     : transaction
+    // );
+    // setTransactionList(updatedTransactionList);
+    setOpen(false);
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="mb-2 text-center">
-          Create a new transaction
+          {updateMode ? "Update Transaction" : "Create a new transaction"}
         </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           {/* Transaction Name */}
-          <form onSubmit={form.handleSubmit(createNewTransaction)}>
+          <form
+            onSubmit={form.handleSubmit(
+              updateMode ? updateTransaction : createNewTransaction
+            )}
+          >
             <FormField
               control={form.control}
               name="transactionName"
@@ -135,7 +190,7 @@ const TransactionForm = ({ setOpen }) => {
                         setTransactionType(value); // Update the transactionType state
                         field.onChange(value); // Update the form field value
                       }}
-                      defaultValue={field.value}
+                      // defaultValue={field.value}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a Transaction Type" />
@@ -231,7 +286,7 @@ const TransactionForm = ({ setOpen }) => {
               )}
             />
             <Button className="mt-5 w-full" type="submit">
-              Submit
+              {updateMode ? "Update" : "Submit"}
             </Button>
           </form>
         </Form>

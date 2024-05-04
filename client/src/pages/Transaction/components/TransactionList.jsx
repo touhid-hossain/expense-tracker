@@ -1,9 +1,21 @@
 import React from "react";
 import moment from "moment";
 import { useAuth } from "@/provider/authProvider";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { BiEditAlt } from "react-icons/bi";
+import { useTransaction } from "@/provider/transactionProvider";
 
-const TransactionList = ({ transactionList }) => {
+const TransactionList = ({setOpen}) => {
   const { user } = useAuth();
+  const { transactionList, editForm, deleteTransaction } = useTransaction();
+
+  // edit-transaction function
+  const editFormFunction = (values) => {
+    setOpen(true)
+    console.log("sending edit data to context");
+    editForm(values._id, values);
+  };
+
   return (
     <div className="space-y-8">
       {transactionList.length === 0 && (
@@ -14,6 +26,7 @@ const TransactionList = ({ transactionList }) => {
       {transactionList?.map((transaction) => {
         const date = moment(transaction?.createdAt);
         const formattedTransactionDate = date.format("MMM D - h.mm a");
+
         return (
           <div key={transaction?._id} className="flex items-center">
             <div className="h-9 w-9 rounded-full overflow-hidden">
@@ -34,6 +47,16 @@ const TransactionList = ({ transactionList }) => {
             <div className="ml-auto font-medium">
               {transaction?.type === "income" ? "+" : "-"} $
               {transaction?.amount}
+            </div>
+            <div className="flex gap-2 pl-10">
+              <BiEditAlt
+                onClick={() => editFormFunction(transaction)}
+                className="text-sky-600 cursor-pointer"
+              />
+              <RiDeleteBin6Line
+                onClick={() => deleteTransaction(transaction._id)}
+                className="text-red-500 cursor-pointer"
+              />
             </div>
           </div>
         );

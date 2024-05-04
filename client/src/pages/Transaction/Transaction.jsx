@@ -30,14 +30,17 @@ const Transaction = () => {
 
   const debouncedSearch = async () => {
     //Filtering the all exercises according to the searchTerm
-    const response = await axios.get("/transaction", {
-      params: {
-        search,
-        type,
-        page: currentPage,
-        limit,
-      },
-    });
+    const response = await axios.get(
+      "/transaction",
+      {
+        params: {
+          search,
+          type,
+          page: currentPage,
+          limit,
+        },
+      }
+    );
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
   };
@@ -124,7 +127,11 @@ const Transaction = () => {
               />
             </DialogContent>
           </Dialog>
-          <TransactionList transactionList={transactionList} />
+          <TransactionList
+            // setTransactionList={setTransactionList}
+            // transactionList={transactionList}
+            setOpen={setTransactionFormOpen}
+          />
         </CardContent>
       </div>
       {/* Pagination */}

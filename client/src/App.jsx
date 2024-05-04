@@ -6,6 +6,7 @@ import useSWR, { SWRConfig } from "swr";
 import axios from "@/lib/axios";
 
 function App() {
+  // const authAxios = useAuth(); // get the axios instance with the Authorization header from the AuthProvider
   return (
     <AuthProvider>
       <TransactionProvider>
