@@ -12,17 +12,16 @@ const TransactionProvider = ({ children }) => {
   const [currentTotalTransactions, setCurrentTotalTransactions] = useState(0);
 
   const [updateId, setUpdateId] = useState("");
-  const [updateMode, setUpdateMode] = useState(false);
   const [updateTransactionValues, setUpdateTransactionValues] = useState("");
 
   const [time, setTime] = useState("yearly");
   const [type, setType] = useState("all");
 
   // Update transaction-list
- const editForm = (transactionId, values) => {
+  const editForm = (transactionId, values) => {
     setUpdateId(transactionId);
     setUpdateTransactionValues(values);
-    setUpdateMode(true)
+    setUpdateMode(true);
   };
 
   // Delete transaction-list
@@ -67,7 +66,6 @@ const TransactionProvider = ({ children }) => {
     deleteTransaction,
     editForm,
     updateId,
-    updateMode,
     updateTransactionValues,
   };
 

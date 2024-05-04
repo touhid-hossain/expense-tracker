@@ -5,14 +5,13 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
 import { useTransaction } from "@/provider/transactionProvider";
 
-const TransactionList = ({setOpen}) => {
+const TransactionList = ({ setOpen, toggleEditForm }) => {
   const { user } = useAuth();
   const { transactionList, editForm, deleteTransaction } = useTransaction();
 
   // edit-transaction function
   const editFormFunction = (values) => {
-    setOpen(true)
-    console.log("sending edit data to context");
+    toggleEditForm();
     editForm(values._id, values);
   };
 

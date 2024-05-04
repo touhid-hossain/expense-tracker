@@ -14,7 +14,6 @@ import { useDebounce } from "@/lib/utils";
 import TransactionPagination from "./components/TransactionPagination";
 
 const Transaction = () => {
-  const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const { transactionList, setTransactionList, updatedTotalTransaction } =
     useTransaction([]);
   const [type, setType] = useState("all");
@@ -22,6 +21,13 @@ const Transaction = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const debouncedValue = useDebounce(search, 300);
+  const [transactionFormOpen, setTransactionFormOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  //  open/close transaction form
+  const toggleTransactionForm = () =>
+    setTransactionFormOpen((prevState) => !prevState);
+  const toggleEditForm = () => setIsEditMode((prevState) => !prevState);
 
   const limit = 8;
   const totalPages = Math.ceil(totalTransactions / limit);
@@ -30,17 +36,14 @@ const Transaction = () => {
 
   const debouncedSearch = async () => {
     //Filtering the all exercises according to the searchTerm
-    const response = await axios.get(
-      "/transaction",
-      {
-        params: {
-          search,
-          type,
-          page: currentPage,
-          limit,
-        },
-      }
-    );
+    const response = await axios.get("/transaction", {
+      params: {
+        search,
+        type,
+        page: currentPage,
+        limit,
+      },
+    });
     setTransactionList(response?.data?.transactions);
     setTotalTransactions(response?.data?.totalTransactions);
   };
@@ -113,24 +116,15 @@ const Transaction = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <Dialog open={transactionFormOpen}>
-            <DialogContent>
-              <div
-                onClick={() => setTransactionFormOpen(false)}
-                className="cursor-pointer relative rounded-sm opacity-60 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none  focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
-              >
-                <X className="absolute right-[-15px] top-[-15px] h-5 w-5 rounded-md bg-rose-600 p-[2px] text-white " />
-              </div>
-              <TransactionForm
-                open={transactionFormOpen}
-                setOpen={setTransactionFormOpen}
-              />
-            </DialogContent>
-          </Dialog>
+          <TransactionForm
+            isEditMode={isEditMode}
+            transactionFormOpen={transactionFormOpen}
+            toggleTransactionForm={toggleTransactionForm}
+            toggleEditForm={toggleEditForm}
+          />
           <TransactionList
-            // setTransactionList={setTransactionList}
-            // transactionList={transactionList}
             setOpen={setTransactionFormOpen}
+            toggleEditForm={toggleEditForm}
           />
         </CardContent>
       </div>
