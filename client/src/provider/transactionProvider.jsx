@@ -21,7 +21,6 @@ const TransactionProvider = ({ children }) => {
   const editForm = (transactionId, values) => {
     setUpdateId(transactionId);
     setUpdateTransactionValues(values);
-    setUpdateMode(true);
   };
 
   // Delete transaction-list

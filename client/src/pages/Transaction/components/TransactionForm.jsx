@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Search, X } from "lucide-react";
@@ -50,7 +50,7 @@ const TransactionForm = ({
   toggleTransactionForm,
   toggleEditForm,
 }) => {
-  const [transactionType, setTransactionType] = useState("income");
+  const [transactionType, setTransactionType] = useState("income"); // Set the setTransactionType in useEffect where form is set with updated transaction values
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
@@ -77,6 +77,7 @@ const TransactionForm = ({
     if (isEditMode && updateId && updateTransactionValues) {
       form.setValue("transactionName", updateTransactionValues.name);
       form.setValue("transactionType", updateTransactionValues.type);
+      setTransactionType(updateTransactionValues.type); // setTransactionType is putted here to update state
       form.setValue("transactionCategories", updateTransactionValues.category);
       form.setValue("transactionAmount", updateTransactionValues.amount);
     } else {
@@ -87,7 +88,6 @@ const TransactionForm = ({
   // Fetch all category by query
   const getCategoryListByType = async () => {
     const res = await axios.get(`/category/?type=${transactionType}`);
-
     setCategoryList(res?.data.categories);
   };
 
@@ -105,7 +105,6 @@ const TransactionForm = ({
         return;
       }
     }
-
     const res = await axios.post("/transaction", {
       name: values.transactionName,
       type: transactionType,
@@ -120,14 +119,32 @@ const TransactionForm = ({
 
   // Edit Transaction
   const updateTransaction = async (values) => {
-    const res = await axios.put(`/edit-transaction/${updateId}`, {
-      name: values.transactionName,
-      type: transactionType,
-      category: values.transactionCategories,
-      amount: values.transactionAmount,
-    });
-    toggleEditForm();
+    try {
+      const url = `/transaction/edit-transaction/${updateId}`; // Assuming the correct API endpoint
+      const res = await axios.put(url, {
+        name: values.transactionName,
+        type: transactionType,
+        category: values.transactionCategories,
+        amount: values.transactionAmount,
+      });
+      // Update the transactionList state
+      updateTransactionList(res.data.updatedTransaction);
+      toggleEditForm();
+    } catch (error) {
+      console.error(`Error updating transaction: ${error.message}`);
+      // Handle the error, e.g., display an error message to the user
+    }
   };
+
+  // Update Transaction List after getting response
+  const updateTransactionList = useCallback((updatedTransaction) => {
+    setTransactionList((prevTransactionList) => [
+      updatedTransaction,
+      ...prevTransactionList.filter(
+        (transaction) => transaction._id !== updatedTransaction._id
+      ),
+    ]);
+  }, []);
 
   return (
     <Dialog open={isEditMode || transactionFormOpen}>
@@ -286,14 +303,16 @@ const TransactionForm = ({
 
             {isOpenErrorPopUp && (
               <Dialog open={isOpenErrorPopUp}>
-                <DialogContent>
+                <DialogContent className="bg-red-400">
                   <div
                     onClick={() => setIsOpenErrorPopUp(false)}
                     className="cursor-pointer relative rounded-sm opacity-60 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none  focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
                   >
                     <X className="absolute right-[-15px] top-[-15px] h-5 w-5 rounded-md bg-rose-600 p-[2px] text-white " />
                   </div>
-                  <p>Unsufficient fund!</p>
+                  <p className="bg-red-800 p-2 rounded-lg text-center text-white">
+                    Unsufficient Fund!
+                  </p>
                 </DialogContent>
               </Dialog>
             )}

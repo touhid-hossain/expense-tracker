@@ -28,7 +28,7 @@ function TCard({ title, endPoint }) {
         </svg>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">${data.value}</div>
+        <div className="text-2xl font-bold">{data.value}$</div>
         <p className="text-xs text-muted-foreground">
           {makePercentageText(data.percentage)}
         </p>

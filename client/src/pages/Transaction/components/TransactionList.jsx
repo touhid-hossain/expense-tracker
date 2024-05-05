@@ -5,7 +5,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
 import { useTransaction } from "@/provider/transactionProvider";
 
-const TransactionList = ({ setOpen, toggleEditForm }) => {
+const TransactionList = ({ toggleEditForm }) => {
   const { user } = useAuth();
   const { transactionList, editForm, deleteTransaction } = useTransaction();
 

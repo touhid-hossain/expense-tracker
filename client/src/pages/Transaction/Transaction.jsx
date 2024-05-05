@@ -121,6 +121,8 @@ const Transaction = () => {
             transactionFormOpen={transactionFormOpen}
             toggleTransactionForm={toggleTransactionForm}
             toggleEditForm={toggleEditForm}
+            transactionList={transactionList}
+            setTransactionList={setTransactionList}
           />
           <TransactionList
             setOpen={setTransactionFormOpen}
