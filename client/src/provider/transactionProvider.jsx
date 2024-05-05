@@ -11,17 +11,8 @@ const TransactionProvider = ({ children }) => {
   const [updatedTotalTransaction, setTotalTransactions] = useState(0);
   const [currentTotalTransactions, setCurrentTotalTransactions] = useState(0);
 
-  const [updateId, setUpdateId] = useState("");
-  const [updateTransactionValues, setUpdateTransactionValues] = useState("");
-
   const [time, setTime] = useState("yearly");
   const [type, setType] = useState("all");
-
-  // Update transaction-list
-  const editForm = (transactionId, values) => {
-    setUpdateId(transactionId);
-    setUpdateTransactionValues(values);
-  };
 
   // Delete transaction-list
   const deleteTransaction = async (id) => {
@@ -63,9 +54,6 @@ const TransactionProvider = ({ children }) => {
     fetchCurrentMonthTransactions,
     currentTotalTransactions,
     deleteTransaction,
-    editForm,
-    updateId,
-    updateTransactionValues,
   };
 
   return (

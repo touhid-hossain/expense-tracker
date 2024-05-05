@@ -5,15 +5,9 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
 import { useTransaction } from "@/provider/transactionProvider";
 
-const TransactionList = ({ toggleEditForm }) => {
+const TransactionList = ({ handleSeletUpdateTransaction }) => {
   const { user } = useAuth();
-  const { transactionList, editForm, deleteTransaction } = useTransaction();
-
-  // edit-transaction function
-  const editFormFunction = (values) => {
-    toggleEditForm();
-    editForm(values._id, values);
-  };
+  const { transactionList, deleteTransaction } = useTransaction();
 
   return (
     <div className="space-y-8">
@@ -49,7 +43,7 @@ const TransactionList = ({ toggleEditForm }) => {
             </div>
             <div className="flex gap-2 pl-10">
               <BiEditAlt
-                onClick={() => editFormFunction(transaction)}
+                onClick={() => handleSeletUpdateTransaction(transaction)}
                 className="text-sky-600 cursor-pointer"
               />
               <RiDeleteBin6Line

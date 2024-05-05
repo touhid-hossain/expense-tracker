@@ -23,11 +23,18 @@ const Transaction = () => {
   const debouncedValue = useDebounce(search, 300);
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   //  open/close transaction form
   const toggleTransactionForm = () =>
     setTransactionFormOpen((prevState) => !prevState);
   const toggleEditForm = () => setIsEditMode((prevState) => !prevState);
+
+  // selected transaction handler
+  const handleSeletUpdateTransaction = (t) => {
+    toggleEditForm();
+    setSelectedTransaction(t);
+  };
 
   const limit = 8;
   const totalPages = Math.ceil(totalTransactions / limit);
@@ -123,10 +130,10 @@ const Transaction = () => {
             toggleEditForm={toggleEditForm}
             transactionList={transactionList}
             setTransactionList={setTransactionList}
+            selectedTransaction={selectedTransaction}
           />
           <TransactionList
-            setOpen={setTransactionFormOpen}
-            toggleEditForm={toggleEditForm}
+            handleSeletUpdateTransaction={handleSeletUpdateTransaction}
           />
         </CardContent>
       </div>

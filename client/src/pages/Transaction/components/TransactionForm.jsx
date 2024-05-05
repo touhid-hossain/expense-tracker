@@ -49,18 +49,14 @@ const TransactionForm = ({
   transactionFormOpen,
   toggleTransactionForm,
   toggleEditForm,
+  selectedTransaction,
 }) => {
   const [transactionType, setTransactionType] = useState("income"); // Set the setTransactionType in useEffect where form is set with updated transaction values
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
-  const {
-    transactionList,
-    setTransactionList,
-    setTotalTransactions,
-    updateId,
-    updateTransactionValues,
-  } = useTransaction();
+  const { transactionList, setTransactionList, setTotalTransactions } =
+    useTransaction();
   const { available } = useGetTotal();
 
   const form = useForm({
@@ -74,16 +70,16 @@ const TransactionForm = ({
   });
 
   useEffect(() => {
-    if (isEditMode && updateId && updateTransactionValues) {
-      form.setValue("transactionName", updateTransactionValues.name);
-      form.setValue("transactionType", updateTransactionValues.type);
-      setTransactionType(updateTransactionValues.type); // setTransactionType is putted here to update state
-      form.setValue("transactionCategories", updateTransactionValues.category);
-      form.setValue("transactionAmount", updateTransactionValues.amount);
+    if (isEditMode && selectedTransaction) {
+      form.setValue("transactionName", selectedTransaction.name);
+      form.setValue("transactionType", selectedTransaction.type);
+      setTransactionType(selectedTransaction.type); // setTransactionType is putted here to update state
+      form.setValue("transactionCategories", selectedTransaction.category);
+      form.setValue("transactionAmount", selectedTransaction.amount);
     } else {
       form.reset();
     }
-  }, [isEditMode, updateId, updateTransactionValues]);
+  }, [isEditMode, selectedTransaction]);
 
   // Fetch all category by query
   const getCategoryListByType = async () => {
@@ -120,7 +116,7 @@ const TransactionForm = ({
   // Edit Transaction
   const updateTransaction = async (values) => {
     try {
-      const url = `/transaction/edit-transaction/${updateId}`; // Assuming the correct API endpoint
+      const url = `/transaction/edit-transaction/${selectedTransaction?._id}`; // Assuming the correct API endpoint
       const res = await axios.put(url, {
         name: values.transactionName,
         type: transactionType,
