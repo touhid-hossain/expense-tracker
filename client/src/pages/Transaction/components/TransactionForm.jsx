@@ -67,11 +67,15 @@ const TransactionForm = ({
     },
   });
 
-  const transactionType = useWatch({
-    control: form.control,
-    name: "transactionType",
+  const [transactionType, tCategory] = form.watch([
+    "transactionType",
+    "transactionCategories",
+  ]);
+
+  console.log({
+    transactionType,
+    tCategory,
   });
-  console.log(form.watch());
 
   useEffect(() => {
     if (isEditMode) {
@@ -92,18 +96,20 @@ const TransactionForm = ({
 
   // Fetch TypeData on every type change
   useEffect(() => {
-    getCategoryListByType();
+    if (transactionType) {
+      getCategoryListByType();
+    }
   }, [transactionType]);
 
   // Create New Transaction
   const createNewTransaction = async (values) => {
-    // Checking things
     if (transactionType === "expense") {
       if (values.transactionAmount > available) {
         setIsOpenErrorPopUp(true);
         return;
       }
     }
+
     const res = await axios.post("/transaction", {
       name: values.transactionName,
       type: transactionType,
@@ -120,8 +126,16 @@ const TransactionForm = ({
   // Edit Transaction
   const updateTransaction = async (values) => {
     try {
+      if (transactionType === "expense") {
+        if (values.transactionAmount > selectedTransaction.amount) {
+          if (values.transactionAmount > available) {
+            setIsOpenErrorPopUp(true);
+            return;
+          }
+        }
+      }
       const url = `/transaction/edit-transaction/${selectedTransaction?._id}`; // Assuming the correct API endpoint
-      const { data, status } = await axios.put(url, {
+      const { data } = await axios.put(url, {
         name: values.transactionName,
         type: transactionType,
         category: values.transactionCategories,
@@ -183,7 +197,7 @@ const TransactionForm = ({
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value);
-                        form.setValue('transactionCategories', '');
+                        form.setValue("transactionCategories", "");
                       }}
                       value={field.value}
                       // defaultValue={field.value} // The default is creating issues, Its not updating at all

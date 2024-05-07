@@ -1,21 +1,12 @@
 import React from "react";
 import UserImg from "../../assets/demoUser.jpg";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
-import { useToast } from "../ui/use-toast";
 import { useAuth } from "@/provider/authProvider";
 
 const Sidebar = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    toast({
-      title: "Logged Out Successfully",
-      variant: "success",
-    });
-  };
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-shrink-0 flex-col items-center justify-between gap-20 w-[320px] px-5 py-8 h-screen sticky top-0 bg-zinc-800">
@@ -38,7 +29,7 @@ const Sidebar = () => {
 
       {/* Log in-out Button */}
       <Button
-        onClick={handleLogout}
+        onClick={() => logout(() => navigate("/login"))}
         className="py-1 px-4 bg-slate-200 rounded-full text-black hover:text-white"
       >
         Logout

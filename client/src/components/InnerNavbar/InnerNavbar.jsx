@@ -21,7 +21,7 @@ const InnerNavbar = () => {
   return (
     <div className="flex justify-between items-center">
       <div>
-        <p className="text-gray-800">Dashboard</p>
+        <p className="text-gray-800">Expense Tracker</p>
       </div>
       {/* My-Account Dropdown-Menu*/}
       <DropdownMenu>

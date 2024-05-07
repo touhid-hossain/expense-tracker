@@ -5,7 +5,6 @@ import useSWR from "swr";
 
 function TCard({ title, endPoint }) {
   const { data, error, isLoading } = useSWR(`/transaction/${endPoint}`);
-  // console.log("Checking TCard Swr Points --", 'data-', data, 'error-',error, 'isLoading-',isLoading, )
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>An error occured</p>;
 
