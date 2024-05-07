@@ -57,13 +57,23 @@ const TransactionForm = ({
     useTransaction();
   const { available } = useGetTotal();
 
+  // const form = useForm({
+  //   resolver: zodResolver(transactionFormSchema),
+  //   defaultValues: {
+  //     transactionName: selectedTransaction.name,
+  //     transactionType: selectedTransaction.type,
+  //     transactionCategories: selectedTransaction.category,
+  //     transactionAmount: selectedTransaction.amount,
+  //   },
+  // });
+
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
-      transactionName: selectedTransaction.name,
-      transactionType: selectedTransaction.type,
-      transactionCategories: selectedTransaction.category,
-      transactionAmount: selectedTransaction.amount,
+      transactionName: "",
+      transactionType: "",
+      transactionCategories: "",
+      transactionAmount: "",
     },
   });
 
@@ -75,10 +85,10 @@ const TransactionForm = ({
 
   useEffect(() => {
     if (isEditMode) {
-      // form.setValue("transactionName", selectedTransaction.name);
-      // form.setValue("transactionType", selectedTransaction.type);
-      // form.setValue("transactionCategories", selectedTransaction.category);
-      // form.setValue("transactionAmount", selectedTransaction.amount);
+      form.setValue("transactionName", selectedTransaction.name);
+      form.setValue("transactionType", selectedTransaction.type);
+      form.setValue("transactionCategories", selectedTransaction.category);
+      form.setValue("transactionAmount", selectedTransaction.amount);
     } else {
       form.reset();
     }
@@ -183,8 +193,10 @@ const TransactionForm = ({
                     <Select
                       onValueChange={(value) => {
                         field.onChange(value);
+                        form.setValue('transactionCategories', '');
                       }}
                       value={field.value}
+                      // defaultValue={field.value} // The default is creating issues, Its not updating at all
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select a Transaction Type" />
