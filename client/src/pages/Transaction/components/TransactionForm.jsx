@@ -57,16 +57,6 @@ const TransactionForm = ({
     useTransaction();
   const { available } = useGetTotal();
 
-  // const form = useForm({
-  //   resolver: zodResolver(transactionFormSchema),
-  //   defaultValues: {
-  //     transactionName: selectedTransaction.name,
-  //     transactionType: selectedTransaction.type,
-  //     transactionCategories: selectedTransaction.category,
-  //     transactionAmount: selectedTransaction.amount,
-  //   },
-  // });
-
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
     defaultValues: {
