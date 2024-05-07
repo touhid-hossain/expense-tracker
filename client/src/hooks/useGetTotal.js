@@ -3,11 +3,11 @@ import useSWR from "swr";
 function useGetTotal() {
   const { data: income } = useSWR("/transaction/total-income");
   const { data: expense } = useSWR("/transaction/total-expense");
-  const available = income?.value - expense?.value;
+  const { data: available } = useSWR("/transaction/total-saved");
   return {
     totalIncome: income?.value,
     totalExpense: expense?.value,
-    available,
+    available: available?.value,
   };
 }
 
