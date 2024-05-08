@@ -11,14 +11,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/provider/authProvider";
-import axios from "@/lib/axios";
 
 const signUpFormSchema = z.object({
   name: z.string().min("1", { message: "This field has to be filled." }),
@@ -114,13 +110,12 @@ const SignUp = () => {
               </Button>
             </form>
           </Form>
-
           <div className="mt-8 text-center">
             <p className="text-slate-400">
-              Already have an account?{" "}
+              Already have an account?
               <Link to="/login" className="text-black">
                 Log In
-              </Link>{" "}
+              </Link>
             </p>
           </div>
         </CardContent>

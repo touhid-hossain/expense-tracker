@@ -14,7 +14,7 @@ import { useDebounce } from "@/lib/utils";
 import TransactionPagination from "./components/TransactionPagination";
 
 const Transaction = () => {
-  const { transactionList, setTransactionList, updatedTotalTransaction } =
+  const { setTransactionList, updatedTotalTransaction } =
     useTransaction([]);
   const [type, setType] = useState("all");
   const [totalTransactions, setTotalTransactions] = useState(0);

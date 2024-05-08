@@ -12,6 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { useTransaction } from "@/provider/transactionProvider";
 import { useAuth } from "@/provider/authProvider";
+import { Button } from "@/components/ui/button";
 
 const RecentTransactions = () => {
   const [transactionList, setTransactionList] = useState([]);
@@ -22,14 +23,11 @@ const RecentTransactions = () => {
   const limit = 7;
   const recentTransactions = async () => {
     //Filtering the all exercises according to the searchTerm
-    const response = await axios.get(
-      "/transaction",
-      {
-        params: {
-          limit,
-        },
-      }
-    );
+    const response = await axios.get("/transaction", {
+      params: {
+        limit,
+      },
+    });
     setTransactionList(response?.data?.transactions);
   };
 
@@ -47,7 +45,9 @@ const RecentTransactions = () => {
             You made {currentTotalTransactions} transactions this month.
           </CardDescription>
         </div>
-        <Link to="/transaction">View All.</Link>
+        <Button variant="outline">
+          <Link to="/transaction"> View All</Link>
+        </Button>
       </CardHeader>
       <CardContent>
         <div className="space-y-8">

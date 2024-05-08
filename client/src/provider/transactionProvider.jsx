@@ -14,16 +14,6 @@ const TransactionProvider = ({ children }) => {
   const [time, setTime] = useState("yearly");
   const [type, setType] = useState("all");
 
-  // Delete transaction-list
-  const deleteTransaction = async (id) => {
-    try {
-      await axios.delete(`/transaction/delete-transaction/${id}`);
-      setTransactionList(transactionList.filter((t) => t._id !== id));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const fetchSummary = async () => {
     const { data } = await axios.get(`/transaction/summary/${time}`);
     setSummaryData(data?.data);
@@ -53,7 +43,6 @@ const TransactionProvider = ({ children }) => {
     fetchSummary,
     fetchCurrentMonthTransactions,
     currentTotalTransactions,
-    deleteTransaction,
   };
 
   return (

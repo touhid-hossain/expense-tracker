@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
 import moment from "moment";
 import { useAuth } from "@/provider/authProvider";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
 import { useTransaction } from "@/provider/transactionProvider";
+import DeleteTransactionForm from "./DeleteTransactionForm";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const TransactionList = ({ handleSelectUpdateTransaction }) => {
   const { user } = useAuth();
-  const { transactionList, deleteTransaction } = useTransaction();
+  const [confirmDeleteTransaction, setConfirmDeleteTransaction] =
+    useState(false);
+  const [selectedId, setSelectedId] = useState("");
+  const { transactionList } = useTransaction();
 
   return (
     <div className="space-y-8">
@@ -42,18 +52,55 @@ const TransactionList = ({ handleSelectUpdateTransaction }) => {
               {transaction?.amount}
             </div>
             <div className="flex gap-2 pl-10">
-              <BiEditAlt
-                onClick={() => handleSelectUpdateTransaction(transaction)}
-                className="text-sky-600 cursor-pointer"
-              />
-              <RiDeleteBin6Line
-                onClick={() => deleteTransaction(transaction._id)}
-                className="text-red-500 cursor-pointer"
-              />
+              {/* on-hover edit tooltip */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <BiEditAlt
+                        onClick={() =>
+                          handleSelectUpdateTransaction(transaction)
+                        }
+                        className="text-sky-600 cursor-pointer"
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Edit</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              {/* on-hover delete tooltip */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div>
+                      <RiDeleteBin6Line
+                        onClick={() => {
+                          setConfirmDeleteTransaction(true),
+                            setSelectedId(transaction._id);
+                        }}
+                        className="text-red-500 cursor-pointer"
+                      />
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Delete</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         );
       })}
+      {
+        ///* Confirm delete transaction component */
+        <DeleteTransactionForm
+          confirmDelete={confirmDeleteTransaction}
+          setConfirm={setConfirmDeleteTransaction}
+          selectedId={selectedId}
+        />
+      }
     </div>
   );
 };

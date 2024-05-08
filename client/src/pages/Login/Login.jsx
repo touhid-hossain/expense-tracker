@@ -90,7 +90,6 @@ const Login = () => {
                   </FormItem>
                 )}
               />
-
               <div className="mt-5 flex justify-between items-center">
                 <div className="flex items-center space-x-2">
                   <Checkbox id="terms" />
@@ -111,13 +110,12 @@ const Login = () => {
               </Button>
             </form>
           </Form>
-
           <div className="mt-8 text-center">
             <p className="text-slate-400">
-              Don't have an account?{" "}
+              Don't have an account?
               <Link to="/signup" className="text-black">
                 Sign In
-              </Link>{" "}
+              </Link>
             </p>
           </div>
         </CardContent>

@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Search, X } from "lucide-react";
-import { useForm, useWatch } from "react-hook-form";
+import { X } from "lucide-react";
+import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
@@ -28,6 +28,7 @@ import { z } from "zod";
 import axios from "@/lib/axios";
 import { useTransaction } from "@/provider/transactionProvider";
 import useGetTotal from "@/hooks/useGetTotal";
+import { toast } from "@/components/ui/use-toast";
 
 const transactionFormSchema = z.object({
   transactionName: z.string().min(4, {
@@ -50,12 +51,12 @@ const TransactionForm = ({
   toggleEditForm,
   selectedTransaction,
 }) => {
+  const { available } = useGetTotal();
+  const { transactionList, setTransactionList, setTotalTransactions } =
+    useTransaction();
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
-  const { transactionList, setTransactionList, setTotalTransactions } =
-    useTransaction();
-  const { available } = useGetTotal();
 
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
@@ -66,17 +67,7 @@ const TransactionForm = ({
       transactionAmount: "",
     },
   });
-
-  const [transactionType, tCategory] = form.watch([
-    "transactionType",
-    "transactionCategories",
-  ]);
-
-  console.log({
-    transactionType,
-    tCategory,
-  });
-
+  // Set selected transaction values in default values to update form.
   useEffect(() => {
     if (isEditMode) {
       form.setValue("transactionName", selectedTransaction.name);
@@ -88,6 +79,7 @@ const TransactionForm = ({
     }
   }, []);
 
+  const transactionType = form.watch("transactionType");
   // Fetch all category by query
   const getCategoryListByType = async () => {
     const res = await axios.get(`/category/?type=${transactionType}`);
@@ -135,13 +127,18 @@ const TransactionForm = ({
         }
       }
       const url = `/transaction/edit-transaction/${selectedTransaction?._id}`; // Assuming the correct API endpoint
-      const { data } = await axios.put(url, {
+      const { data, status } = await axios.put(url, {
         name: values.transactionName,
         type: transactionType,
         category: values.transactionCategories,
         amount: values.transactionAmount,
       });
-
+      if (status === 200) {
+        toast({
+          title: "Transaction Updated Successfully",
+          variant: "success",
+        });
+      }
       const newT = transactionList.map((t) => {
         if (t._id === selectedTransaction._id) {
           return { ...t, ...data.updatedTransaction };
@@ -152,6 +149,10 @@ const TransactionForm = ({
       setTransactionList(newT);
       toggleEditForm();
     } catch (error) {
+      toast({
+        title: error.message,
+        variant: "destructive",
+      });
       console.error(`Error updating transaction: ${error.message}`);
       // Handle the error, e.g., display an error message to the user
     }
