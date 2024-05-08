@@ -53,7 +53,7 @@ const TransactionList = ({ handleSelectUpdateTransaction }) => {
             </div>
             <div className="flex gap-2 pl-10">
               {/* on-hover edit tooltip */}
-              <TooltipProvider>
+              <TooltipProvider delayDuration={150}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>
@@ -71,7 +71,7 @@ const TransactionList = ({ handleSelectUpdateTransaction }) => {
                 </Tooltip>
               </TooltipProvider>
               {/* on-hover delete tooltip */}
-              <TooltipProvider>
+              <TooltipProvider delayDuration={150}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div>

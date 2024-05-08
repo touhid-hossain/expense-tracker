@@ -1,13 +1,12 @@
 import useSWR from "swr";
 
 function useGetTotal() {
-  const { data: income } = useSWR("/transaction/total-income");
-  const { data: expense } = useSWR("/transaction/total-expense");
-  const { data: available } = useSWR("/transaction/total-saved");
+  const { data } = useSWR("/transaction/total-details");
+
   return {
-    totalIncome: income?.value,
-    totalExpense: expense?.value,
-    available: available?.value,
+    totalIncome: data?.incomeDetails?.value,
+    totalExpense: data?.expenseDetail?.value,
+    available: data?.savedDetail?.value,
   };
 }
 

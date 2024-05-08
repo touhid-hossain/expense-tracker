@@ -6,9 +6,7 @@ const {
   getAllTransaction,
   getYearlyTransactionSummary,
   getMonthlyTransactionSummary,
-  getTotalIncome,
-  getTotalExpense,
-  getTotalSaved,
+  getTransactionDetails,
   getCurrentMonthlyTransactionSummary,
   deleteTransaction,
   editTransaction,
@@ -31,9 +29,7 @@ router.get(
   getCurrentMonthlyTransactionSummary
 );
 
-router.get("/total-income", verifyToken, getTotalIncome);
-router.get("/total-expense", verifyToken, getTotalExpense);
-router.get("/total-saved", verifyToken, getTotalSaved);
+router.get("/total-details", verifyToken, getTransactionDetails);
 router.put("/edit-transaction/:id", editTransaction);
 router.delete("/delete-transaction/:id", deleteTransaction);
 

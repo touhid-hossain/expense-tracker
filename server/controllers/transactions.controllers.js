@@ -101,27 +101,39 @@ const getYearlyTransactionSummary = async (req, res) => {
   }
 };
 
-const getTotalIncome = async (req, res) => {
+const getTransactionDetails = async (req, res) => {
   try {
     const userId = req.userId;
 
     const currentMonthData = await getMonthlyData(userId, currentMonth);
     const lastMonthData = await getMonthlyData(userId, lastMonth);
 
+    // Last month ==>
+    const lastMonthIncome = incomeCalculate(lastMonthData);
+    const lastMonthExpense = expenseCalculate(lastMonthData);
+    const lastMonthSaved = lastMonthIncome - lastMonthExpense;
+    // Last month ==>
+
+    // Current month ==>
+    const currentMonthIncome = incomeCalculate(currentMonthData);
+    const currentMonthExpense = expenseCalculate(currentMonthData);
+    const currentMonthSaved = currentMonthIncome - currentMonthExpense;
+    // Current month ==>
+
     // //  ==> Case 1
     if (currentMonthData.length <= 0 && lastMonthData.length > 0) {
-      // calculate last total
-      const lastTotalIncome = incomeCalculate(lastMonthData);
+      const detailsObject = {
+        value: 0,
+        ...calculatePercentage(lastMonthIncome, 0),
+      };
 
       // some staff..
       return responseHandler({
         res,
         message: {
-          value: 0,
-          percentage: {
-            ...calculatePercentage(lastTotalIncome, 0),
-            isLastNone: false,
-          },
+          incomeDetail: detailsObject,
+          expenseDetail: detailsObject,
+          savedDetail: detailsObject,
         },
         code: 200,
       });
@@ -129,17 +141,23 @@ const getTotalIncome = async (req, res) => {
 
     // //  ==> Case 2
     if (currentMonthData.length > 0 && lastMonthData.length <= 0) {
-      // calculate current total
-      const currentTotalIncome = incomeCalculate(currentMonthData);
+      const percentage = "No Transactions found in last month";
 
       // some staff..
       return responseHandler({
         res,
         message: {
-          value: currentTotalIncome,
-          percentage: {
-            ...calculatePercentage(0, currentTotalIncome),
-            isLastNone: true,
+          incomeDetail: {
+            value: currentMonthIncome,
+            percentage,
+          },
+          expenseDetail: {
+            value: currentMonthExpense,
+            percentage,
+          },
+          savedDetail: {
+            value: currentMonthSaved,
+            percentage,
           },
         },
         code: 200,
@@ -148,15 +166,18 @@ const getTotalIncome = async (req, res) => {
 
     // //  ==> Case 3
     if (currentMonthData.length <= 0 && lastMonthData.length <= 0) {
+      const detailsObject = {
+        value: 0,
+        ...calculatePercentage(0, 0),
+      };
+
       // some staff..
       return responseHandler({
         res,
         message: {
-          value: 0,
-          percentage: {
-            ...calculatePercentage(0, 0),
-            isLastNone: true,
-          },
+          incomeDetail: detailsObject,
+          expenseDetail: detailsObject,
+          savedDetail: detailsObject,
         },
         code: 200,
       });
@@ -164,196 +185,20 @@ const getTotalIncome = async (req, res) => {
 
     // //  ==> Case 4
     if (currentMonthData.length > 0 && lastMonthData.length > 0) {
-      // calculate current total
-      const currentTotalIncome = incomeCalculate(currentMonthData);
-      // calculate last total
-      const lastTotalIncome = incomeCalculate(lastMonthData);
-      // some staff..
       return responseHandler({
         res,
         message: {
-          value: currentTotalIncome,
-          percentage: {
-            ...calculatePercentage(lastTotalIncome, currentTotalIncome),
-            isLastNone: false,
+          incomeDetail: {
+            value: currentMonthIncome,
+            ...calculatePercentage(lastMonthIncome, currentMonthIncome),
           },
-        },
-        code: 200,
-      });
-    }
-  } catch (error) {
-    responseHandler({
-      res,
-      message: error.message,
-      code: 400,
-    });
-  }
-};
-const getTotalExpense = async (req, res) => {
-  try {
-    const userId = req.userId;
-
-    const currentMonthData = await getMonthlyData(userId, currentMonth);
-    const lastMonthData = await getMonthlyData(userId, lastMonth);
-
-    // //  ==> Case 1
-    if (currentMonthData.length <= 0 && lastMonthData.length > 0) {
-      // calculate last total
-      const lastTotalExpense = expenseCalculate(lastMonthData);
-
-      // some staff..
-      return responseHandler({
-        res,
-        message: {
-          value: 0,
-          percentage: {
-            ...calculatePercentage(lastTotalExpense, 0),
-            isLastNone: false,
+          expenseDetail: {
+            value: currentMonthExpense,
+            ...calculatePercentage(lastMonthExpense, currentMonthExpense),
           },
-        },
-        code: 200,
-      });
-    }
-
-    // //  ==> Case 2
-    if (currentMonthData.length > 0 && lastMonthData.length <= 0) {
-      // calculate current total
-      const currentTotalExpense = expenseCalculate(currentMonthData);
-
-      // some staff..
-      return responseHandler({
-        res,
-        message: {
-          value: currentTotalExpense,
-          percentage: {
-            ...calculatePercentage(0, currentTotalExpense),
-            isLastNone: true,
-          },
-        },
-        code: 200,
-      });
-    }
-
-    // //  ==> Case 3
-    if (currentMonthData.length <= 0 && lastMonthData.length <= 0) {
-      // some staff..
-      return responseHandler({
-        res,
-        message: {
-          value: 0,
-          percentage: {
-            ...calculatePercentage(0, 0),
-            isLastNone: true,
-          },
-        },
-        code: 200,
-      });
-    }
-
-    // //  ==> Case 4
-    if (currentMonthData.length > 0 && lastMonthData.length > 0) {
-      // calculate current total
-      const currentTotalExpense = expenseCalculate(currentMonthData);
-      // calculate last total
-      const lastTotalExpense = expenseCalculate(lastMonthData);
-      // some staff..
-      return responseHandler({
-        res,
-        message: {
-          value: currentTotalExpense,
-          percentage: {
-            ...calculatePercentage(lastTotalExpense, currentTotalExpense),
-            isLastNone: false,
-          },
-        },
-        code: 200,
-      });
-    }
-  } catch (error) {
-    responseHandler({
-      res,
-      message: error.message,
-      code: 400,
-    });
-  }
-};
-const getTotalSaved = async (req, res) => {
-  try {
-    const userId = req.userId;
-    const currentMonthData = await getMonthlyData(userId, currentMonth);
-    const lastMonthData = await getMonthlyData(userId, lastMonth);
-
-    // //  ==> Case 1
-    if (currentMonthData.length <= 0 && lastMonthData.length > 0) {
-      // calculate last total
-      const lastTotalSaved =
-        incomeCalculate(lastMonthData) - expenseCalculate(lastMonthData);
-
-      // some staff..
-      return responseHandler({
-        res,
-        message: {
-          value: 0,
-          percentage: {
-            ...calculatePercentage(lastTotalSaved, 0),
-            isLastNone: false,
-          },
-        },
-        code: 200,
-      });
-    }
-
-    // //  ==> Case 2
-    if (currentMonthData.length > 0 && lastMonthData.length <= 0) {
-      // calculate current total saved
-      const currentTotalSaved =
-        incomeCalculate(currentMonthData) - expenseCalculate(currentMonthData);
-
-      // some staff..
-      return responseHandler({
-        res,
-        message: {
-          value: currentTotalSaved,
-          percentage: {
-            ...calculatePercentage(0, currentTotalSaved),
-            isLastNone: true,
-          },
-        },
-        code: 200,
-      });
-    }
-
-    // //  ==> Case 3
-    if (currentMonthData.length <= 0 && lastMonthData.length <= 0) {
-      // some staff..
-      return responseHandler({
-        res,
-        message: {
-          value: 0,
-          percentage: {
-            ...calculatePercentage(0, 0),
-            isLastNone: true,
-          },
-        },
-        code: 200,
-      });
-    }
-
-    // //  ==> Case 4
-    if (currentMonthData.length > 0 && lastMonthData.length > 0) {
-      const currentTotalSaved =
-        incomeCalculate(currentMonthData) - expenseCalculate(currentMonthData);
-      const lastTotalSaved =
-        incomeCalculate(lastMonthData) - expenseCalculate(lastMonthData);
-
-      // some staff..
-      return responseHandler({
-        res,
-        message: {
-          value: currentTotalSaved,
-          percentage: {
-            ...calculatePercentage(lastTotalSaved, currentTotalSaved),
-            isLastNone: false,
+          savedDetail: {
+            value: currentMonthSaved,
+            ...calculatePercentage(lastMonthSaved, currentMonthSaved),
           },
         },
         code: 200,
@@ -421,9 +266,7 @@ module.exports = {
   getAllTransaction,
   getMonthlyTransactionSummary,
   getYearlyTransactionSummary,
-  getTotalIncome,
-  getTotalExpense,
-  getTotalSaved,
+  getTransactionDetails,
   getCurrentMonthlyTransactionSummary,
   editTransaction,
   deleteTransaction,

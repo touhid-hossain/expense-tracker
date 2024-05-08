@@ -15,10 +15,10 @@ function calculatePercentage(last, current) {
   if (isNaN(last) || isNaN(current)) {
     throw new Error("Inputs must be numbers");
   }
+
   if (last === 0) {
     return {
-      value: "Last Month Have not any value",
-      increase: false,
+      percentage: "No Transactions found in last month",
     };
   }
 
@@ -28,8 +28,7 @@ function calculatePercentage(last, current) {
     // Round the percentage to two decimal places (optional)
     const roundedPercentage = Math.round(percentage * 100) / 100;
     return {
-      value: roundedPercentage,
-      increase: true,
+      percentage: `+${roundedPercentage}% from last month`,
     };
   } else {
     const diff = last - current;
@@ -38,8 +37,7 @@ function calculatePercentage(last, current) {
     // Round the percentage to two decimal places (optional)
     const roundedPercentage = Math.round(percentage * 100) / 100;
     return {
-      value: roundedPercentage,
-      increase: false,
+      percentage: `-${roundedPercentage}% from last month`,
     };
   }
 }
