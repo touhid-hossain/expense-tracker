@@ -13,6 +13,7 @@ import React, { useEffect, useState } from "react";
 import { useTransaction } from "@/provider/transactionProvider";
 import { useAuth } from "@/provider/authProvider";
 import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/EmptyState/EmptyState";
 
 const RecentTransactions = () => {
   const [transactionList, setTransactionList] = useState([]);
@@ -51,11 +52,7 @@ const RecentTransactions = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-8">
-          {transactionList.length === 0 && (
-            <div className="flex items-center justify-center  h-[50vh]">
-              <h6>No Transactions found</h6>
-            </div>
-          )}
+          {transactionList.length === 0 && <EmptyState />}
           {transactionList?.map((transaction) => {
             const date = moment(transaction?.createdAt);
             const formattedTransactionDate = date.format("MMM D - h.mm a");

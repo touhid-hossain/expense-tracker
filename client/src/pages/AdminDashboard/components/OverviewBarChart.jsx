@@ -1,3 +1,4 @@
+import EmptyState from "@/components/EmptyState/EmptyState";
 import { useTransaction } from "@/provider/transactionProvider";
 import React, { useEffect, useState } from "react";
 import {
@@ -13,7 +14,8 @@ import {
 } from "recharts";
 
 const Overview = () => {
-  const { time, type, summaryData, fetchSummary } = useTransaction();
+  const { time, type, summaryData, fetchSummary, transactionList } =
+    useTransaction();
 
   useEffect(() => {
     fetchSummary();
@@ -54,6 +56,10 @@ const Overview = () => {
       default:
         return null;
     }
+  }
+
+  if (transactionList.length === 0) {
+    return <EmptyState />;
   }
 
   return (

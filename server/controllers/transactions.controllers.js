@@ -185,6 +185,7 @@ const getTransactionDetails = async (req, res) => {
 
     // //  ==> Case 4
     if (currentMonthData.length > 0 && lastMonthData.length > 0) {
+
       return responseHandler({
         res,
         message: {

@@ -11,6 +11,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import EmptyState from "@/components/EmptyState/EmptyState";
 
 const TransactionList = ({ handleSelectUpdateTransaction }) => {
   const { user } = useAuth();
@@ -21,11 +22,7 @@ const TransactionList = ({ handleSelectUpdateTransaction }) => {
 
   return (
     <div className="space-y-8">
-      {transactionList.length === 0 && (
-        <div className="flex items-center justify-center h-[50vh]">
-          <h6>No Transactions found</h6>
-        </div>
-      )}
+      {transactionList.length === 0 && <EmptyState />}
       {transactionList?.map((transaction) => {
         const date = moment(transaction?.createdAt);
         const formattedTransactionDate = date.format("MMM D - h.mm a");
