@@ -22,7 +22,7 @@ const TransactionList = ({ handleSelectUpdateTransaction }) => {
 
   return (
     <div className="space-y-8">
-      {transactionList.length === 0 && <EmptyState />}
+      {transactionList.length === 0 && <EmptyState showBtn={false} />}
       {transactionList?.map((transaction) => {
         const date = moment(transaction?.createdAt);
         const formattedTransactionDate = date.format("MMM D - h.mm a");

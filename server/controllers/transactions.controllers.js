@@ -141,23 +141,22 @@ const getTransactionDetails = async (req, res) => {
 
     // //  ==> Case 2
     if (currentMonthData.length > 0 && lastMonthData.length <= 0) {
-      const percentage = "No Transactions found in last month";
-
+      const percentage = calculatePercentage(0, null)
       // some staff..
       return responseHandler({
         res,
         message: {
           incomeDetail: {
             value: currentMonthIncome,
-            percentage,
+            ...percentage,
           },
           expenseDetail: {
             value: currentMonthExpense,
-            percentage,
+            ...percentage,
           },
           savedDetail: {
             value: currentMonthSaved,
-            percentage,
+            ...percentage,
           },
         },
         code: 200,
