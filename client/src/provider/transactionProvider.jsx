@@ -1,4 +1,5 @@
 import axios from "@/lib/axios";
+import { useEffect } from "react";
 import { createContext, useContext, useState } from "react";
 
 // Create Transaction Context
@@ -29,6 +30,17 @@ const TransactionProvider = ({ children }) => {
   const handleTypeChange = (type) => {
     setType(type);
   };
+
+  // sync our transaction local state with database
+  useEffect(() => {
+    const handleGetAllTransactions = async () => {
+      const { data, status } = await axios.get("/transaction");
+      if (status === 201) {
+        setTransactionList([...data.transactions, ...transactionList]);
+      }
+    };
+    handleGetAllTransactions();
+  }, []);
 
   const value = {
     transactionList,

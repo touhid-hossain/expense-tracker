@@ -109,7 +109,6 @@ const TransactionForm = ({
       amount: values.transactionAmount,
     });
 
-    // console.log("New TransactionList Created at Mongo", newData);
     setTransactionList([res.data.transaction, ...transactionList]);
     setTotalTransactions(res?.data?.totalTransactions);
     toggleTransactionForm();

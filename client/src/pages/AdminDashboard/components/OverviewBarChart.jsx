@@ -57,14 +57,10 @@ const Overview = () => {
         return null;
     }
   }
-
-  if (transactionList.length === 0) {
-    return <EmptyState />;
-  }
+  if (transactionList.length === 0) return <EmptyState />;
 
   return (
     <div>
-      {/* Chart component */}
       <ResponsiveContainer width="100%" height={350}>
         <BarChart barGap={2} barSize={60} data={summaryData}>
           <XAxis
