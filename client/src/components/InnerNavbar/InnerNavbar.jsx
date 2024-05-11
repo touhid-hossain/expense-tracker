@@ -13,9 +13,11 @@ import { useAuth } from "@/provider/authProvider";
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { getInitials } from "@/lib/utils";
+import { useUser } from "@/hooks/useUser";
 
 const InnerNavbar = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   return (

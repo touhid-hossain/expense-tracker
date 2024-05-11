@@ -3,9 +3,11 @@ import UserImg from "../../assets/demoUser.jpg";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useAuth } from "@/provider/authProvider";
+import { useUser } from "@/hooks/useUser";
 
 const Sidebar = () => {
-  const { user, logout } = useAuth();
+  const { logout } = useAuth();
+  const { user } = useUser();
   const navigate = useNavigate();
 
   return (
@@ -14,7 +16,7 @@ const Sidebar = () => {
       <div className="flex flex-col gap-3 items-center">
         <img
           src={`http://localhost:5000/${user?.image_url}` || UserImg}
-          className="max-w-[120px]  rounded-xl"
+          className="max-w-[120px] object-cover aspect-square  rounded-xl"
           alt="user-image"
         />
         <p className="text-white">Hello, {user?.name.split(" ")[0]}</p>

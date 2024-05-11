@@ -8,12 +8,7 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [token, setToken_] = useState(localStorage.getItem("token") || null);
-  const [user, setUser] = useState(null); // Initial user state is null
   const { toast } = useToast();
-
-  const updateUser = (newUser) => {
-    setUser(newUser);
-  };
 
   const setToken = (newToken) => {
     if (newToken) {
@@ -98,8 +93,6 @@ const AuthProvider = ({ children }) => {
   const value = {
     token,
     setToken,
-    user,
-    setUser: updateUser,
     login,
     signUp,
     logout,

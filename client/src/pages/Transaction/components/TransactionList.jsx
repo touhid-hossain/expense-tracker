@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import moment from "moment";
-import { useAuth } from "@/provider/authProvider";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
 import { useTransaction } from "@/provider/transactionProvider";
@@ -12,9 +11,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import EmptyState from "@/components/EmptyState/EmptyState";
+import { useUser } from "@/hooks/useUser";
 
 const TransactionList = ({ handleSelectUpdateTransaction }) => {
-  const { user } = useAuth();
+  const { user } = useUser();
+
   const [confirmDeleteTransaction, setConfirmDeleteTransaction] =
     useState(false);
   const [selectedId, setSelectedId] = useState("");

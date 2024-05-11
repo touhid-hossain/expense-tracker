@@ -1,4 +1,3 @@
-import axios from "@/lib/axios";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import {
@@ -9,14 +8,14 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useTransaction } from "@/provider/transactionProvider";
-import { useAuth } from "@/provider/authProvider";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/EmptyState/EmptyState";
+import { useUser } from "@/hooks/useUser";
 
 const RecentTransactions = () => {
-  const { user } = useAuth();
+  const { user } = useUser();
   const {
     fetchCurrentMonthTransactions,
     currentTotalTransactions,

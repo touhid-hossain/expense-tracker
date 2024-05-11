@@ -19,7 +19,7 @@ import { useForm } from "react-hook-form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
-import { useAuth } from "@/provider/authProvider";
+import { useUser } from "@/hooks/useUser";
 
 const profileUpdateFormSchema = z
   .object({
@@ -56,7 +56,7 @@ const profileUpdateFormSchema = z
 
 const SettingForm = ({ isEditing, setIsEditing }) => {
   const [imageFile, setImageFile] = useState(null);
-  const { user, setUser } = useAuth();
+  const { user, userMutate } = useUser();
 
   const form = useForm({
     resolver: zodResolver(profileUpdateFormSchema),
@@ -84,7 +84,6 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
   };
 
   const handleProfileUpdate = async (values) => {
-    console.log(values);
     // return
     try {
       const formData = new FormData();
@@ -109,7 +108,8 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
         },
       });
 
-      setUser(response?.user);
+      // re-validate user info
+      userMutate();
 
       toast({
         title: response?.data?.message,

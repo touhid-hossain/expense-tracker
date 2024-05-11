@@ -1,12 +1,12 @@
-const UserSchema = require('../models/user.models');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const deleteFile = require('../utils/deleteFile');
+const UserSchema = require("../models/user.models");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const deleteFile = require("../utils/deleteFile");
 
 // Function for getting all users
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await UserSchema.find().select('-hashed_password');
+    const users = await UserSchema.find().select("-hashed_password");
     res.json(users);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -17,9 +17,9 @@ exports.getAllUsers = async (req, res) => {
 exports.getUser = async (req, res) => {
   let user;
   try {
-    user = await UserSchema.findById(req.userId).select('-hashed_password');
+    user = await UserSchema.findById(req.userId).select("-hashed_password");
     if (!user) {
-      return res.status(404).json({ message: 'Cannot find user' });
+      return res.status(404).json({ message: "Cannot find user" });
     }
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -33,49 +33,55 @@ exports.authenticate = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: "Required field missing!" })
+    return res.status(400).json({ message: "Required field missing!" });
   }
   try {
     const existingUser = await UserSchema.findOne({
-      email: email
+      email: email,
     });
 
     if (!existingUser) {
       return res.status(404).json({ message: "User not found!" });
     }
 
-    const passwordMatched = await bcrypt.compare(password, existingUser.hashed_password);
+    const passwordMatched = await bcrypt.compare(
+      password,
+      existingUser.hashed_password
+    );
 
     if (!passwordMatched) {
       return res.status(401).json({ message: "Wrong Credentials!" });
     }
 
-    const token = jwt.sign({ userId: existingUser._id }, process.env.JWT_ACCESS_TOKEN_SECRET, {
-      expiresIn: '48h',
-    });
+    const token = jwt.sign(
+      { userId: existingUser._id },
+      process.env.JWT_ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "48h",
+      }
+    );
 
     res.status(200).json({ token });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
-}
+};
 
 // Function for creating a new user
 exports.createUser = async (req, res) => {
   const { name, email, password } = req.body;
 
   try {
-
     if (!email || !password || !name) {
-      return res.status(400).json({ message: 'Required field missing' })
+      return res.status(400).json({ message: "Required field missing" });
     }
     const existingUser = await UserSchema.findOne({
-      email: email
+      email: email,
     });
 
     // CHECK IF EMAIL IS ALREADY IN USE
     if (existingUser) {
-      return res.status(409).json({ message: 'Email already in use!' })
+      return res.status(409).json({ message: "Email already in use!" });
     }
 
     // HASH PASSWORD
@@ -84,7 +90,7 @@ exports.createUser = async (req, res) => {
     const newUser = await UserSchema.create({
       name: name,
       email: email,
-      hashed_password: hashedPassword
+      hashed_password: hashedPassword,
     });
 
     // EXCLUDE THE hashed_password FIELD FROM THE RESPONSE
@@ -92,7 +98,7 @@ exports.createUser = async (req, res) => {
       const obj = this.toObject();
       delete obj.hashed_password;
       return obj;
-    }
+    };
 
     res.status(201).json(newUser);
   } catch (err) {
@@ -106,7 +112,7 @@ exports.updateUser = async (req, res) => {
   try {
     user = await UserSchema.findById(req.userId);
     if (!user) {
-      return res.status(404).json({ message: 'Cannot find user' });
+      return res.status(404).json({ message: "Cannot find user" });
     }
 
     if (req.body.name) {
@@ -120,13 +126,16 @@ exports.updateUser = async (req, res) => {
     // Image Url
     if (req.file) {
       if (user.image_url) {
-        await deleteFile(user.image_url)
+        await deleteFile(user.image_url);
       }
-      user.image_url = req.file.path
+      user.image_url = req.file.path;
     }
 
     if (req.body.password && req.body.newPassword) {
-      const passwordMatched = await bcrypt.compare(req.body.password, user.hashed_password);
+      const passwordMatched = await bcrypt.compare(
+        req.body.password,
+        user.hashed_password
+      );
 
       if (!passwordMatched) {
         return res.status(401).json({ message: "Invalid Credentials" });
@@ -143,9 +152,11 @@ exports.updateUser = async (req, res) => {
       const obj = this.toObject();
       delete obj.hashed_password;
       return obj;
-    }
+    };
 
-    res.status(200).json({ message: "Successfully updated.", user: updatedUser });
+    res
+      .status(200)
+      .json({ message: "Successfully updated.", user: updatedUser });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -157,7 +168,7 @@ exports.deleteUser = async (req, res) => {
   try {
     user = await UserSchema.findById(req.userId);
     if (user == null) {
-      return res.status(404).json({ message: 'Cannot find user' });
+      return res.status(404).json({ message: "Cannot find user" });
     }
   } catch (err) {
     return res.status(500).json({ message: err.message });
@@ -165,7 +176,7 @@ exports.deleteUser = async (req, res) => {
 
   try {
     await user.remove();
-    res.json({ message: 'User deleted!' });
+    res.json({ message: "User deleted!" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
