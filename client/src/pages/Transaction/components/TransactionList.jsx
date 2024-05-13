@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import moment from "moment";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { BiEditAlt } from "react-icons/bi";
-import { useTransaction } from "@/provider/transactionProvider";
 import DeleteTransactionForm from "./DeleteTransactionForm";
 import {
   Tooltip,
@@ -12,14 +11,14 @@ import {
 } from "@/components/ui/tooltip";
 import EmptyState from "@/components/EmptyState/EmptyState";
 import { useUser } from "@/hooks/useUser";
+import useSWRTransaction from "@/hooks/useSWRTransaction";
 
 const TransactionList = ({ handleSelectUpdateTransaction }) => {
   const { user } = useUser();
-
   const [confirmDeleteTransaction, setConfirmDeleteTransaction] =
     useState(false);
   const [selectedId, setSelectedId] = useState("");
-  const { transactionList } = useTransaction();
+  const { transactionList } = useSWRTransaction();
 
   return (
     <div className="space-y-8">

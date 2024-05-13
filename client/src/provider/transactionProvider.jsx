@@ -7,7 +7,6 @@ const TransactionContext = createContext();
 
 // TransactionProvider Component
 const TransactionProvider = ({ children }) => {
-  const [transactionList, setTransactionList] = useState([]);
   const [summaryData, setSummaryData] = useState([]);
   const [updatedTotalTransaction, setTotalTransactions] = useState(0);
   const [currentTotalTransactions, setCurrentTotalTransactions] = useState(0);
@@ -31,21 +30,9 @@ const TransactionProvider = ({ children }) => {
     setType(type);
   };
 
-  // sync our transaction local state with database
-  useEffect(() => {
-    const handleGetAllTransactions = async () => {
-      const { data, status } = await axios.get("/transaction");
-      if (status === 201) {
-        setTransactionList([...data.transactions, ...transactionList]);
-      }
-    };
-    handleGetAllTransactions();
-  }, []);
-
   const value = {
-    transactionList,
-    setTransactionList,
     updatedTotalTransaction,
+    currentTotalTransactions,
     setTotalTransactions,
     time,
     type,
@@ -54,7 +41,6 @@ const TransactionProvider = ({ children }) => {
     summaryData,
     fetchSummary,
     fetchCurrentMonthTransactions,
-    currentTotalTransactions,
   };
 
   return (

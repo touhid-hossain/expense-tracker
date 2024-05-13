@@ -13,14 +13,14 @@ import { useTransaction } from "@/provider/transactionProvider";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/EmptyState/EmptyState";
 import { useUser } from "@/hooks/useUser";
+import useSWRTransaction from "@/hooks/useSWRTransaction";
 
 const RecentTransactions = () => {
   const { user } = useUser();
-  const {
-    fetchCurrentMonthTransactions,
-    currentTotalTransactions,
-    transactionList,
-  } = useTransaction();
+  const { fetchCurrentMonthTransactions, currentTotalTransactions } =
+    useTransaction();
+
+  const { transactionList } = useSWRTransaction();
 
   const limit = 8;
 

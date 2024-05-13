@@ -29,6 +29,7 @@ import axios from "@/lib/axios";
 import { useTransaction } from "@/provider/transactionProvider";
 import useGetTotal from "@/hooks/useGetTotal";
 import { toast } from "@/components/ui/use-toast";
+import useSWRTransaction from "@/hooks/useSWRTransaction";
 
 const transactionFormSchema = z.object({
   transactionName: z.string().min(4, {
@@ -52,11 +53,12 @@ const TransactionForm = ({
   selectedTransaction,
 }) => {
   const { available } = useGetTotal();
-  const { transactionList, setTransactionList, setTotalTransactions } =
-    useTransaction();
+  const { setTransactionList, setTotalTransactions } = useTransaction();
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
+  const { creatTransactionMutation, updateTransactionMutation } =
+    useSWRTransaction();
 
   const form = useForm({
     resolver: zodResolver(transactionFormSchema),
@@ -101,60 +103,36 @@ const TransactionForm = ({
         return;
       }
     }
-
-    const res = await axios.post("/transaction", {
+    creatTransactionMutation({
       name: values.transactionName,
       type: transactionType,
       category: values.transactionCategories,
       amount: values.transactionAmount,
     });
-
-    setTransactionList([res.data.transaction, ...transactionList]);
-    setTotalTransactions(res?.data?.totalTransactions);
     toggleTransactionForm();
+
+    // setTotalTransactions(res?.data?.totalTransactions);
   };
 
   // Edit Transaction
-  const updateTransaction = async (values) => {
-    try {
-      if (transactionType === "expense") {
-        if (values.transactionAmount > selectedTransaction.amount) {
-          if (values.transactionAmount > available) {
-            setIsOpenErrorPopUp(true);
-            return;
-          }
+  const updateTransaction = (values) => {
+    if (transactionType === "expense") {
+      if (values.transactionAmount > selectedTransaction.amount) {
+        if (values.transactionAmount > available) {
+          setIsOpenErrorPopUp(true);
+          return;
         }
       }
-      const url = `/transaction/edit-transaction/${selectedTransaction?._id}`; // Assuming the correct API endpoint
-      const { data, status } = await axios.put(url, {
-        name: values.transactionName,
-        type: transactionType,
-        category: values.transactionCategories,
-        amount: values.transactionAmount,
-      });
-      if (status === 200) {
-        toast({
-          title: "Transaction Updated Successfully",
-          variant: "success",
-        });
-      }
-      const newT = transactionList.map((t) => {
-        if (t._id === selectedTransaction._id) {
-          return { ...t, ...data.updatedTransaction };
-        }
-        return t;
-      });
-
-      setTransactionList(newT);
-      toggleEditForm();
-    } catch (error) {
-      toast({
-        title: error.message,
-        variant: "destructive",
-      });
-      console.error(`Error updating transaction: ${error.message}`);
-      // Handle the error, e.g., display an error message to the user
     }
+
+    updateTransactionMutation({
+      name: values.transactionName,
+      type: transactionType,
+      category: values.transactionCategories,
+      amount: values.transactionAmount,
+      id: selectedTransaction?._id,
+    });
+    toggleEditForm();
   };
 
   return (

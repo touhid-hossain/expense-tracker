@@ -1,4 +1,5 @@
 import EmptyState from "@/components/EmptyState/EmptyState";
+import useSWRTransaction from "@/hooks/useSWRTransaction";
 import { useTransaction } from "@/provider/transactionProvider";
 import React, { useEffect, useState } from "react";
 import {
@@ -14,8 +15,8 @@ import {
 } from "recharts";
 
 const Overview = () => {
-  const { time, type, summaryData, fetchSummary, transactionList } =
-    useTransaction();
+  const { time, type, summaryData, fetchSummary } = useTransaction();
+  const { transactionList } = useSWRTransaction();
 
   useEffect(() => {
     fetchSummary();
