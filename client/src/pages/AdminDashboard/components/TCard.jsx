@@ -26,7 +26,7 @@ function TCard({ title, details }) {
       <CardContent>
         <div className="text-2xl font-bold">
           {details.value}
-          {user.currency.sign}
+          {user?.currency?.sign}
         </div>
         <p className="text-xs text-muted-foreground">{details.percentage}</p>
       </CardContent>

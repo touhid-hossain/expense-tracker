@@ -14,8 +14,7 @@ import { useDebounce } from "@/lib/utils";
 import TransactionPagination from "./components/TransactionPagination";
 
 const Transaction = () => {
-  const { setTransactionList, updatedTotalTransaction } =
-    useTransaction([]);
+  const { setTransactionList, updatedTotalTransaction } = useTransaction([]);
   const [type, setType] = useState("all");
   const [totalTransactions, setTotalTransactions] = useState(0);
   const [search, setSearch] = useState("");
@@ -24,6 +23,8 @@ const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+
+  console.log(currentPage);
 
   //  open/close transaction form
   const toggleTransactionForm = () =>

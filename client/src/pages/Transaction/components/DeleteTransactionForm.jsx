@@ -10,22 +10,21 @@ import React from "react";
 import axios from "@/lib/axios";
 import { useTransaction } from "@/provider/transactionProvider";
 import { toast } from "@/components/ui/use-toast";
+import useSWRTransaction from "@/hooks/useSWRTransaction";
 
 const DeleteTransactionForm = ({ confirmDelete, setConfirm, selectedId }) => {
-  const { transactionList, setTransactionList } = useTransaction();
+  const { transactionsMutate } = useSWRTransaction();
+
   // Delete transaction-list
   const deleteTransaction = async (id) => {
     try {
-      const { status } = await axios.delete(
-        `/transaction/delete-transaction/${id}`
-      );
-      if (status === 200) {
-        toast({
-          title: "Transaction Deleted Successfully",
-          variant: "success",
-        });
-      }
-      setTransactionList(transactionList.filter((t) => t._id !== id));
+      await axios.delete(`/transaction/delete-transaction/${id}`);
+
+      transactionsMutate();
+      toast({
+        title: "Transaction Deleted Successfully",
+        variant: "success",
+      });
     } catch (error) {
       toast({
         title: error.message,

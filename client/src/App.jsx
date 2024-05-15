@@ -9,7 +9,7 @@ function App() {
   return (
     <SWRConfig
       value={{
-        refreshInterval: 0,
+        // refreshInterval: 0,
         revalidateOnFocus: false,
         fetcher: (resource) => axios.get(resource).then((res) => res.data),
       }}

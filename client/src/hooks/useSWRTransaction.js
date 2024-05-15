@@ -5,10 +5,6 @@ import { toast } from "@/components/ui/use-toast";
 function useSWRTransaction() {
   const { data, mutate } = useSWR("/transaction");
 
-  const creatTransactionMutation = async (t) => {
-    mutate(() => axios.post("/transaction", t));
-  };
-
   const updateTransactionMutation = async ({ id, ...rest }) => {
     try {
       await mutate(
@@ -51,7 +47,7 @@ function useSWRTransaction() {
 
   return {
     transactionList: data?.transactions ? data.transactions : [],
-    creatTransactionMutation,
+    transactionsMutate: mutate,
     updateTransactionMutation,
   };
 }

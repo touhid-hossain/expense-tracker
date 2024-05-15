@@ -52,12 +52,12 @@ const TransactionForm = ({
   toggleEditForm,
   selectedTransaction,
 }) => {
-  const { available } = useGetTotal();
   const { setTransactionList, setTotalTransactions } = useTransaction();
   const [categoryList, setCategoryList] = useState([]);
   const [openCustomCategory, setOpenCustomCategory] = useState(false);
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
-  const { creatTransactionMutation, updateTransactionMutation } =
+  const { available, totalIncome } = useGetTotal();
+  const { transactionsMutate, updateTransactionMutation, transactionList } =
     useSWRTransaction();
 
   const form = useForm({
@@ -103,12 +103,14 @@ const TransactionForm = ({
         return;
       }
     }
-    creatTransactionMutation({
+
+    await axios.post("/transaction", {
       name: values.transactionName,
       type: transactionType,
       category: values.transactionCategories,
       amount: values.transactionAmount,
     });
+    transactionsMutate();
     toggleTransactionForm();
 
     // setTotalTransactions(res?.data?.totalTransactions);
@@ -117,10 +119,18 @@ const TransactionForm = ({
   // Edit Transaction
   const updateTransaction = (values) => {
     if (transactionType === "expense") {
-      if (values.transactionAmount > selectedTransaction.amount) {
-        if (values.transactionAmount > available) {
-          setIsOpenErrorPopUp(true);
-          return;
+      // Expense value increase/decrease
+      if (+values.transactionAmount > +selectedTransaction.amount) {
+        if (+values.transactionAmount > available) {
+          return setIsOpenErrorPopUp(true);
+        }
+      }
+
+      //  Income => Expense Transformation
+      if (selectedTransaction.type === "income") {
+        const newIncome = totalIncome - +selectedTransaction.amount;
+        if (newIncome < +selectedTransaction.amount) {
+          return setIsOpenErrorPopUp(true);
         }
       }
     }
