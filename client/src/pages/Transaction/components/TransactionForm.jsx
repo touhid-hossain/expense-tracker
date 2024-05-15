@@ -118,10 +118,18 @@ const TransactionForm = ({
   const updateTransaction = async (values) => {
     try {
       if (transactionType === "expense") {
-        if (values.transactionAmount > selectedTransaction.amount) {
-          if (values.transactionAmount > available) {
-            setIsOpenErrorPopUp(true);
-            return;
+        // Expense value increase/decrease
+        if (+values.transactionAmount > +selectedTransaction.amount) {
+          if (+values.transactionAmount > available) {
+            return setIsOpenErrorPopUp(true);
+          }
+        }
+
+        //  Income => Expense Transformation
+        if (selectedTransaction.type === "income") {
+          const newIncome = totalIncome - +selectedTransaction.amount;
+          if (newIncome < +selectedTransaction.amount) {
+            return setIsOpenErrorPopUp(true);
           }
         }
       }
