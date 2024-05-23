@@ -14,12 +14,10 @@ exports.createCategory = async (req, res) => {
       type,
     });
 
-    res
-      .status(201)
-      .json({
-        category: newCategory,
-        message: "Successfully Created New Category",
-      });
+    res.status(201).json({
+      category: newCategory,
+      message: "Successfully Created New Category",
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -34,7 +32,9 @@ exports.getAllCategory = async (req, res) => {
     }
 
     if (type === "income" || type === "expense") {
-      const filteredCategory = await Category.find({ type });
+      const filteredCategory = await Category.find({ type }).sort({
+        createdAt: -1,
+      });
 
       res.status(200).json({ categories: filteredCategory });
     } else {

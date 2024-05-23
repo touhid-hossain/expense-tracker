@@ -53,6 +53,14 @@ const getAllTransaction = async (req, res) => {
       creator: req.userId,
     };
 
+    if (req.query.isPaginate === "false") {
+      const totalT = await Transaction.countDocuments(query);
+
+      return res.status(201).json({
+        totalT,
+      });
+    }
+
     if (type) {
       if (type === "all") {
         // if type === all then return all transactions
@@ -71,11 +79,12 @@ const getAllTransaction = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 }); // sort by createdAt in descending order
-    // Set totalTransactions
     const totalTransactions = await Transaction.countDocuments(query);
-    // console.log('sending transactions value in get function',totalTransactions)
+
+    // Set totalTransactions
     res.status(201).json({
       transactions,
+      totalTransactions,
     });
   } catch (error) {
     res.status(400).json({ message: error.message });

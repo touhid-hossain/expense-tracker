@@ -8,25 +8,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import React, { useEffect } from "react";
-import { useTransaction } from "@/provider/transactionProvider";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/EmptyState/EmptyState";
 import { useUser } from "@/hooks/useUser";
-import useSWRTransaction from "@/hooks/useSWRTransaction";
+import useSWR from "swr";
+import usePagination from "@/hooks/usePagination";
 
 const RecentTransactions = () => {
   const { user } = useUser();
-  const { fetchCurrentMonthTransactions, currentTotalTransactions } =
-    useTransaction();
-
-  const { transactionList } = useSWRTransaction();
-
-  const limit = 8;
-
-  useEffect(() => {
-    fetchCurrentMonthTransactions();
-  }, []);
+  const { data: currentTotalTransactions } = useSWR(
+    "/transaction/currentMonth/transactions"
+  );
+  const { transactionList } = usePagination({ currentPage: 1, limit: 2 });
 
   return (
     <Card className="w-full flex flex-col xl:w-[40%] mt-10">
@@ -46,7 +40,7 @@ const RecentTransactions = () => {
           {transactionList.length === 0 ? (
             <EmptyState />
           ) : (
-            transactionList.slice(0, limit).map((transaction) => {
+            transactionList.map((transaction) => {
               const date = moment(transaction?.createdAt);
               const formattedTransactionDate = date.format("MMM D - h.mm a");
               return (

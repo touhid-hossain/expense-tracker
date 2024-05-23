@@ -1,6 +1,5 @@
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { useEffect, useState } from "react";
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
@@ -20,18 +19,12 @@ export function getInitials(name) {
   return initials;
 }
 
-export function useDebounce(value, delay) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
+const PAGE_SIZE = 6;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedValue(value);
-    }, delay || 500);
+const getKey = (pageIndex, previousPageData, repo, pageSize) => {
+  if (previousPageData && !previousPageData.length) return null; // reached the end
 
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [value, delay]);
-
-  return debouncedValue;
-}
+  return `https://api.github.com/repos/${repo}/issues?per_page=${pageSize}&page=${
+    pageIndex + 1
+  }`;
+};

@@ -1,30 +1,24 @@
-import React, { useState, useEffect } from "react";
-import TransactionList from "./components/TransactionList";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import TransactionForm from "./components/TransactionForm";
-import { Search, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useTransaction } from "@/provider/transactionProvider";
-import axios from "@/lib/axios";
-import { useDebounce } from "@/lib/utils";
+import { X } from "lucide-react";
 import TransactionPagination from "./components/TransactionPagination";
+import TransactionForm from "./components/TransactionForm";
+import TransactionList from "./components/TransactionList";
+import { useTransaction } from "@/provider/transactionProvider";
+import TransactionFilter from "./components/TransactionFilter";
+import useDebounce from "@/hooks/useDebounce";
+import useSWR from "swr";
 
 const Transaction = () => {
-  const { setTransactionList, updatedTotalTransaction } = useTransaction([]);
   const [type, setType] = useState("all");
-  const [totalTransactions, setTotalTransactions] = useState(0);
   const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const debouncedValue = useDebounce(search, 300);
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-
-  console.log(currentPage);
+  const { currentPage, paginate, totalPaginateT } = useTransaction();
+  const debouncedSearch = useDebounce(search, 1000);
 
   //  open/close transaction form
   const toggleTransactionForm = () =>
@@ -32,38 +26,14 @@ const Transaction = () => {
   const toggleEditForm = () => setIsEditMode((prevState) => !prevState);
 
   // selected transaction handler
-  const handleSelectUpdateTransaction = (t) => {
+  const handleSelectUpdateTransaction = (t, isOpenDialog = true) => {
     setSelectedTransaction(t);
-    toggleEditForm();
+    isOpenDialog && toggleEditForm();
   };
 
-  const limit = 8;
-  const totalPages = Math.ceil(totalTransactions / limit);
+  const limit = 2;
+  const totalPages = Math.ceil(totalPaginateT / limit);
   const pagesToShow = totalPages > 5 ? 5 : totalPages;
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const debouncedSearch = async () => {
-    //Filtering the all exercises according to the searchTerm
-    const response = await axios.get("/transaction", {
-      params: {
-        search,
-        type,
-        page: currentPage,
-        limit,
-      },
-    });
-    setTransactionList(response?.data?.transactions);
-    setTotalTransactions(response?.data?.totalTransactions);
-  };
-
-  // HANDLING WHEN SEARCH TERM  CHANGES
-  useEffect(() => {
-    const handleSearch = debouncedSearch;
-    handleSearch();
-    return () => clearTimeout(debouncedSearch);
-  }, [debouncedValue, currentPage, type, updatedTotalTransaction]);
-
-  // modal close function
 
   return (
     <Card className="mt-10 h-[85vh] flex flex-col justify-between">
@@ -79,48 +49,13 @@ const Transaction = () => {
                 Add new +
               </Button>
             </div>
-            <div className="w-[300px] relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search"
-                className="pl-8"
-              />
-              {/* Filter Transaction List */}
-              <div className="flex justify-end gap-3 mt-3">
-                <Label>Sort By :</Label>
-                <RadioGroup
-                  onValueChange={setType}
-                  defaultValue={type}
-                  className="flex"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="all"
-                      id="r1"
-                      checked={type === "all"}
-                    />
-                    <Label htmlFor="r1">All</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="income"
-                      id="r2"
-                      checked={type === "income"}
-                    />
-                    <Label htmlFor="r2">Income</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="expense"
-                      id="r3"
-                      checked={type === "expense"}
-                    />
-                    <Label htmlFor="r3">Expense</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-            </div>
+            {/* Transaction filter component load here */}
+            <TransactionFilter
+              type={type}
+              search={search}
+              setType={setType}
+              setSearch={setSearch}
+            />
           </div>
         </CardHeader>
         <CardContent>
@@ -137,20 +72,38 @@ const Transaction = () => {
                 toggleTransactionForm={toggleTransactionForm}
                 toggleEditForm={toggleEditForm}
                 selectedTransaction={selectedTransaction}
+                handleSelectUpdateTransaction={handleSelectUpdateTransaction}
               />
             </DialogContent>
           </Dialog>
           <TransactionList
             handleSelectUpdateTransaction={handleSelectUpdateTransaction}
+            selectedTransaction={selectedTransaction}
+            limit={limit}
+            type={type}
+            search={debouncedSearch}
+            currentPage={currentPage}
           />
+          {/*Rendered Next page */}
+          <div className="hidden">
+            <TransactionList
+              handleSelectUpdateTransaction={handleSelectUpdateTransaction}
+              selectedTransaction={selectedTransaction}
+              currentPage={totalPages !== currentPage ? currentPage + 1 : 1}
+              limit={limit}
+              type={type}
+              search={debouncedSearch}
+            />
+          </div>
         </CardContent>
       </div>
       {/* Pagination */}
+
       <TransactionPagination
-        currentPage={currentPage}
         pagesToShow={pagesToShow}
         totalPages={totalPages}
         paginate={paginate}
+        currentPage={currentPage}
       />
     </Card>
   );
