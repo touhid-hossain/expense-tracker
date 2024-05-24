@@ -1,11 +1,9 @@
 import axios from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
 import { useSWRConfig } from "swr";
-import { useTransaction } from "@/provider/transactionProvider";
 
 function useSWRTransaction() {
   const { mutate } = useSWRConfig();
-  // const {} = useTransaction()
 
   const deleteTransaction = async (id) => {
     try {

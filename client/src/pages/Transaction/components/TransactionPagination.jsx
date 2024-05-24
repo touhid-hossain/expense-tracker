@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/pagination";
 import { useTransaction } from "@/provider/transactionProvider";
 
-const TransactionPagination = ({ totalPages, pagesToShow, paginate }) => {
-  const { currentPage } = useTransaction();
+const TransactionPagination = ({ totalPages, pagesToShow }) => {
+  const { currentPage, paginate } = useTransaction();
 
   return (
     <Pagination className="mb-3 cursor-pointer">
@@ -50,7 +50,7 @@ const TransactionPagination = ({ totalPages, pagesToShow, paginate }) => {
             return <PaginationEllipsis key={`ellipsis-${page}`} />;
           }
 
-          return null;
+          return <h1>Loading...</h1>;
         })}
 
         <PaginationItem>

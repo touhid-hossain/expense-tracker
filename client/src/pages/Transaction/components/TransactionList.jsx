@@ -25,19 +25,18 @@ import usePagination from "@/hooks/usePagination";
 const TransactionList = ({
   handleSelectUpdateTransaction,
   selectedTransaction: selectedId,
-  limit,
-  type,
   search,
   currentPage,
 }) => {
   const { user } = useUser();
   const [confirmDeleteTransaction, setConfirmDeleteTransaction] =
     useState(false);
+  const { filterType, debouncedSearch, PAGINATE_LIMIT } = useTransaction();
 
   const { transactionList, isLoading } = usePagination({
     currentPage,
-    limit,
-    filterOptions: { type, search },
+    limit: PAGINATE_LIMIT,
+    filterOptions: { type: filterType, search: debouncedSearch },
   });
 
   // toggle delete dialog
@@ -50,7 +49,7 @@ const TransactionList = ({
     <div className="space-y-8">
       {transactionList.length === 0 && (
         <EmptyState
-          text={`You didn't have no transactions record with yet now! type ${type} and search ${search}`}
+          text={`You didn't have no transactions record with yet now! type ${filterType} and search ${debouncedSearch}`}
           showBtn={false}
         />
       )}
@@ -164,8 +163,11 @@ const DeleteTransactionForm = ({
           <Button
             type="button"
             variant="destructive"
-            onClick={async () => {
-              await deleteTransaction(selectedId);
+            onClick={() => {
+              deleteTransaction(selectedId);
+              if (transactionList.length === 1 && currentPage > 1) {
+                paginate(currentPage - 1);
+              }
               handleCloseDeleteDialog();
               handleSelectUpdateTransaction(null, false);
             }}

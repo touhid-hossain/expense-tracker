@@ -5,13 +5,14 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTransaction } from "@/provider/transactionProvider";
 
-function TransactionFilter({ setType, setSearch, type, search }) {
-  const { paginate } = useTransaction();
+function TransactionFilter() {
+  const { paginate, handleSearch, search, handleFilterType, filterType } =
+    useTransaction();
   return (
     <div className="w-[300px] relative">
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
-        onChange={(e) => setSearch(e.target.value)}
+        onChange={(e) => handleSearch(e.target.value)}
         placeholder="Search"
         className="pl-8"
         value={search}
@@ -21,21 +22,25 @@ function TransactionFilter({ setType, setSearch, type, search }) {
         <Label>Sort By :</Label>
         <RadioGroup
           onValueChange={(value) => {
-            setType(value);
+            handleFilterType(value);
             paginate(1);
           }}
-          defaultValue={type}
+          defaultValue={filterType}
           className="flex"
         >
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="all" id="r1" checked={type === "all"} />
+            <RadioGroupItem
+              value="all"
+              id="r1"
+              checked={filterType === "all"}
+            />
             <Label htmlFor="r1">All</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem
               value="income"
               id="r2"
-              checked={type === "income"}
+              checked={filterType === "income"}
             />
             <Label htmlFor="r2">Income</Label>
           </div>
@@ -43,7 +48,7 @@ function TransactionFilter({ setType, setSearch, type, search }) {
             <RadioGroupItem
               value="expense"
               id="r3"
-              checked={type === "expense"}
+              checked={filterType === "expense"}
             />
             <Label htmlFor="r3">Expense</Label>
           </div>

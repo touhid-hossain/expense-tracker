@@ -8,27 +8,21 @@ import TransactionForm from "./components/TransactionForm";
 import TransactionList from "./components/TransactionList";
 import { useTransaction } from "@/provider/transactionProvider";
 import TransactionFilter from "./components/TransactionFilter";
-import useDebounce from "@/hooks/useDebounce";
 import usePagination from "@/hooks/usePagination";
-export const PAGINATE_LIMIT = 3;
 
 const Transaction = () => {
-  const [type, setType] = useState("all");
-  const [search, setSearch] = useState("");
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const { currentPage, paginate } = useTransaction();
+  const { currentPage, debouncedSearch, filterType, PAGINATE_LIMIT } =
+    useTransaction();
 
-  const debouncedSearch = useDebounce(search, 500, () => {
-    paginate(1);
-  });
-
-  const { totalPages, pagesToShow } = usePagination({
-    currentPage,
-    limit: PAGINATE_LIMIT,
-    filterOptions: { type, search },
-  });
+  const { totalPages, pagesToShow, totalTransactions, isLoading } =
+    usePagination({
+      currentPage,
+      limit: PAGINATE_LIMIT,
+      filterOptions: { type: filterType, search: debouncedSearch },
+    });
 
   //  open/close transaction form
   const toggleTransactionForm = () =>
@@ -54,14 +48,16 @@ const Transaction = () => {
               >
                 Add new +
               </Button>
+              {!isLoading && (
+                <p className="mt-2">
+                  {`${totalTransactions} ${
+                    totalTransactions > 1 ? "transactions" : "transaction"
+                  } found`}
+                </p>
+              )}
             </div>
             {/* Transaction filter component load here */}
-            <TransactionFilter
-              type={type}
-              search={search}
-              setType={setType}
-              setSearch={setSearch}
-            />
+            <TransactionFilter />
           </div>
         </CardHeader>
         <CardContent>
@@ -85,9 +81,6 @@ const Transaction = () => {
           <TransactionList
             handleSelectUpdateTransaction={handleSelectUpdateTransaction}
             selectedTransaction={selectedTransaction}
-            limit={PAGINATE_LIMIT}
-            type={type}
-            search={debouncedSearch}
             currentPage={currentPage}
           />
           {/*Rendered Next page */}
@@ -96,9 +89,6 @@ const Transaction = () => {
               handleSelectUpdateTransaction={handleSelectUpdateTransaction}
               selectedTransaction={selectedTransaction}
               currentPage={totalPages !== currentPage ? currentPage + 1 : 1}
-              limit={PAGINATE_LIMIT}
-              type={type}
-              search={debouncedSearch}
             />
           </div>
         </CardContent>
@@ -107,8 +97,6 @@ const Transaction = () => {
       <TransactionPagination
         pagesToShow={pagesToShow}
         totalPages={totalPages}
-        paginate={paginate}
-        currentPage={currentPage}
       />
     </Card>
   );
