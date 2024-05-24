@@ -3,8 +3,10 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useTransaction } from "@/provider/transactionProvider";
 
 function TransactionFilter({ setType, setSearch, type, search }) {
+  const { paginate } = useTransaction();
   return (
     <div className="w-[300px] relative">
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -18,7 +20,10 @@ function TransactionFilter({ setType, setSearch, type, search }) {
       <div className="flex justify-end gap-3 mt-3">
         <Label>Sort By :</Label>
         <RadioGroup
-          onValueChange={setType}
+          onValueChange={(value) => {
+            setType(value);
+            paginate(1);
+          }}
           defaultValue={type}
           className="flex"
         >

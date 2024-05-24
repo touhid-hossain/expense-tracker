@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useTransaction } from "@/provider/transactionProvider";
 import usePagination from "@/hooks/usePagination";
-import { useEffect } from "react";
 
 const TransactionList = ({
   handleSelectUpdateTransaction,
@@ -35,24 +34,26 @@ const TransactionList = ({
   const [confirmDeleteTransaction, setConfirmDeleteTransaction] =
     useState(false);
 
-  const { handleT } = useTransaction();
-  const { transactionList, totalTransactions } = usePagination({
+  const { transactionList, isLoading } = usePagination({
     currentPage,
     limit,
-    filterBy: { type, search },
+    filterOptions: { type, search },
   });
-
-  useEffect(() => {
-    handleT(totalTransactions);
-  }, [transactionList]);
 
   // toggle delete dialog
   const handleOpenDeleteDialog = () => setConfirmDeleteTransaction(true);
   const handleCloseDeleteDialog = () => setConfirmDeleteTransaction(false);
 
+  if (isLoading) return <h1>Loading...</h1>;
+
   return (
     <div className="space-y-8">
-      {/* {transactionList.length === 0 && <EmptyState showBtn={false} />} */}
+      {transactionList.length === 0 && (
+        <EmptyState
+          text={`You didn't have no transactions record with yet now! type ${type} and search ${search}`}
+          showBtn={false}
+        />
+      )}
       {transactionList?.map((transaction) => {
         const date = moment(transaction?.createdAt);
         const formattedTransactionDate = date.format("MMM D - h.mm a");

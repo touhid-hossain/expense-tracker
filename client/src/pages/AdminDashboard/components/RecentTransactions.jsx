@@ -20,7 +20,12 @@ const RecentTransactions = () => {
   const { data: currentTotalTransactions } = useSWR(
     "/transaction/currentMonth/transactions"
   );
-  const { transactionList } = usePagination({ currentPage: 1, limit: 2 });
+  const { transactionList, isLoading } = usePagination({
+    currentPage: 1,
+    limit: 8,
+  });
+
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <Card className="w-full flex flex-col xl:w-[40%] mt-10">
@@ -31,14 +36,14 @@ const RecentTransactions = () => {
             You made {currentTotalTransactions} transactions this month.
           </CardDescription>
         </div>
-        <Button variant="outline">
+        <Button asChild variant="outline">
           <Link to="/transaction"> View All</Link>
         </Button>
       </CardHeader>
       <CardContent>
         <div className="space-y-8">
           {transactionList.length === 0 ? (
-            <EmptyState />
+            <EmptyState text="You didn't have no transactions record with yet now!" />
           ) : (
             transactionList.map((transaction) => {
               const date = moment(transaction?.createdAt);

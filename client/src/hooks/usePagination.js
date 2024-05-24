@@ -1,13 +1,11 @@
 import useSWR from "swr";
 
-function usePagination({ currentPage, limit, filterBy }) {
+function usePagination({ currentPage, limit, filterOptions }) {
   const getPaginateKey = () => {
-    if (filterBy) {
-      const { type, search } = filterBy;
+    if (filterOptions) {
+      const { type, search } = filterOptions;
 
-      if (type || search) {
-        return `/transaction?page=${currentPage}&limit=${limit}&type=${type}&search=${search}`;
-      }
+      return `/transaction?page=${currentPage}&limit=${limit}&type=${type}&search=${search}`;
     }
 
     return `/transaction?page=${currentPage}&limit=${limit}`;
@@ -16,10 +14,16 @@ function usePagination({ currentPage, limit, filterBy }) {
   const { data, isLoading } = useSWR(getPaginateKey());
 
   const transactionList = data?.transactions ? data.transactions : [];
+  const totalTransactions = data?.totalTransactions;
+
+  const totalPages = Math.ceil(totalTransactions / limit);
+  const pagesToShow = totalPages > 5 ? 5 : totalPages;
 
   return {
     transactionList,
-    totalTransactions: data?.totalTransactions,
+    totalTransactions,
+    totalPages,
+    pagesToShow,
     isLoading,
   };
 }

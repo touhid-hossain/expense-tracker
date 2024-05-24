@@ -10,7 +10,6 @@ const TransactionProvider = ({ children }) => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [totalPaginateT, setTotalPaginateT] = useState(0);
 
   const handleT = (value) => setTotalPaginateT(value);
 
@@ -36,8 +35,6 @@ const TransactionProvider = ({ children }) => {
     handleTimeChange,
     handleTypeChange,
     paginate,
-    handleT,
-    totalPaginateT,
   };
 
   return (

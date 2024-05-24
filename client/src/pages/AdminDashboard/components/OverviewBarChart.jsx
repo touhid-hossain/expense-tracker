@@ -53,7 +53,10 @@ const Overview = () => {
         return null;
     }
   }
-  if (summaryData?.data.length === 0) return <EmptyState />;
+  if (summaryData?.data.length === 0)
+    return (
+      <EmptyState text="You didn't have no transactions record with yet now!" />
+    );
 
   return (
     <div>

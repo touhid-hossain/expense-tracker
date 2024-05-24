@@ -1,17 +1,19 @@
 import axios from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
 import { useSWRConfig } from "swr";
+import { useTransaction } from "@/provider/transactionProvider";
 
 function useSWRTransaction() {
   const { mutate } = useSWRConfig();
+  // const {} = useTransaction()
 
   const deleteTransaction = async (id) => {
     try {
       await axios.delete(`/transaction/delete-transaction/${id}`);
       await mutate(
-        (key) =>
-          (typeof key === "string" && key.startsWith("/transaction?page=")) ||
-          key.startsWith("/transaction?isPaginate=")
+        (key) => typeof key === "string" && key.startsWith("/transaction?page=")
+        // Local mutation function
+        // should be return updated data that updated local cached data
       );
 
       toast({

@@ -9,7 +9,8 @@ import TransactionList from "./components/TransactionList";
 import { useTransaction } from "@/provider/transactionProvider";
 import TransactionFilter from "./components/TransactionFilter";
 import useDebounce from "@/hooks/useDebounce";
-import useSWR from "swr";
+import usePagination from "@/hooks/usePagination";
+export const PAGINATE_LIMIT = 3;
 
 const Transaction = () => {
   const [type, setType] = useState("all");
@@ -17,8 +18,17 @@ const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const { currentPage, paginate, totalPaginateT } = useTransaction();
-  const debouncedSearch = useDebounce(search, 1000);
+  const { currentPage, paginate } = useTransaction();
+
+  const debouncedSearch = useDebounce(search, 500, () => {
+    paginate(1);
+  });
+
+  const { totalPages, pagesToShow } = usePagination({
+    currentPage,
+    limit: PAGINATE_LIMIT,
+    filterOptions: { type, search },
+  });
 
   //  open/close transaction form
   const toggleTransactionForm = () =>
@@ -30,10 +40,6 @@ const Transaction = () => {
     setSelectedTransaction(t);
     isOpenDialog && toggleEditForm();
   };
-
-  const limit = 2;
-  const totalPages = Math.ceil(totalPaginateT / limit);
-  const pagesToShow = totalPages > 5 ? 5 : totalPages;
 
   return (
     <Card className="mt-10 h-[85vh] flex flex-col justify-between">
@@ -79,7 +85,7 @@ const Transaction = () => {
           <TransactionList
             handleSelectUpdateTransaction={handleSelectUpdateTransaction}
             selectedTransaction={selectedTransaction}
-            limit={limit}
+            limit={PAGINATE_LIMIT}
             type={type}
             search={debouncedSearch}
             currentPage={currentPage}
@@ -90,7 +96,7 @@ const Transaction = () => {
               handleSelectUpdateTransaction={handleSelectUpdateTransaction}
               selectedTransaction={selectedTransaction}
               currentPage={totalPages !== currentPage ? currentPage + 1 : 1}
-              limit={limit}
+              limit={PAGINATE_LIMIT}
               type={type}
               search={debouncedSearch}
             />
@@ -98,7 +104,6 @@ const Transaction = () => {
         </CardContent>
       </div>
       {/* Pagination */}
-
       <TransactionPagination
         pagesToShow={pagesToShow}
         totalPages={totalPages}

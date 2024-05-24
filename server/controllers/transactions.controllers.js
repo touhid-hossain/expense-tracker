@@ -53,14 +53,6 @@ const getAllTransaction = async (req, res) => {
       creator: req.userId,
     };
 
-    if (req.query.isPaginate === "false") {
-      const totalT = await Transaction.countDocuments(query);
-
-      return res.status(201).json({
-        totalT,
-      });
-    }
-
     if (type) {
       if (type === "all") {
         // if type === all then return all transactions
