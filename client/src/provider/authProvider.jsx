@@ -12,8 +12,8 @@ const AuthProvider = ({ children }) => {
 
   const setToken = (newToken) => {
     if (newToken) {
-      localStorage.setItem("token", newToken);
       setToken_(newToken);
+      localStorage.setItem("token", newToken);
     } else {
       localStorage.removeItem("token");
       setToken_(newToken);
@@ -38,6 +38,7 @@ const AuthProvider = ({ children }) => {
       const response = await axios.post("/user/authenticate", {
         email: values.email,
         password: values.password,
+        rememberMe: values.rememberMe,
       });
       if (response.status === 200) {
         toast({
@@ -46,6 +47,7 @@ const AuthProvider = ({ children }) => {
         });
         const token = response.data.token;
         setToken(token);
+
         cb();
       }
     } catch (error) {

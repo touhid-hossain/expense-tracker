@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -31,6 +31,7 @@ const loginFormSchema = z.object({
 
 const Login = () => {
   const { token, login } = useAuth();
+  const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,7 +58,7 @@ const Login = () => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit((values) =>
-                login(values, () => navigate("/", { replace: true }))
+                login({...values, rememberMe}, () => navigate("/", { replace: true }))
               )}
             >
               <FormField
@@ -91,7 +92,10 @@ const Login = () => {
                 )}
               />
               <div className="mt-5 flex justify-between items-center">
-                <div className="flex items-center space-x-2">
+                <div
+                  onClick={(e) => setRememberMe(e.target.checked)}
+                  className="flex items-center space-x-2"
+                >
                   <Checkbox id="terms" />
                   <Label htmlFor="terms">Remember for 30 days</Label>
                 </div>

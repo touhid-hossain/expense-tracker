@@ -30,7 +30,7 @@ exports.getUser = async (req, res) => {
 
 // Authenticate User
 exports.authenticate = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, rememberMe } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: "Required field missing!" });
@@ -53,11 +53,19 @@ exports.authenticate = async (req, res) => {
       return res.status(401).json({ message: "Wrong Credentials!" });
     }
 
+    // set expiresIn for 30 days if rememberMe is true else null
+    let expiresInTime;
+    if (rememberMe) {
+      expiresInTime = "30d";
+    } else {
+      expiresInTime = "24h";
+    }
+
     const token = jwt.sign(
       { userId: existingUser._id },
       process.env.JWT_ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "48h",
+        expiresIn: expiresInTime,
       }
     );
 
