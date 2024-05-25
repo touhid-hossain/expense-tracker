@@ -33,7 +33,7 @@ const TransactionList = ({
     useState(false);
   const { filterType, debouncedSearch, PAGINATE_LIMIT } = useTransaction();
 
-  const { transactionList, isLoading } = usePagination({
+  const { transactionList, isLoading, totalTransactions } = usePagination({
     currentPage,
     limit: PAGINATE_LIMIT,
     filterOptions: { type: filterType, search: debouncedSearch },
@@ -45,14 +45,20 @@ const TransactionList = ({
 
   if (isLoading) return <h1>Loading...</h1>;
 
+  let errorContent;
+  if (!totalTransactions || !transactionList.length) {
+    errorContent = (
+      <EmptyState
+        title="No transactions found"
+        text={`Can't find transaction with type: ${filterType} and search: ${debouncedSearch}`}
+        showBtn={false}
+      />
+    );
+  }
+
   return (
     <div className="space-y-8">
-      {transactionList.length === 0 && (
-        <EmptyState
-          text={`You didn't have no transactions record with yet now! type ${filterType} and search ${debouncedSearch}`}
-          showBtn={false}
-        />
-      )}
+      {errorContent}
       {transactionList?.map((transaction) => {
         const date = moment(transaction?.createdAt);
         const formattedTransactionDate = date.format("MMM D - h.mm a");

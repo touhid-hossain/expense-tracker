@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
@@ -48,13 +49,20 @@ const Transaction = () => {
               >
                 Add new +
               </Button>
-              {!isLoading && (
-                <p className="mt-2">
-                  {`${totalTransactions} ${
-                    totalTransactions > 1 ? "transactions" : "transaction"
-                  } found`}
-                </p>
-              )}
+              <div className="mt-2">
+                {isLoading ? (
+                  <Skeleton className="h-4 w-[200px]" />
+                ) : (
+                  // <p>Loading...</p>
+                  <div>
+                    <p>
+                      {`${totalTransactions} ${
+                        totalTransactions > 1 ? "transactions" : "transaction"
+                      } found`}
+                    </p>
+                  </div>
+                )}
+              </div>
             </div>
             {/* Transaction filter component load here */}
             <TransactionFilter />

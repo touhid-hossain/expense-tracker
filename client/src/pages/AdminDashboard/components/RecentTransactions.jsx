@@ -43,7 +43,10 @@ const RecentTransactions = () => {
       <CardContent>
         <div className="space-y-8">
           {transactionList.length === 0 ? (
-            <EmptyState text="You didn't have no transactions record with yet now!" />
+            <EmptyState
+              title="Gretting!"
+              text="You didn't have no transactions record with yet now!"
+            />
           ) : (
             transactionList.map((transaction) => {
               const date = moment(transaction?.createdAt);

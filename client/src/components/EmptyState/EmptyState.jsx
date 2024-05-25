@@ -9,14 +9,14 @@ import {
 } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 
-function EmptyState({ showBtn = true, text }) {
+function EmptyState({ showBtn = true, text, title }) {
   const navigate = useNavigate();
 
   return (
-    <div className="flex items-center justify-center py-[150px]">
+    <div className="flex  items-center justify-center py-[150px]">
       <Card>
         <CardHeader>
-          <CardTitle>Greeting!</CardTitle>
+          <CardTitle>{title}</CardTitle>
           {/* <CardDescription>You didn't have no transactions record yet now.</CardDescription> */}
           <CardDescription>{text}</CardDescription>
         </CardHeader>

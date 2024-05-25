@@ -55,7 +55,10 @@ const Overview = () => {
   }
   if (summaryData?.data.length === 0)
     return (
-      <EmptyState text="You didn't have no transactions record with yet now!" />
+      <EmptyState
+        title="Gretting!"
+        text="You didn't have no transactions record with yet now!"
+      />
     );
 
   return (

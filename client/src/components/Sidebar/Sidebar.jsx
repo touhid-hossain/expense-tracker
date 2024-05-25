@@ -14,11 +14,13 @@ const Sidebar = () => {
     <div className="flex flex-shrink-0 flex-col items-center justify-between gap-20 w-[250px] px-5 py-8 h-screen sticky top-0 bg-zinc-800">
       {/* User */}
       <div className="flex flex-col gap-3 items-center">
-        <img
-          src={`http://localhost:5000/${user?.image_url}` || UserImg}
-          className="max-w-[120px] object-cover aspect-square  rounded-xl"
-          alt="user-image"
-        />
+        {user?.image_url && (
+          <img
+            src={`http://localhost:5000/${user.image_url}`}
+            className="max-w-[120px] object-cover aspect-square  rounded-xl"
+            alt="user-image"
+          />
+        )}
         <p className="text-white">Hello, {user?.name.split(" ")[0]}</p>
       </div>
 
