@@ -1,5 +1,4 @@
-import axios from "@/lib/axios";
-import { useEffect } from "react";
+import useDebounce from "@/hooks/useDebounce";
 import { createContext, useContext, useState } from "react";
 
 // Create Transaction Context
@@ -7,22 +6,21 @@ const TransactionContext = createContext();
 
 // TransactionProvider Component
 const TransactionProvider = ({ children }) => {
-  const [transactionList, setTransactionList] = useState([]);
-  const [summaryData, setSummaryData] = useState([]);
-  const [updatedTotalTransaction, setTotalTransactions] = useState(0);
-  const [currentTotalTransactions, setCurrentTotalTransactions] = useState(0);
-
-  const [time, setTime] = useState("yearly");
+  const PAGINATE_LIMIT = 2;
   const [type, setType] = useState("all");
+  const [filterType, setFilterType] = useState("all");
+  const [search, setSearch] = useState("");
+  const [time, setTime] = useState("yearly");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const fetchSummary = async () => {
-    const { data } = await axios.get(`/transaction/summary/${time}`);
-    setSummaryData(data?.data);
-  };
-  const fetchCurrentMonthTransactions = async () => {
-    const { data } = await axios.get("/transaction/currentMonth/transactions");
-    setCurrentTotalTransactions(data);
-  };
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const handleFilterType = (type) => setFilterType(type);
+  const handleSearch = (value) => setSearch(value);
+
+  const debouncedSearch = useDebounce(search, 1000, () => {
+    paginate(1);
+  });
+
   const handleTimeChange = (e) => {
     setTime(e);
   };
@@ -31,30 +29,18 @@ const TransactionProvider = ({ children }) => {
     setType(type);
   };
 
-  // sync our transaction local state with database
-  useEffect(() => {
-    const handleGetAllTransactions = async () => {
-      const { data, status } = await axios.get("/transaction");
-      if (status === 201) {
-        setTransactionList([...data.transactions, ...transactionList]);
-      }
-    };
-    handleGetAllTransactions();
-  }, []);
-
   const value = {
-    transactionList,
-    setTransactionList,
-    updatedTotalTransaction,
-    setTotalTransactions,
     time,
     type,
+    currentPage,
     handleTimeChange,
     handleTypeChange,
-    summaryData,
-    fetchSummary,
-    fetchCurrentMonthTransactions,
-    currentTotalTransactions,
+    paginate,
+    handleFilterType,
+    handleSearch,
+    filterType,
+    debouncedSearch,
+    PAGINATE_LIMIT,
   };
 
   return (

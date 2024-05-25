@@ -8,25 +8,24 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import React, { useEffect } from "react";
-import { useTransaction } from "@/provider/transactionProvider";
+import React from "react";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/EmptyState/EmptyState";
 import { useUser } from "@/hooks/useUser";
+import useSWR from "swr";
+import usePagination from "@/hooks/usePagination";
 
 const RecentTransactions = () => {
   const { user } = useUser();
-  const {
-    fetchCurrentMonthTransactions,
-    currentTotalTransactions,
-    transactionList,
-  } = useTransaction();
+  const { data: currentTotalTransactions } = useSWR(
+    "/transaction/currentMonth/transactions"
+  );
+  const { transactionList, isLoading } = usePagination({
+    currentPage: 1,
+    limit: 8,
+  });
 
-  const limit = 8;
-
-  useEffect(() => {
-    fetchCurrentMonthTransactions();
-  }, []);
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <Card className="w-full flex flex-col xl:w-[40%] mt-10">
@@ -37,16 +36,19 @@ const RecentTransactions = () => {
             You made {currentTotalTransactions} transactions this month.
           </CardDescription>
         </div>
-        <Button variant="outline">
+        <Button asChild variant="outline">
           <Link to="/transaction"> View All</Link>
         </Button>
       </CardHeader>
       <CardContent>
         <div className="space-y-8">
           {transactionList.length === 0 ? (
-            <EmptyState />
+            <EmptyState
+              title="Gretting!"
+              text="You didn't have no transactions record with yet now!"
+            />
           ) : (
-            transactionList.slice(0, limit).map((transaction) => {
+            transactionList.map((transaction) => {
               const date = moment(transaction?.createdAt);
               const formattedTransactionDate = date.format("MMM D - h.mm a");
               return (

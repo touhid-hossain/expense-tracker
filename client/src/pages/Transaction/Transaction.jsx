@@ -1,29 +1,29 @@
-import React, { useState, useEffect } from "react";
-import TransactionList from "./components/TransactionList";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import TransactionForm from "./components/TransactionForm";
-import { Search, X } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useTransaction } from "@/provider/transactionProvider";
-import axios from "@/lib/axios";
-import { useDebounce } from "@/lib/utils";
+import { X } from "lucide-react";
 import TransactionPagination from "./components/TransactionPagination";
+import TransactionForm from "./components/TransactionForm";
+import TransactionList from "./components/TransactionList";
+import { useTransaction } from "@/provider/transactionProvider";
+import TransactionFilter from "./components/TransactionFilter";
+import usePagination from "@/hooks/usePagination";
 
 const Transaction = () => {
-  const { setTransactionList, updatedTotalTransaction } =
-    useTransaction([]);
-  const [type, setType] = useState("all");
-  const [totalTransactions, setTotalTransactions] = useState(0);
-  const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const debouncedValue = useDebounce(search, 300);
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const { currentPage, debouncedSearch, filterType, PAGINATE_LIMIT } =
+    useTransaction();
+
+  const { totalPages, pagesToShow, totalTransactions, isLoading } =
+    usePagination({
+      currentPage,
+      limit: PAGINATE_LIMIT,
+      filterOptions: { type: filterType, search: debouncedSearch },
+    });
 
   //  open/close transaction form
   const toggleTransactionForm = () =>
@@ -31,38 +31,10 @@ const Transaction = () => {
   const toggleEditForm = () => setIsEditMode((prevState) => !prevState);
 
   // selected transaction handler
-  const handleSelectUpdateTransaction = (t) => {
+  const handleSelectUpdateTransaction = (t, isOpenDialog = true) => {
     setSelectedTransaction(t);
-    toggleEditForm();
+    isOpenDialog && toggleEditForm();
   };
-
-  const limit = 8;
-  const totalPages = Math.ceil(totalTransactions / limit);
-  const pagesToShow = totalPages > 5 ? 5 : totalPages;
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  const debouncedSearch = async () => {
-    //Filtering the all exercises according to the searchTerm
-    const response = await axios.get("/transaction", {
-      params: {
-        search,
-        type,
-        page: currentPage,
-        limit,
-      },
-    });
-    setTransactionList(response?.data?.transactions);
-    setTotalTransactions(response?.data?.totalTransactions);
-  };
-
-  // HANDLING WHEN SEARCH TERM  CHANGES
-  useEffect(() => {
-    const handleSearch = debouncedSearch;
-    handleSearch();
-    return () => clearTimeout(debouncedSearch);
-  }, [debouncedValue, currentPage, type, updatedTotalTransaction]);
-
-  // modal close function
 
   return (
     <Card className="mt-10 h-[85vh] flex flex-col justify-between">
@@ -77,49 +49,23 @@ const Transaction = () => {
               >
                 Add new +
               </Button>
-            </div>
-            <div className="w-[300px] relative">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search"
-                className="pl-8"
-              />
-              {/* Filter Transaction List */}
-              <div className="flex justify-end gap-3 mt-3">
-                <Label>Sort By :</Label>
-                <RadioGroup
-                  onValueChange={setType}
-                  defaultValue={type}
-                  className="flex"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="all"
-                      id="r1"
-                      checked={type === "all"}
-                    />
-                    <Label htmlFor="r1">All</Label>
+              <div className="mt-2">
+                {isLoading ? (
+                  <Skeleton className="h-4 w-[200px]" />
+                ) : (
+                  // <p>Loading...</p>
+                  <div>
+                    <p>
+                      {`${totalTransactions} ${
+                        totalTransactions > 1 ? "transactions" : "transaction"
+                      } found`}
+                    </p>
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="income"
-                      id="r2"
-                      checked={type === "income"}
-                    />
-                    <Label htmlFor="r2">Income</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem
-                      value="expense"
-                      id="r3"
-                      checked={type === "expense"}
-                    />
-                    <Label htmlFor="r3">Expense</Label>
-                  </div>
-                </RadioGroup>
+                )}
               </div>
             </div>
+            {/* Transaction filter component load here */}
+            <TransactionFilter />
           </div>
         </CardHeader>
         <CardContent>
@@ -136,20 +82,29 @@ const Transaction = () => {
                 toggleTransactionForm={toggleTransactionForm}
                 toggleEditForm={toggleEditForm}
                 selectedTransaction={selectedTransaction}
+                handleSelectUpdateTransaction={handleSelectUpdateTransaction}
               />
             </DialogContent>
           </Dialog>
           <TransactionList
             handleSelectUpdateTransaction={handleSelectUpdateTransaction}
+            selectedTransaction={selectedTransaction}
+            currentPage={currentPage}
           />
+          {/*Rendered Next page */}
+          <div className="hidden">
+            <TransactionList
+              handleSelectUpdateTransaction={handleSelectUpdateTransaction}
+              selectedTransaction={selectedTransaction}
+              currentPage={totalPages !== currentPage ? currentPage + 1 : 1}
+            />
+          </div>
         </CardContent>
       </div>
       {/* Pagination */}
       <TransactionPagination
-        currentPage={currentPage}
         pagesToShow={pagesToShow}
         totalPages={totalPages}
-        paginate={paginate}
       />
     </Card>
   );

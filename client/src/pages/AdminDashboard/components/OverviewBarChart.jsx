@@ -1,11 +1,11 @@
 import EmptyState from "@/components/EmptyState/EmptyState";
 import { useTransaction } from "@/provider/transactionProvider";
-import React, { useEffect, useState } from "react";
+import useSWR from "swr";
+import React from "react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
-  LabelList,
   Legend,
   ResponsiveContainer,
   Tooltip,
@@ -14,12 +14,8 @@ import {
 } from "recharts";
 
 const Overview = () => {
-  const { time, type, summaryData, fetchSummary, transactionList } =
-    useTransaction();
-
-  useEffect(() => {
-    fetchSummary();
-  }, [time]);
+  const { time, type } = useTransaction();
+  const { data: summaryData } = useSWR(`/transaction/summary/${time}`);
 
   const renderCustomizedLabel = (props) => {
     const { x, y, width, height, value } = props;
@@ -57,12 +53,18 @@ const Overview = () => {
         return null;
     }
   }
-  if (transactionList.length === 0) return <EmptyState />;
+  if (summaryData?.data.length === 0)
+    return (
+      <EmptyState
+        title="Gretting!"
+        text="You didn't have no transactions record with yet now!"
+      />
+    );
 
   return (
     <div>
       <ResponsiveContainer width="100%" height={350}>
-        <BarChart barGap={2} barSize={60} data={summaryData}>
+        <BarChart barGap={2} barSize={60} data={summaryData?.data}>
           <XAxis
             dataKey={time === "yearly" ? "month" : "day"}
             stroke="#888888"

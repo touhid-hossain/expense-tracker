@@ -51,7 +51,6 @@ const AuthProvider = ({ children }) => {
         cb();
       }
     } catch (error) {
-      console.log(error);
       toast({
         title: error.response.data.message,
         variant: "destructive",

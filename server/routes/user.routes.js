@@ -4,7 +4,6 @@ const userController = require("../controllers/user.controllers");
 const { verifyToken } = require("../middlewares/authMiddleware");
 const upload = require("../middlewares/uploadMiddleware");
 
-
 // // Route for getting a single user by id
 // router.get("/:id", userController.getUserById);
 

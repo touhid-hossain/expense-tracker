@@ -102,17 +102,19 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
         formData.append("image", imageFile);
       }
 
-      const response = await axios.put("/user", formData, {
+      const { data } = await axios.put("/user", formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Required for file uploads
         },
       });
 
-      // re-validate user info
-      userMutate();
+      // mutate user info
+      userMutate(async (user) => ({ ...user, ...data?.user }), {
+        revalidate: false,
+      });
 
       toast({
-        title: response?.data?.message,
+        title: data?.message,
         variant: "success",
       });
 

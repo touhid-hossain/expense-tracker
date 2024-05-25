@@ -1,7 +1,10 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useUser } from "@/hooks/useUser";
 
 function TCard({ title, details }) {
+  const { user } = useUser();
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -21,7 +24,10 @@ function TCard({ title, details }) {
         </svg>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">{details.value}$</div>
+        <div className="text-2xl font-bold">
+          {details.value}
+          {user?.currency?.sign}
+        </div>
         <p className="text-xs text-muted-foreground">{details.percentage}</p>
       </CardContent>
     </Card>

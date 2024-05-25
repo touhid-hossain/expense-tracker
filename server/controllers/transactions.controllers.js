@@ -67,16 +67,16 @@ const getAllTransaction = async (req, res) => {
       // only search
       query.name = { $regex: search, $options: "i" };
     }
-    const userTransactions = await Transaction.find(query)
+    const transactions = await Transaction.find(query)
       .skip(skip)
       .limit(limit)
       .sort({ createdAt: -1 }); // sort by createdAt in descending order
-    // Set totalTransactions
     const totalTransactions = await Transaction.countDocuments(query);
-    // console.log('sending transactions value in get function',totalTransactions)
+
+    // Set totalTransactions
     res.status(201).json({
-      transactions: userTransactions,
-      totalTransactions: totalTransactions,
+      transactions,
+      totalTransactions,
     });
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -141,7 +141,7 @@ const getTransactionDetails = async (req, res) => {
 
     // //  ==> Case 2
     if (currentMonthData.length > 0 && lastMonthData.length <= 0) {
-      const percentage = calculatePercentage(0, null)
+      const percentage = calculatePercentage(0, null);
       // some staff..
       return responseHandler({
         res,
@@ -184,7 +184,6 @@ const getTransactionDetails = async (req, res) => {
 
     // //  ==> Case 4
     if (currentMonthData.length > 0 && lastMonthData.length > 0) {
-
       return responseHandler({
         res,
         message: {

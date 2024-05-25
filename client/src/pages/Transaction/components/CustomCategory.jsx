@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogClose,
@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "@/lib/axios";
+import { useSWRConfig } from "swr";
 
 // Transaction form schema
 const newTransactionFormSchema = z.object({
@@ -29,13 +30,7 @@ const newTransactionFormSchema = z.object({
   }),
 });
 
-const CustomCategory = ({
-  transactionType,
-  open,
-  setOpen,
-  categoryList,
-  setCategoryList,
-}) => {
+const CustomCategory = ({ transactionType }) => {
   const form = useForm({
     resolver: zodResolver(newTransactionFormSchema),
     defaultValues: {
@@ -43,22 +38,32 @@ const CustomCategory = ({
     },
   });
 
-  const customTransaction = async (values) => {
-    console.log("Created New Category", values);
+  const [openCustomCategory, setOpenCustomCategory] = useState(false);
+  const { mutate } = useSWRConfig();
 
+  const customTransaction = async (values) => {
     const { data: newData } = await axios.post("/category/create", {
       name: values.transactionName,
       type: transactionType,
     });
 
-    setCategoryList([newData?.category, ...categoryList]);
-    setOpen(false);
+    mutate(
+      `/category/?type=${transactionType}`,
+      async (data) => {
+        return {
+          ...data,
+          categories: [newData?.category, ...data?.categories],
+        };
+      },
+      { revalidate: false }
+    );
+    setOpenCustomCategory(false);
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog open={openCustomCategory}>
       <DialogTrigger asChild>
-        <Button variant="outline" onClick={() => setOpen(true)}>
+        <Button variant="outline" onClick={() => setOpenCustomCategory(true)}>
           + Add new category
         </Button>
       </DialogTrigger>
@@ -90,7 +95,7 @@ const CustomCategory = ({
                   <DialogFooter className="sm:justify-start ">
                     <DialogClose asChild>
                       <Button
-                        onClick={() => setOpen(false)}
+                        onClick={() => setOpenCustomCategory(false)}
                         type="button"
                         variant="destructive"
                       >

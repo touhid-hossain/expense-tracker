@@ -8,15 +8,13 @@ import {
   PaginationEllipsis,
   PaginationContent,
 } from "@/components/ui/pagination";
+import { useTransaction } from "@/provider/transactionProvider";
 
-const TransactionPagination = ({ currentPage, totalPages, pagesToShow, paginate }) => {
+const TransactionPagination = ({ totalPages, pagesToShow }) => {
+  const { currentPage, paginate } = useTransaction();
+
   return (
-    <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages}
-      pagesToShow={pagesToShow}
-      className="mb-3 cursor-pointer"
-    >
+    <Pagination className="mb-3 cursor-pointer">
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
@@ -37,8 +35,11 @@ const TransactionPagination = ({ currentPage, totalPages, pagesToShow, paginate 
               page <= currentPage + Math.floor(pagesToShow / 2))
           ) {
             return (
-              <PaginationItem key={page} active={page === currentPage}>
-                <PaginationLink onClick={() => paginate(page)}>
+              <PaginationItem key={page}>
+                <PaginationLink
+                  isActive={page === currentPage}
+                  onClick={() => paginate(page)}
+                >
                   {page}
                 </PaginationLink>
               </PaginationItem>
@@ -49,7 +50,7 @@ const TransactionPagination = ({ currentPage, totalPages, pagesToShow, paginate 
             return <PaginationEllipsis key={`ellipsis-${page}`} />;
           }
 
-          return null;
+          return <h1>Loading...</h1>;
         })}
 
         <PaginationItem>
