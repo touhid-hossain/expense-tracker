@@ -17,13 +17,18 @@ router.get("/", verifyToken, userController.getUser);
 router.post("/authenticate", userController.authenticate);
 
 // Route for updating a user
-router.put("/:id", userController.updateUser);
+// router.put("/:id", userController.updateUser);
 
 // Route for deleting a user
 router.delete("/:id", userController.deleteUser);
 
 // Route for updating a user // Upload Image Route
-router.put("/", verifyToken, upload.single("image"), userController.updateUser);
+router.put(
+  "/:id",
+  verifyToken,
+  upload.single("image"),
+  userController.updateUser
+);
 
 // Routes for getting all users
 router.get("/all", verifyToken, userController.getAllUsers);
