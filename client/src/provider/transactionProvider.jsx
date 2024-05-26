@@ -6,7 +6,6 @@ const TransactionContext = createContext();
 
 // TransactionProvider Component
 const TransactionProvider = ({ children }) => {
-  const PAGINATE_LIMIT = 2;
   const [type, setType] = useState("all");
   const [filterType, setFilterType] = useState("all");
   const [search, setSearch] = useState("");
@@ -40,7 +39,6 @@ const TransactionProvider = ({ children }) => {
     handleSearch,
     filterType,
     debouncedSearch,
-    PAGINATE_LIMIT,
   };
 
   return (

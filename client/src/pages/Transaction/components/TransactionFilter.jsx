@@ -5,15 +5,20 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTransaction } from "@/provider/transactionProvider";
 
-function TransactionFilter() {
+function TransactionFilter({ totalTransactions }) {
   const { paginate, handleSearch, search, handleFilterType, filterType } =
     useTransaction();
+
   return (
     <div className="w-[300px] relative">
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
       <Input
         onChange={(e) => handleSearch(e.target.value)}
-        placeholder="Search"
+        placeholder={
+          !totalTransactions
+            ? "Loading..."
+            : `${totalTransactions} Search result...`
+        }
         className="pl-8"
         value={search}
       />
