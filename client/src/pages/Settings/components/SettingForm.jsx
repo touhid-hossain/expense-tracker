@@ -132,7 +132,7 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
           src={
             imageFile
               ? URL.createObjectURL(imageFile)
-              : `http://localhost:5000/${user?.image_url}`
+              : `https://expense-tracker-tzs.vercel.app/${user?.image_url}`
           }
         />
         <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
