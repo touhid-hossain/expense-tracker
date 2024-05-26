@@ -31,7 +31,7 @@ const InnerNavbar = () => {
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="absolute h-8 w-8 ">
               <AvatarImage
-                src={`http://localhost:5000/${user?.image_url}`}
+                src={`https://expense-tracker-tzs.vercel.app/${user?.image_url}`}
                 alt="profile picture"
                 className="rounded-full"
               />

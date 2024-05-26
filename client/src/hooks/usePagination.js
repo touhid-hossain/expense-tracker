@@ -1,7 +1,7 @@
 import useSWR from "swr";
 
 function usePagination({ currentPage, limit, filterOptions }) {
-  let PAGINATE_LIMIT = limit ? limit : 2;
+  let PAGINATE_LIMIT = limit ? limit : 8;
 
   const getPaginateKey = () => {
     if (filterOptions) {

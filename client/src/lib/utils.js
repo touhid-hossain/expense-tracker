@@ -18,13 +18,3 @@ export function getInitials(name) {
 
   return initials;
 }
-
-const PAGE_SIZE = 6;
-
-const getKey = (pageIndex, previousPageData, repo, pageSize) => {
-  if (previousPageData && !previousPageData.length) return null; // reached the end
-
-  return `https://api.github.com/repos/${repo}/issues?per_page=${pageSize}&page=${
-    pageIndex + 1
-  }`;
-};

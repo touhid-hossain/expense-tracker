@@ -67,7 +67,7 @@ const TransactionList = ({
             <div className="h-9 w-9 rounded-full overflow-hidden">
               <img
                 className="h-full w-full object-cover"
-                src={`http://localhost:5000/${user?.image_url}`}
+                src={`https://expense-tracker-tzs.vercel.app/${user?.image_url}`}
                 alt="Avatar"
               />
             </div>
