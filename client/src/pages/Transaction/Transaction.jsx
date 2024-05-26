@@ -15,13 +15,11 @@ const Transaction = () => {
   const [transactionFormOpen, setTransactionFormOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const { currentPage, debouncedSearch, filterType, PAGINATE_LIMIT } =
-    useTransaction();
+  const { currentPage, debouncedSearch, filterType } = useTransaction();
 
   const { totalPages, pagesToShow, totalTransactions, isLoading } =
     usePagination({
       currentPage,
-      limit: PAGINATE_LIMIT,
       filterOptions: { type: filterType, search: debouncedSearch },
     });
 
@@ -65,7 +63,7 @@ const Transaction = () => {
               </div>
             </div>
             {/* Transaction filter component load here */}
-            <TransactionFilter />
+            <TransactionFilter totalTransactions={totalTransactions} />
           </div>
         </CardHeader>
         <CardContent>

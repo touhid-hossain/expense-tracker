@@ -31,11 +31,10 @@ const TransactionList = ({
   const { user } = useUser();
   const [confirmDeleteTransaction, setConfirmDeleteTransaction] =
     useState(false);
-  const { filterType, debouncedSearch, PAGINATE_LIMIT } = useTransaction();
+  const { filterType, debouncedSearch } = useTransaction();
 
   const { transactionList, isLoading, totalTransactions } = usePagination({
     currentPage,
-    limit: PAGINATE_LIMIT,
     filterOptions: { type: filterType, search: debouncedSearch },
   });
 
