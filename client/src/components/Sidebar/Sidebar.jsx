@@ -15,7 +15,7 @@ const Sidebar = () => {
       <div className="flex flex-col gap-3 items-center">
         {user?.image_url && (
           <img
-            src={`http://localhost:5000/${user.image_url}`}
+            src={`https://expense-tracker-tzs.vercel.app/${user.image_url}`}
             className="max-w-[120px] object-cover aspect-square  rounded-xl"
             alt="user-image"
           />

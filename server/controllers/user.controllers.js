@@ -132,15 +132,8 @@ exports.updateUser = async (req, res) => {
     }
 
     if (req.file) {
-      user.image_url = req.file.destination + req.file.originalname;
+      user.image_url = req.file.destination + req.file.filename;
     }
-
-    // // Image Url
-    // if (req.file) {
-    //   if (user.image_url) {
-    //     await deleteFile(user.image_url);
-    //   }
-    // }
 
     if (req.body.password && req.body.newPassword) {
       const passwordMatched = await bcrypt.compare(
