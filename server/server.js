@@ -19,14 +19,14 @@ app.use(express.json());
 // database connect
 connectDB();
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 // Application Level  Middleware pattern
 app.use("/api/v1/user", userRoutes);
 // Transaction middleware pattern
 app.use("/api/v1/transaction", transactionRoutes);
 // Category middleware pattern
 app.use("/api/v1/category", categoryRoutes);
-
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (req, res) => {
   res.send("Express on Vercel");
@@ -35,6 +35,14 @@ app.get("/", (req, res) => {
 // Server Start
 app.listen(PORT, () => {
   console.log(`server is running http://localhost:${PORT}`);
+});
+
+// Error Handling
+app.use((err, req, res, next) => {
+  if (err) {
+    res.status(err.status).json({ message: "Something went wrong!!" });
+  }
+  console.log(err);
 });
 
 // Export app object

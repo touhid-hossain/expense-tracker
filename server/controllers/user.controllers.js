@@ -131,13 +131,16 @@ exports.updateUser = async (req, res) => {
       user.email = req.body.email;
     }
 
-    // Image Url
     if (req.file) {
-      if (user.image_url) {
-        await deleteFile(user.image_url);
-      }
-      user.image_url = req.file.path;
+      user.image_url = req.file.destination + req.file.originalname;
     }
+
+    // // Image Url
+    // if (req.file) {
+    //   if (user.image_url) {
+    //     await deleteFile(user.image_url);
+    //   }
+    // }
 
     if (req.body.password && req.body.newPassword) {
       const passwordMatched = await bcrypt.compare(
@@ -154,13 +157,6 @@ exports.updateUser = async (req, res) => {
     }
 
     const updatedUser = await user.save();
-
-    // EXCLUDE THE hashed_password FIELD FROM THE RESPONSE
-    updatedUser.toJSON = function () {
-      const obj = this.toObject();
-      delete obj.hashed_password;
-      return obj;
-    };
 
     res
       .status(200)

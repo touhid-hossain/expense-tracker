@@ -31,7 +31,7 @@ const useTransactionForm = ({
 }) => {
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
 
-  const { totalIncome, totalExpense } = useGetTotal();
+  const { totalIncome, totalExpense, available } = useGetTotal();
   const { updateTransactionMutation } = useSWRTransaction();
   const { mutate } = useSWRConfig();
 
@@ -70,7 +70,7 @@ const useTransactionForm = ({
   const createNewTransaction = async (values) => {
     if (transactionType === "expense") {
       const newExpense = +values.transactionAmount;
-      if (totalIncome < newExpense) {
+      if (available < newExpense) {
         return setIsOpenErrorPopUp(true);
       }
     }
@@ -92,7 +92,7 @@ const useTransactionForm = ({
       // Expense value increase/decrease
       const newExpense = +values.transactionAmount;
 
-      if (totalIncome < newExpense) {
+      if (available < newExpense) {
         return setIsOpenErrorPopUp(true);
       }
       //  Income => Expense Transformation

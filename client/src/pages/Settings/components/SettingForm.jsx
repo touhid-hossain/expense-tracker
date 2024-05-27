@@ -102,7 +102,7 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
         formData.append("image", imageFile);
       }
 
-      const { data } = await axios.put("/user", formData, {
+      const { data } = await axios.put(`/user/${user._id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data", // Required for file uploads
         },
@@ -152,7 +152,8 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
               <FormControl>
                 <Input
                   className="cursor-pointer"
-                  id="image"
+                  // id="image"
+                  name="image"
                   type="file"
                   {...field}
                   onChange={(event) => {
