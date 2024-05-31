@@ -16,6 +16,28 @@ const TransactionProvider = ({ children }) => {
   const handleFilterType = (type) => setFilterType(type);
   const handleSearch = (value) => setSearch(value);
 
+  const [transactionFormOpen, setTransactionFormOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
+
+  //  open/close transaction form
+  const toggleTransactionForm = () =>
+    setTransactionFormOpen((prevState) => !prevState);
+  const toggleEditForm = () => setIsEditMode((prevState) => !prevState);
+
+  // selected transaction handler
+  const handleSelectUpdateTransaction = (t, isOpenDialog = true) => {
+    setSelectedTransaction(t);
+    isOpenDialog && toggleEditForm();
+  };
+
+  // toggle erorr dialog
+  const handleToggleErrorDialog = () =>
+    setIsOpenErrorPopUp((prevState) => !prevState);
+
+  const openErrorDialog = () => setIsOpenErrorPopUp(true);
+
   const debouncedSearch = useDebounce(search, 1000, () => {
     paginate(1);
   });
@@ -31,14 +53,23 @@ const TransactionProvider = ({ children }) => {
   const value = {
     time,
     type,
+    isEditMode,
+    filterType,
     currentPage,
+    debouncedSearch,
+    isOpenErrorPopUp,
+    selectedTransaction,
+    transactionFormOpen,
+    paginate,
+    handleSearch,
     handleTimeChange,
     handleTypeChange,
-    paginate,
     handleFilterType,
-    handleSearch,
-    filterType,
-    debouncedSearch,
+    toggleEditForm,
+    openErrorDialog,
+    toggleTransactionForm,
+    handleToggleErrorDialog,
+    handleSelectUpdateTransaction,
   };
 
   return (

@@ -21,7 +21,7 @@ const RecentTransactions = () => {
     "/transaction/currentMonth/transactions"
   );
   const { transactionList, isLoading } = usePagination({
-    currentPage: 1,
+    isPageOne: true,
     limit: 8,
   });
 

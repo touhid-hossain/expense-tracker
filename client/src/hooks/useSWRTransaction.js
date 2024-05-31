@@ -1,8 +1,10 @@
 import axios from "@/lib/axios";
 import { toast } from "@/components/ui/use-toast";
 import { useSWRConfig } from "swr";
+import { useTransaction } from "@/provider/transactionProvider";
 
 function useSWRTransaction() {
+  const { toggleEditForm, handleSelectUpdateTransaction } = useTransaction();
   const { mutate } = useSWRConfig();
 
   const deleteTransaction = async (id) => {
@@ -28,7 +30,7 @@ function useSWRTransaction() {
 
   const updateTransactionMutation = async (updatedTransaction) => {
     try {
-      mutate(
+      await mutate(
         (key) =>
           typeof key === "string" && key.startsWith("/transaction?page="),
         // It's occur remote mutation and update the local cache
@@ -55,6 +57,8 @@ function useSWRTransaction() {
           revalidate: true,
         }
       );
+      toggleEditForm();
+      handleSelectUpdateTransaction(null, false);
       toast({
         title: "Transaction Updated Successfully",
         variant: "success",

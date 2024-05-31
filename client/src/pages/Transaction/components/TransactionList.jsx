@@ -1,15 +1,5 @@
 import React, { useState } from "react";
-import moment from "moment";
-import { RiDeleteBin6Line } from "react-icons/ri";
-import { BiEditAlt } from "react-icons/bi";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import EmptyState from "@/components/EmptyState/EmptyState";
-import { useUser } from "@/hooks/useUser";
 import useSWRTransaction from "@/hooks/useSWRTransaction";
 import {
   Dialog,
@@ -21,31 +11,25 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import { useTransaction } from "@/provider/transactionProvider";
 import usePagination from "@/hooks/usePagination";
+import { Skeleton } from "@/components/ui/skeleton";
+import TransactionCard from "./TransactionCard";
 
-const TransactionList = ({
-  handleSelectUpdateTransaction,
-  selectedTransaction: selectedId,
-  search,
-  currentPage,
-}) => {
-  const { user } = useUser();
+const TransactionList = ({ isNextPage }) => {
   const [confirmDeleteTransaction, setConfirmDeleteTransaction] =
     useState(false);
   const { filterType, debouncedSearch } = useTransaction();
 
-  const { transactionList, isLoading, totalTransactions } = usePagination({
-    currentPage,
-    filterOptions: { type: filterType, search: debouncedSearch },
+  const { transactionList, isPaginateLoading } = usePagination({
+    isNextPage,
   });
 
   // toggle delete dialog
   const handleOpenDeleteDialog = () => setConfirmDeleteTransaction(true);
   const handleCloseDeleteDialog = () => setConfirmDeleteTransaction(false);
 
-  if (isLoading) return <h1>Loading...</h1>;
-
   let errorContent;
-  if (!totalTransactions || !transactionList.length) {
+
+  if (!transactionList.length) {
     errorContent = (
       <EmptyState
         title="No transactions found"
@@ -55,100 +39,40 @@ const TransactionList = ({
     );
   }
 
+  if (isPaginateLoading) {
+    return <Skeleton className="h-8 w-full" />;
+  }
+
   return (
     <div className="space-y-8">
       {errorContent}
-      {transactionList?.map((transaction) => {
-        const date = moment(transaction?.createdAt);
-        const formattedTransactionDate = date.format("MMM D - h.mm a");
-
-        return (
-          <div key={transaction?._id} className="flex items-center">
-            <div className="h-9 w-9 rounded-full overflow-hidden">
-              <img
-                className="h-full w-full object-cover"
-                src={`https://expense-tracker-tzs.vercel.app/${user?.image_url}`}
-                alt="Avatar"
-              />
-            </div>
-            <div className="ml-4 space-y-1">
-              <p className="text-sm font-medium leading-none">
-                {transaction?.name}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {formattedTransactionDate}
-              </p>
-            </div>
-            <div className="ml-auto font-medium">
-              {transaction?.type === "income" ? "+" : "-"} $
-              {transaction?.amount}
-            </div>
-            <div className="flex gap-2 pl-10">
-              {/* on-hover edit tooltip */}
-              <TooltipProvider delayDuration={150}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <BiEditAlt
-                        onClick={() =>
-                          handleSelectUpdateTransaction(transaction)
-                        }
-                        className="text-sky-600 cursor-pointer"
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Edit</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              {/* on-hover delete tooltip */}
-              <TooltipProvider delayDuration={150}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div>
-                      <RiDeleteBin6Line
-                        onClick={() => {
-                          handleOpenDeleteDialog();
-                          handleSelectUpdateTransaction(transaction._id, false);
-                        }}
-                        className="text-red-500 cursor-pointer"
-                      />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Delete</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
-        );
-      })}
-      {
-        ///* Confirm delete transaction component */
-        <DeleteTransactionForm
-          confirmDelete={confirmDeleteTransaction}
-          handleCloseDeleteDialog={handleCloseDeleteDialog}
-          handleSelectUpdateTransaction={handleSelectUpdateTransaction}
-          selectedId={selectedId}
-          transactionList={transactionList}
+      {transactionList.map((transaction) => (
+        <TransactionCard
+          key={transaction._id}
+          transaction={transaction}
+          handleOpenDeleteDialog={handleOpenDeleteDialog}
         />
-      }
+      ))}
+
+      {/* Confirm delete transaction component */}
+      <DeleteTransactionForm
+        confirmDelete={confirmDeleteTransaction}
+        handleCloseDeleteDialog={handleCloseDeleteDialog}
+      />
     </div>
   );
 };
 
 // Delete transaction Dialog
-const DeleteTransactionForm = ({
-  confirmDelete,
-  handleCloseDeleteDialog,
-  handleSelectUpdateTransaction,
-  selectedId,
-  transactionList,
-}) => {
+const DeleteTransactionForm = ({ confirmDelete, handleCloseDeleteDialog }) => {
   const { deleteTransaction } = useSWRTransaction();
-  const { currentPage, paginate } = useTransaction();
+  const {
+    currentPage,
+    paginate,
+    handleSelectUpdateTransaction,
+    selectedTransaction,
+  } = useTransaction();
+  const { transactionList } = usePagination();
 
   return (
     <Dialog open={confirmDelete} className="bg-black/20">
@@ -169,7 +93,7 @@ const DeleteTransactionForm = ({
             type="button"
             variant="destructive"
             onClick={() => {
-              deleteTransaction(selectedId);
+              deleteTransaction(selectedTransaction._id);
               if (transactionList.length === 1 && currentPage > 1) {
                 paginate(currentPage - 1);
               }
