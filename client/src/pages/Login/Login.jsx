@@ -30,9 +30,11 @@ const loginFormSchema = z.object({
 });
 
 const Login = () => {
-  const { token, login } = useAuth();
+  const { token, login, isLoading } = useAuth();
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
+
+  const buttonText = isLoading ? "Please wait" : "Log In";
 
   useEffect(() => {
     if (token) {
@@ -42,10 +44,6 @@ const Login = () => {
 
   const form = useForm({
     resolver: zodResolver(loginFormSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
   });
 
   return (
@@ -58,7 +56,9 @@ const Login = () => {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit((values) =>
-                login({...values, rememberMe}, () => navigate("/", { replace: true }))
+                login({ ...values, rememberMe }, () =>
+                  navigate("/", { replace: true })
+                )
               )}
             >
               <FormField
@@ -107,13 +107,13 @@ const Login = () => {
               </div>
 
               <Button className="mt-5 w-full" type="submit">
-                Log In
-              </Button>
-              <Button variant="outline" className="mt-5 w-full" type="submit">
-                Log In with Google
+                {buttonText}
               </Button>
             </form>
           </Form>
+          <Button variant="outline" className="mt-5 w-full" type="submit">
+            Log In with Google
+          </Button>
           <div className="mt-8 text-center">
             <p className="text-slate-400">
               Don't have an account?

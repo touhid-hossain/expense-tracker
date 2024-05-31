@@ -13,10 +13,13 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Overview = () => {
   const { time, type } = useTransaction();
-  const { data: summaryData } = useSWR(`/transaction/summary/${time}`);
+  const { data: summaryData, isLoading } = useSWR(
+    `/transaction/summary/${time}`
+  );
 
   const renderCustomizedLabel = (props) => {
     const { x, y, width, height, value } = props;
@@ -54,34 +57,38 @@ const Overview = () => {
         return null;
     }
   }
-  if (summaryData?.data.length === 0)
-    return (
-      <EmptyState
-        title="Gretting!"
-        text="You didn't have no transactions record with yet now!"
-      />
-    );
+
+  if (isLoading) {
+    return <Skeleton className="w-[940px] h-[400px]" />;
+  }
 
   return (
     <div>
-      <ResponsiveContainer width="100%" height={350}>
-        <BarChart barGap={2} barSize={60} data={summaryData?.data}>
-          <XAxis dataKey={time === "yearly" ? "month" : "day"}>
-            {time === "monthly" && (
-              <Label
-                value={summaryData?.data[0].month}
-                offset={-40}
-                position="left"
-              />
-            )}
-          </XAxis>
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <CartesianGrid strokeDasharray="3 3" />
-          {renderBar()}
-        </BarChart>
-      </ResponsiveContainer>
+      {summaryData?.data.length === 0 ? (
+        <EmptyState
+          title="Gretting!"
+          text="You didn't have no transactions record with yet now!"
+        />
+      ) : (
+        <ResponsiveContainer width="100%" height={350}>
+          <BarChart barGap={2} barSize={60} data={summaryData.data}>
+            <XAxis dataKey={time === "yearly" ? "month" : "day"}>
+              {time === "monthly" && (
+                <Label
+                  value={summaryData.data[0].month}
+                  offset={-40}
+                  position="left"
+                />
+              )}
+            </XAxis>
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <CartesianGrid strokeDasharray="3 3" />
+            {renderBar()}
+          </BarChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };

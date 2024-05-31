@@ -4,24 +4,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useTransaction } from "@/provider/transactionProvider";
+import usePagination from "@/hooks/usePagination";
 
-function TransactionFilter({ totalTransactions }) {
+function TransactionFilter() {
   const { paginate, handleSearch, search, handleFilterType, filterType } =
     useTransaction();
+
+  const { totalTransactions, isPaginateLoading } = usePagination();
 
   return (
     <div className="w-[300px] relative">
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-      <Input
-        onChange={(e) => handleSearch(e.target.value)}
-        placeholder={
-          !totalTransactions
-            ? "Loading..."
-            : `${totalTransactions} Search result...`
-        }
-        className="pl-8"
-        value={search}
-      />
+
+      <div>
+        <Input
+          onChange={(e) => handleSearch(e.target.value)}
+          placeholder={`${totalTransactions} Search result...`}
+          className="pl-8"
+          value={search}
+        />
+      </div>
       {/* Filter Transaction List */}
       <div className="flex justify-end gap-3 mt-3">
         <Label>Sort By :</Label>

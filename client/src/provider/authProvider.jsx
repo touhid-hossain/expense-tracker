@@ -8,6 +8,7 @@ const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
   const [token, setToken_] = useState(localStorage.getItem("token") || null);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
   const setToken = (newToken) => {
@@ -35,22 +36,25 @@ const AuthProvider = ({ children }) => {
 
   const login = async (values, cb) => {
     try {
+      // set loading true
+      setIsLoading(true);
+
       const response = await axios.post("/user/authenticate", {
         email: values.email,
         password: values.password,
         rememberMe: values.rememberMe,
       });
-      if (response.status === 200) {
-        toast({
-          title: "Successfully Logged In",
-          variant: "success",
-        });
-        const token = response.data.token;
-        setToken(token);
+      toast({
+        title: "Successfully Logged In",
+        variant: "success",
+      });
+      setIsLoading(false);
+      const token = response.data.token;
+      setToken(token);
 
-        cb();
-      }
+      cb();
     } catch (error) {
+      setIsLoading(false);
       toast({
         title: error.response.data.message,
         variant: "destructive",
@@ -60,20 +64,23 @@ const AuthProvider = ({ children }) => {
 
   const signUp = async (values, cb) => {
     try {
-      const response = await axios.post("/user/", {
+      // set loading true
+      setIsLoading(true);
+
+      await axios.post("/user/", {
         name: values.name,
         email: values.email,
         password: values.password,
       });
 
-      if (response.status === 201) {
-        toast({
-          title: "User created Successfully",
-          variant: "success",
-        });
-        cb();
-      }
+      setIsLoading(false);
+      toast({
+        title: "User created Successfully",
+        variant: "success",
+      });
+      cb();
     } catch (error) {
+      setIsLoading(true);
       console.log(error);
       toast({
         title: error.response.data.message,
@@ -97,6 +104,7 @@ const AuthProvider = ({ children }) => {
     login,
     signUp,
     logout,
+    isLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

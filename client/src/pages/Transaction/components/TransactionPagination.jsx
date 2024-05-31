@@ -9,9 +9,11 @@ import {
   PaginationContent,
 } from "@/components/ui/pagination";
 import { useTransaction } from "@/provider/transactionProvider";
+import usePagination from "@/hooks/usePagination";
 
-const TransactionPagination = ({ totalPages, pagesToShow }) => {
+const TransactionPagination = () => {
   const { currentPage, paginate } = useTransaction();
+  const { totalPages, pagesToShow } = usePagination();
 
   return (
     <Pagination className="mb-3 cursor-pointer">
