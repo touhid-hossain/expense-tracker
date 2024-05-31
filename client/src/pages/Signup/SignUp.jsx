@@ -29,7 +29,9 @@ const signUpFormSchema = z.object({
 
 const SignUp = () => {
   const navigate = useNavigate();
-  const { token, signUp } = useAuth();
+  const { token, signUp, isLoading } = useAuth();
+
+  const buttonText = isLoading ? "Please wait" : "Sign Up";
 
   useEffect(() => {
     if (token) {
@@ -103,13 +105,13 @@ const SignUp = () => {
                 )}
               />
               <Button className="mt-5 w-full" type="submit">
-                Sign Up
-              </Button>
-              <Button variant="outline" className="mt-5 w-full" type="submit">
-                Sign Up with Google
+                {buttonText}
               </Button>
             </form>
           </Form>
+          <Button variant="outline" className="mt-5 w-full" type="submit">
+            Sign Up with Google
+          </Button>
           <div className="mt-8 text-center">
             <p className="text-slate-400">
               Already have an account?

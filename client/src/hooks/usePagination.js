@@ -3,7 +3,7 @@ import useSWR from "swr";
 
 function usePagination(props) {
   const { currentPage, filterType, debouncedSearch } = useTransaction();
-  const PAGINATE_LIMIT = props?.limit ? props?.limit : 2;
+  const PAGINATE_LIMIT = props?.limit ? props?.limit : 8;
   const page = props?.isNextPage ? currentPage + 1 : currentPage;
 
   const getPaginateKey = () => {

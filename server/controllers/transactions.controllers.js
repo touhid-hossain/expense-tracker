@@ -14,8 +14,6 @@ const {
 const createTransaction = async (req, res) => {
   const { name, type, category, amount } = req.body;
 
-  console.log(req.body);
-
   try {
     const newTransaction = await Transaction.create({
       creator: req.userId,

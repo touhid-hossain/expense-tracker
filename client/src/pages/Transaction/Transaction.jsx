@@ -13,8 +13,7 @@ import ErrorDiaLog from "./components/ErrorDialog";
 
 const Transaction = () => {
   const { toggleTransactionForm } = useTransaction();
-  const { isPaginateLoading, totalTransactions, transactionList } =
-    usePagination();
+  const { isPaginateLoading, totalTransactions } = usePagination();
 
   return (
     <Card className="mt-10 h-[85vh] flex flex-col justify-between">
