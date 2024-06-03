@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/sheet";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
+import { Skeleton } from "../ui/skeleton";
 
 const Sidebar = () => {
   const { logout } = useAuth();

@@ -12,9 +12,17 @@ env.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Cors options
+const corsOptions = {
+  origin: [
+    "https://expense-tracker-zdu4.vercel.app/",
+    "http://localhost:5173/",
+  ],
+};
+
 /* Set Middle wares  */
-app.use(cors());
 app.use(express.json());
+app.use(cors(corsOptions));
 
 // database connect
 connectDB();
