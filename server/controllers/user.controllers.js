@@ -2,6 +2,7 @@ const UserSchema = require("../models/user.models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const deleteFile = require("../utils/deleteFile");
+const cloudinaryUpload = require("../config/cloudinary");
 
 // Function for getting all users
 exports.getAllUsers = async (req, res) => {
@@ -132,7 +133,12 @@ exports.updateUser = async (req, res) => {
     }
 
     if (req.file) {
-      user.image_url = req.file.destination + req.file.filename;
+      const b64 = Buffer.from(req.file.buffer).toString("base64");
+
+      let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+      const { url } = await cloudinaryUpload(dataURI);
+
+      user.image_url = url;
     }
 
     if (req.body.password && req.body.newPassword) {
@@ -156,6 +162,7 @@ exports.updateUser = async (req, res) => {
       .json({ message: "Successfully updated.", user: updatedUser });
   } catch (err) {
     res.status(400).json({ message: err.message });
+    console.log(err);
   }
 };
 

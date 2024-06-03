@@ -4,11 +4,11 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import TransactionForm from "./TransactionForm";
 import { useTransaction } from "@/provider/transactionProvider";
-import usePagination from "@/hooks/usePagination";
+import useSWRTransaction from "@/hooks/useSWRTransaction";
 
 const CreateForm = () => {
   const { transactionFormOpen, toggleTransactionForm } = useTransaction();
-  const { isPaginateValidating } = usePagination();
+  const { createTransactionHandler, isCreating } = useSWRTransaction();
 
   return (
     <Dialog open={transactionFormOpen}>
@@ -27,7 +27,8 @@ const CreateForm = () => {
           </CardHeader>
           <CardContent>
             <TransactionForm
-              buttonText={isPaginateValidating ? "Creating..." : "Submit"}
+              buttonText={isCreating ? "Creating..." : "Submit"}
+              handler={createTransactionHandler}
             />
           </CardContent>
         </Card>

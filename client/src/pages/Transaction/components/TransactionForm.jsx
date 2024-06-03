@@ -19,28 +19,19 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import CustomCategory from "./CustomCategory";
-import useTransactionForm from "@/hooks/useTransactionForm";
 import { useTransaction } from "@/provider/transactionProvider";
+import useTransactionForm from "@/hooks/useTransactionForm";
 
-const TransactionForm = ({ buttonText, isEditMode }) => {
+const TransactionForm = ({ buttonText, isEditMode, handler }) => {
   const { selectedTransaction } = useTransaction();
-
-  const {
-    form,
-    categoryList,
-    transactionType,
-    createNewTransaction,
-    updateTransaction,
-  } = useTransactionForm(isEditMode && selectedTransaction);
+  const { form, categoryList, transactionType } = useTransactionForm(
+    isEditMode && selectedTransaction
+  );
 
   return (
     <Form {...form}>
       {/* Transaction Name */}
-      <form
-        onSubmit={form.handleSubmit(
-          isEditMode ? updateTransaction : createNewTransaction
-        )}
-      >
+      <form onSubmit={form.handleSubmit(handler)}>
         <FormField
           control={form.control}
           name="transactionName"

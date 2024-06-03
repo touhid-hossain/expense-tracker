@@ -20,6 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/useUser";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const profileUpdateFormSchema = z
   .object({
@@ -56,7 +57,7 @@ const profileUpdateFormSchema = z
 
 const SettingForm = ({ isEditing, setIsEditing }) => {
   const [imageFile, setImageFile] = useState(null);
-  const { user, userMutate } = useUser();
+  const { user, userUpdate, isUserLoading, isUpdating } = useUser();
 
   const form = useForm({
     resolver: zodResolver(profileUpdateFormSchema),
@@ -102,19 +103,10 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
         formData.append("image", imageFile);
       }
 
-      const { data } = await axios.put(`/user/${user._id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data", // Required for file uploads
-        },
-      });
-
-      // mutate user info
-      userMutate(async (user) => ({ ...user, ...data?.user }), {
-        revalidate: false,
-      });
+      await userUpdate({ userId: user?.id, formData });
 
       toast({
-        title: data?.message,
+        title: "Successfully Updated",
         variant: "success",
       });
 
@@ -127,15 +119,11 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
   return (
     <Form {...form}>
       <Avatar className="h-20 w-20">
-        <AvatarImage
-          className="bg-cover"
-          src={
-            imageFile
-              ? URL.createObjectURL(imageFile)
-              : `https://expense-tracker-tzs.vercel.app/${user?.image_url}`
-          }
-        />
-        <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
+        {isUserLoading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <AvatarImage className="bg-cover" src={user?.image_url} />
+        )}
       </Avatar>
 
       <form
@@ -258,7 +246,7 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
         {isEditing && (
           <div className="flex flex-row gap-2">
             <Button className="w-[140px] col-span-2" type="submit">
-              Update
+              {isUpdating ? "Updating" : "Update"}
             </Button>
             <Button
               onClick={() => setIsEditing(false)}

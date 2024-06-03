@@ -4,11 +4,11 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import TransactionForm from "./TransactionForm";
 import { useTransaction } from "@/provider/transactionProvider";
-import usePagination from "@/hooks/usePagination";
+import useSWRTransaction from "@/hooks/useSWRTransaction";
 
 const UpdateForm = () => {
   const { isEditMode, toggleEditForm } = useTransaction();
-  const { isPaginateValidating } = usePagination();
+  const { updateTransactionHandler, isUpdating } = useSWRTransaction();
 
   return (
     <Dialog open={isEditMode}>
@@ -27,8 +27,9 @@ const UpdateForm = () => {
           </CardHeader>
           <CardContent>
             <TransactionForm
-              buttonText={isPaginateValidating ? "Updating..." : "Update"}
+              buttonText={isUpdating ? "Updating..." : "Update"}
               isEditMode={true}
+              handler={updateTransactionHandler}
             />
           </CardContent>
         </Card>

@@ -51,8 +51,6 @@ const TransactionPagination = () => {
           if ((page === 2 && currentPage > 1) || page === totalPages - 1) {
             return <PaginationEllipsis key={`ellipsis-${page}`} />;
           }
-
-          return <h1>Loading...</h1>;
         })}
 
         <PaginationItem>

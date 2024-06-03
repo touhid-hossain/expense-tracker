@@ -17,10 +17,9 @@ import usePagination from "@/hooks/usePagination";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const RecentTransactions = () => {
-  const { user } = useUser();
-  const { data: currentTotalTransactions } = useSWR(
-    "/transaction/currentMonth/transactions"
-  );
+  const { user, isLoading } = useUser();
+  const { data: currentTotalTransactions, isLoading: totalTransactionLoading } =
+    useSWR("/transaction/currentMonth/transactions");
   const { transactionList, isPaginateLoading } = usePagination({
     isPageOne: true,
     limit: 8,
@@ -38,7 +37,18 @@ const RecentTransactions = () => {
   }
 
   if (isPaginateLoading) {
-    loadingAndEmptyContent = <Skeleton className="h-8 w-full" />;
+    loadingAndEmptyContent = (
+      <div className="flex flex-col gap-5">
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+        <Skeleton className="h-12 w-full" />
+      </div>
+    );
   }
 
   return (
@@ -47,7 +57,11 @@ const RecentTransactions = () => {
         <div>
           <CardTitle className="mb-2">Recent Transactions</CardTitle>
           <CardDescription>
-            You made {currentTotalTransactions} transactions this month.
+            {totalTransactionLoading ? (
+              <Skeleton className="w-full h-3" />
+            ) : (
+              `You made ${currentTotalTransactions} transactions this month.`
+            )}
           </CardDescription>
         </div>
         <Button asChild variant="outline">
@@ -63,11 +77,15 @@ const RecentTransactions = () => {
             return (
               <div key={transaction?._id} className="flex items-center">
                 <div className="h-9 w-9 rounded-full overflow-hidden">
-                  <img
-                    className="h-full w-full object-cover"
-                    src={`https://expense-tracker-tzs.vercel.app/${user?.image_url}`}
-                    alt="Avatar"
-                  />
+                  {isLoading ? (
+                    <Skeleton className="w-full h-full" />
+                  ) : (
+                    <img
+                      className="h-full w-full object-cover"
+                      src={user?.image_url}
+                      alt="Avatar"
+                    />
+                  )}
                 </div>
                 <div className="ml-4 space-y-1">
                   <p className="text-sm font-medium leading-none">

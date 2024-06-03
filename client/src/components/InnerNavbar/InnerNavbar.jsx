@@ -10,9 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/provider/authProvider";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Link, useNavigate } from "react-router-dom";
-import { getInitials } from "@/lib/utils";
 import { useUser } from "@/hooks/useUser";
 
 const InnerNavbar = () => {
@@ -31,11 +30,10 @@ const InnerNavbar = () => {
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="absolute h-8 w-8 ">
               <AvatarImage
-                src={`https://expense-tracker-tzs.vercel.app/${user?.image_url}`}
+                src={user?.image_url}
                 alt="profile picture"
                 className="rounded-full"
               />
-              <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>

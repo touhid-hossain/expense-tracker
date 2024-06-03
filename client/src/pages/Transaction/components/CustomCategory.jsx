@@ -33,9 +33,6 @@ const newTransactionFormSchema = z.object({
 const CustomCategory = ({ transactionType }) => {
   const form = useForm({
     resolver: zodResolver(newTransactionFormSchema),
-    defaultValues: {
-      transactionName: "",
-    },
   });
 
   const [openCustomCategory, setOpenCustomCategory] = useState(false);

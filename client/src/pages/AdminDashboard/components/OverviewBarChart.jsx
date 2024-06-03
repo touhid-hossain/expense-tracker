@@ -71,11 +71,11 @@ const Overview = () => {
         />
       ) : (
         <ResponsiveContainer width="100%" height={350}>
-          <BarChart barGap={2} barSize={60} data={summaryData.data}>
+          <BarChart barGap={2} barSize={60} data={summaryData?.data}>
             <XAxis dataKey={time === "yearly" ? "month" : "day"}>
               {time === "monthly" && (
                 <Label
-                  value={summaryData.data[0].month}
+                  value={summaryData?.data[0].month}
                   offset={-40}
                   position="left"
                 />

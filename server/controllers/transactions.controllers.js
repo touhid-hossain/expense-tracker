@@ -101,12 +101,24 @@ const getYearlyTransactionSummary = async (req, res) => {
   }
 };
 
-const getTransactionDetails = async (req, res) => {
+const getCurrentTransactionDetails = async (req, res) => {
   try {
     const userId = req.userId;
 
     const currentMonthData = await getMonthlyData(userId, currentMonth);
     const lastMonthData = await getMonthlyData(userId, lastMonth);
+
+    // Total Income
+    const incomeArr = await Transaction.find({ type: "income" });
+    const expenseArr = await Transaction.find({ type: "expense" });
+
+    const totalIncome = incomeArr.reduce((total, item) => {
+      return total + parseInt(item.amount);
+    }, 0);
+
+    const totalExpense = expenseArr.reduce((total, item) => {
+      return total + parseInt(item.amount);
+    }, 0);
 
     // Last month ==>
     const lastMonthIncome = incomeCalculate(lastMonthData);
@@ -212,6 +224,41 @@ const getTransactionDetails = async (req, res) => {
   }
 };
 
+const getTotalTransactionDetails = async (req, res) => {
+  try {
+    const userId = req.userId;
+    // Total Income
+    const incomeArr = await Transaction.find({ type: "income" });
+    const expenseArr = await Transaction.find({ type: "expense" });
+
+    const totalIncome = incomeArr.reduce((total, item) => {
+      return total + parseInt(item.amount);
+    }, 0);
+
+    const totalExpense = expenseArr.reduce((total, item) => {
+      return total + parseInt(item.amount);
+    }, 0);
+
+    const totalSaved = totalIncome - totalExpense;
+
+    return responseHandler({
+      res,
+      message: {
+        totalIncome,
+        totalExpense,
+        totalSaved,
+      },
+      code: 200,
+    });
+  } catch (error) {
+    responseHandler({
+      res,
+      message: error.message,
+      code: 400,
+    });
+  }
+};
+
 const getCurrentMonthlyTransactionSummary = async (req, res) => {
   try {
     const monthlyData = await getMonthlyData(req.userId, currentMonth);
@@ -265,8 +312,9 @@ module.exports = {
   getAllTransaction,
   getMonthlyTransactionSummary,
   getYearlyTransactionSummary,
-  getTransactionDetails,
   getCurrentMonthlyTransactionSummary,
   editTransaction,
   deleteTransaction,
+  getCurrentTransactionDetails,
+  getTotalTransactionDetails,
 };

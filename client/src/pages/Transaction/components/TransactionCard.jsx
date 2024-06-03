@@ -10,9 +10,10 @@ import {
 import dayjs from "dayjs";
 import { useUser } from "@/hooks/useUser";
 import { useTransaction } from "@/provider/transactionProvider";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function TransactionCard({ transaction, handleOpenDeleteDialog }) {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
   const { handleSelectUpdateTransaction } = useTransaction();
 
   const formattedTransactionDate = dayjs(transaction.createdAt).format(
@@ -22,11 +23,15 @@ function TransactionCard({ transaction, handleOpenDeleteDialog }) {
   return (
     <div className="flex items-center">
       <div className="h-9 w-9 rounded-full overflow-hidden">
-        <img
-          className="h-full w-full object-cover"
-          src={`https://expense-tracker-tzs.vercel.app/${user?.image_url}`}
-          alt="Avatar"
-        />
+        {isLoading ? (
+          <Skeleton className="w-full h-full" />
+        ) : (
+          <img
+            className="h-full w-full object-cover"
+            src={user.image_url}
+            alt="Avatar"
+          />
+        )}
       </div>
       <div className="ml-4 space-y-1">
         <p className="text-sm font-medium leading-none">{transaction?.name}</p>

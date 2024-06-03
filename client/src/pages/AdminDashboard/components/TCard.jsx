@@ -4,11 +4,12 @@ import { useUser } from "@/hooks/useUser";
 
 function TCard({ title, details }) {
   const { user } = useUser();
+  const { currentValue, totalValue } = details;
 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium">Overall {title}</CardTitle>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -24,11 +25,20 @@ function TCard({ title, details }) {
         </svg>
       </CardHeader>
       <CardContent>
-        <div className="text-2xl font-bold">
-          {details.value}
+        <div className="text-2xl mb-2 font-bold">
+          {totalValue}
           {user?.currency?.sign}
         </div>
-        <p className="text-xs text-muted-foreground">{details.percentage}</p>
+      </CardContent>
+      <CardContent>
+        <p className="text-sm font-medium mb-1">Current month {title}</p>
+        <div className="text-2xl font-bold">
+          {currentValue.value}
+          {user?.currency?.sign}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {currentValue?.percentage}
+        </p>
       </CardContent>
     </Card>
   );

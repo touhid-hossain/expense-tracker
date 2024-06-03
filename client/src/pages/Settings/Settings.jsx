@@ -15,7 +15,7 @@ const Settings = () => {
     <Card className="mt-10">
       <CardHeader className="flex flex-row justify-between items-center">
         <div>
-          <CardTitle>Account Information</CardTitle>
+          <CardTitle className="mb-2">Account Information</CardTitle>
           <CardDescription>Update Your account information</CardDescription>
         </div>
 

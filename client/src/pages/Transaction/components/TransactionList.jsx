@@ -19,9 +19,10 @@ const TransactionList = ({ isNextPage }) => {
     useState(false);
   const { filterType, debouncedSearch } = useTransaction();
 
-  const { transactionList, isPaginateLoading } = usePagination({
-    isNextPage,
-  });
+  const { transactionList, isPaginateLoading, isPaginateValidating } =
+    usePagination({
+      isNextPage,
+    });
 
   // toggle delete dialog
   const handleOpenDeleteDialog = () => setConfirmDeleteTransaction(true);
@@ -39,8 +40,19 @@ const TransactionList = ({ isNextPage }) => {
     );
   }
 
-  if (isPaginateLoading) {
-    return <Skeleton className="h-8 w-full" />;
+  if (isPaginateLoading || isPaginateValidating) {
+    return (
+      <div className="flex flex-col gap-5">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-8 w-full" />
+      </div>
+    );
   }
 
   return (
@@ -65,7 +77,7 @@ const TransactionList = ({ isNextPage }) => {
 
 // Delete transaction Dialog
 const DeleteTransactionForm = ({ confirmDelete, handleCloseDeleteDialog }) => {
-  const { deleteTransaction } = useSWRTransaction();
+  const { deleteTransactionHandler, isDeleting } = useSWRTransaction();
   const {
     currentPage,
     paginate,
@@ -88,12 +100,12 @@ const DeleteTransactionForm = ({ confirmDelete, handleCloseDeleteDialog }) => {
             Do you want to delete this transaction?
           </DialogTitle>
         </DialogHeader>
-        <div className="flex justify-between items-center m-auto w-[170px] mt-2 ">
+        <div className="flex gap-2 justify-center items-center mt-2 ">
           <Button
             type="button"
             variant="destructive"
-            onClick={() => {
-              deleteTransaction(selectedTransaction._id);
+            onClick={async () => {
+              await deleteTransactionHandler(selectedTransaction._id);
               if (transactionList.length === 1 && currentPage > 1) {
                 paginate(currentPage - 1);
               }
@@ -101,7 +113,7 @@ const DeleteTransactionForm = ({ confirmDelete, handleCloseDeleteDialog }) => {
               handleSelectUpdateTransaction(null, false);
             }}
           >
-            Delete
+            {isDeleting ? "Processing..." : "Delete"}
           </Button>
           <Button type="button" onClick={handleCloseDeleteDialog}>
             Cancel

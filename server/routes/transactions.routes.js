@@ -6,10 +6,11 @@ const {
   getAllTransaction,
   getYearlyTransactionSummary,
   getMonthlyTransactionSummary,
-  getTransactionDetails,
   getCurrentMonthlyTransactionSummary,
   deleteTransaction,
   editTransaction,
+  getCurrentTransactionDetails,
+  getTotalTransactionDetails,
 } = require("../controllers/transactions.controllers");
 
 // Route for creating a new transaction
@@ -29,7 +30,8 @@ router.get(
   getCurrentMonthlyTransactionSummary
 );
 
-router.get("/total-details", verifyToken, getTransactionDetails);
+router.get("/current-details", verifyToken, getCurrentTransactionDetails);
+router.get("/total-details", verifyToken, getTotalTransactionDetails);
 router.put("/edit-transaction/:id", editTransaction);
 router.delete("/delete-transaction/:id", deleteTransaction);
 
