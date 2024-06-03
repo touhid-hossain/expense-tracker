@@ -103,7 +103,7 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
         formData.append("image", imageFile);
       }
 
-      await userUpdate({ userId: user?.id, formData });
+      await userUpdate({ userId: user?._id, formData });
 
       toast({
         title: "Successfully Updated",
