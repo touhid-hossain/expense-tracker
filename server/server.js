@@ -14,10 +14,7 @@ const PORT = process.env.PORT || 5000;
 
 // Cors options
 const corsOptions = {
-  origin: [
-    "https://expense-tracker-zdu4.vercel.app/",
-    "http://localhost:5173/",
-  ],
+  origin: ["https://expense-tracker-zdu4.vercel.app", "http://localhost:5173"],
 };
 
 /* Set Middle wares  */
