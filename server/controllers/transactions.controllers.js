@@ -228,8 +228,14 @@ const getTotalTransactionDetails = async (req, res) => {
   try {
     const userId = req.userId;
     // Total Income
-    const incomeArr = await Transaction.find({ type: "income" });
-    const expenseArr = await Transaction.find({ type: "expense" });
+    const incomeArr = await Transaction.find({
+      type: "income",
+      creator: userId,
+    });
+    const expenseArr = await Transaction.find({
+      type: "expense",
+      creator: userId,
+    });
 
     const totalIncome = incomeArr.reduce((total, item) => {
       return total + parseInt(item.amount);

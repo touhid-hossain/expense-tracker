@@ -7,6 +7,8 @@ async function updatedUser(url, extraInfo) {
     arg: { userId, formData },
   } = extraInfo;
 
+  console.log(userId, formData);
+
   await axios.put(`${url}/${userId}`, formData, {
     headers: {
       "Content-Type": "multipart/form-data", // Required for file uploads

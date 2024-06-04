@@ -13,6 +13,7 @@ import { useAuth } from "@/provider/authProvider";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@/hooks/useUser";
+import { AvatarFallback } from "../ui/avatar";
 
 const InnerNavbar = () => {
   const { logout } = useAuth();
@@ -61,15 +62,18 @@ const InnerNavbar = () => {
       {/* My-Account Dropdown-Menu*/}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-            <Avatar className="absolute h-8 w-8 ">
+          <div className="cursor-pointer">
+            <Avatar>
               <AvatarImage
                 src={user?.image_url}
                 alt="profile picture"
-                className="rounded-full"
+                className="rounded-full w-12 aspect-square object-cover"
               />
+              <AvatarFallback className="p-2">
+                {user?.name.split(" ")[0]}
+              </AvatarFallback>
             </Avatar>
-          </Button>
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56" align="end" forceMount>
           <DropdownMenuLabel className="font-normal cursor-pointer">
