@@ -14,17 +14,22 @@ import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@/hooks/useUser";
 import { AvatarFallback } from "../ui/avatar";
+import { useTransaction } from "@/provider/transactionProvider";
 
 const InnerNavbar = () => {
   const { logout } = useAuth();
   const { user } = useUser();
   const navigate = useNavigate();
+  const { toggleSidebar } = useTransaction();
 
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-4">
         {/* Menu Button */}
-        <Button class="items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-none hover:bg-accent hover:text-accent-foreground hidden p-0 -ml-2 h-9 w-9 lg:flex">
+        <Button
+          onClick={toggleSidebar}
+          class="items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-none hover:bg-accent hover:text-accent-foreground hidden p-0 -ml-2 h-9 w-9 lg:flex"
+        >
           <svg
             stroke-width="1.5"
             viewBox="0 0 24 24"

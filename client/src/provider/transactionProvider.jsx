@@ -20,6 +20,12 @@ const TransactionProvider = ({ children }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isOpenErrorPopUp, setIsOpenErrorPopUp] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [isOpenSidebar, setIsOpenSidebar] = useState(false);
+
+  // open/close side-bar
+  const toggleSidebar = () => {
+    setIsOpenSidebar((prevState) => !prevState);
+  };
 
   //  open/close transaction form
   const toggleTransactionForm = () =>
@@ -32,7 +38,7 @@ const TransactionProvider = ({ children }) => {
     isOpenDialog && toggleEditForm();
   };
 
-  // toggle erorr dialog
+  // toggle error dialog
   const handleToggleErrorDialog = () =>
     setIsOpenErrorPopUp((prevState) => !prevState);
 
@@ -70,6 +76,8 @@ const TransactionProvider = ({ children }) => {
     toggleTransactionForm,
     handleToggleErrorDialog,
     handleSelectUpdateTransaction,
+    toggleSidebar,
+    isOpenSidebar,
   };
 
   return (
