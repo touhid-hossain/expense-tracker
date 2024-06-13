@@ -30,7 +30,7 @@ const RecentTransactions = () => {
   if (!transactionList.length) {
     loadingAndEmptyContent = (
       <EmptyState
-        title="Gretting!"
+        title="Greeting!"
         text="You didn't have no transactions record with yet now!"
       />
     );
@@ -53,10 +53,10 @@ const RecentTransactions = () => {
 
   return (
     <Card className="w-full flex flex-col xl:w-[40%] mt-10">
-      <CardHeader className="flex flex-row justify-between items-center">
+      <CardHeader className="flex sm:flex-row justify-between items-center">
         <div>
           <CardTitle className="mb-2">Recent Transactions</CardTitle>
-          <CardDescription>
+          <CardDescription className="mb-4 sm:mb-0">
             {totalTransactionLoading ? (
               <Skeleton className="w-full h-3" />
             ) : (
@@ -64,7 +64,7 @@ const RecentTransactions = () => {
             )}
           </CardDescription>
         </div>
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" className="w-full sm:w-auto">
           <Link to="/transaction"> View All</Link>
         </Button>
       </CardHeader>
@@ -75,25 +75,27 @@ const RecentTransactions = () => {
             const date = moment(transaction?.createdAt);
             const formattedTransactionDate = date.format("MMM D - h.mm a");
             return (
-              <div key={transaction?._id} className="flex items-center">
-                <div className="h-9 w-9 rounded-full overflow-hidden">
-                  {isLoading ? (
-                    <Skeleton className="w-full h-full" />
-                  ) : (
-                    <img
-                      className="h-full w-full object-cover"
-                      src={user?.image_url}
-                      alt="Avatar"
-                    />
-                  )}
-                </div>
-                <div className="ml-4 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {transaction?.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {formattedTransactionDate}
-                  </p>
+              <div className="flex justify-between items-center mt-5">
+                <div className="flex gap-4 flex-1">
+                  <div className="hidden sm:block h-9 w-9 rounded-full overflow-hidden">
+                    {isLoading ? (
+                      <Skeleton className="w-full h-full" />
+                    ) : (
+                      <img
+                        className="h-full w-full object-cover"
+                        src={user.image_url}
+                        alt="Avatar"
+                      />
+                    )}
+                  </div>
+                  <div className="ml-0 space-y-1">
+                    <p className="text-sm font-medium leading-none">
+                      {transaction?.name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {formattedTransactionDate}
+                    </p>
+                  </div>
                 </div>
                 <div className="ml-auto font-medium">
                   {transaction?.type === "income" ? "+" : "-"} $

@@ -24,15 +24,15 @@ function TCard({ title, details }) {
           <path d="M2 10h20" />
         </svg>
       </CardHeader>
-      <CardContent>
-        <div className="text-2xl mb-2 font-bold">
+      <CardContent className="p-0 pb-5 px-5">
+        <div className="text-xl sm:text-2xl font-bold">
           {totalValue}
           {user?.currency?.sign}
         </div>
       </CardContent>
-      <CardContent>
+      <CardContent className="border-t-2 pt-5">
         <p className="text-sm font-medium mb-1">Current month {title}</p>
-        <div className="text-2xl font-bold">
+        <div className="text-xl sm:text-2xl font-bold">
           {currentValue.value}
           {user?.currency?.sign}
         </div>

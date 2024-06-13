@@ -22,7 +22,7 @@ const Overview = () => {
   );
 
   const renderCustomizedLabel = (props) => {
-    const { x, y, width, height, value } = props;
+    const { x, y, width, value } = props;
     const radius = 10;
 
     return (
@@ -66,7 +66,7 @@ const Overview = () => {
     <div>
       {summaryData?.data.length === 0 ? (
         <EmptyState
-          title="Gretting!"
+          title="Greeting!"
           text="You didn't have no transactions record with yet now!"
         />
       ) : (
