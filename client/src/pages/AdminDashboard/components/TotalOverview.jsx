@@ -9,14 +9,14 @@ function TotalOverview() {
     isLoading: totalDetailsLoading,
   } = useSWR("/transaction/total-details");
   const {
-    data: currentDetials,
+    data: currentDetails,
     error: currentDetailsError,
-    isLoading: currentDetialsLoading,
+    isLoading: currentDetailsLoading,
   } = useSWR("/transaction/current-details");
 
-  if (totalDetailsError || currentDetailsError) return <p>An error occured</p>;
+  if (totalDetailsError || currentDetailsError) return <p>An error occurred</p>;
 
-  if (totalDetailsLoading || currentDetialsLoading) {
+  if (totalDetailsLoading || currentDetailsLoading) {
     return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-10">
         <Skeleton className="h-[200px]" />
@@ -27,25 +27,25 @@ function TotalOverview() {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3  mt-10">
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mt-6 sm:mt-10">
       <TCard
         title="Total Income"
         details={{
-          currentValue: currentDetials?.incomeDetail,
+          currentValue: currentDetails?.incomeDetail,
           totalValue: totalDetails?.totalIncome,
         }}
       />
       <TCard
         title="Total Expense"
         details={{
-          currentValue: currentDetials?.expenseDetail,
+          currentValue: currentDetails?.expenseDetail,
           totalValue: totalDetails?.totalExpense,
         }}
       />
       <TCard
         title="Total Saved"
         details={{
-          currentValue: currentDetials?.savedDetail,
+          currentValue: currentDetails?.savedDetail,
           totalValue: totalDetails?.totalSaved,
         }}
       />

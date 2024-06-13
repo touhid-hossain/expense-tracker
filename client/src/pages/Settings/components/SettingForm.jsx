@@ -11,13 +11,10 @@ import {
 import { Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "@/lib/axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getInitials } from "@/lib/utils";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/useUser";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -118,7 +115,7 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
 
   return (
     <Form {...form}>
-      <Avatar className="h-20 w-20">
+      <Avatar className="h-12 w-12 md:h-14 md:w-14">
         {isUserLoading ? (
           <Skeleton className="w-full h-full" />
         ) : (
@@ -127,7 +124,7 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
       </Avatar>
 
       <form
-        className="grid grid-cols-2 gap-5 "
+        className="grid grid-cols-1 gap-5 md:grid md:grid-cols-2"
         onSubmit={form.handleSubmit(handleProfileUpdate)}
       >
         <FormField
@@ -244,7 +241,7 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
           )}
         />
         {isEditing && (
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 mt-5 md:mt-0">
             <Button className="w-[140px] col-span-2" type="submit">
               {isUpdating ? "Updating" : "Update"}
             </Button>

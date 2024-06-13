@@ -16,12 +16,12 @@ const Transaction = () => {
   const { isPaginateLoading, totalTransactions } = usePagination();
 
   return (
-    <Card className="mt-10 h-[85vh] flex flex-col justify-between">
+    <Card className="mt-8 md:mt-10 flex flex-col justify-between">
       <div>
         <CardHeader>
-          <div className="flex justify-between items-end mb-10">
+            <CardTitle className="text-xl sm:text-2xl mb-5">Transaction Page</CardTitle>
+          <div className="flex flex-col sm:flex-row items-start gap-5 justify-between md:items-end mb-10">
             <div>
-              <CardTitle className="mb-5">Transaction Page</CardTitle>
               <Button variant="outline" onClick={toggleTransactionForm}>
                 Add new +
               </Button>
