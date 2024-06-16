@@ -37,17 +37,17 @@ const profileUpdateFormSchema = z
       .string()
       .min(1, { message: "This field has to be filled." })
       .email("This is not a valid email."),
-    image: z
-      .any()
+    // image: z
+    //   .any()
 
-      .refine(
-        (file) => file?.size <= MAX_FILE_SIZE_BYTE,
-        `Max image size is 80KB.`
-      )
-      .refine(
-        (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-        "Only .jpg, .jpeg, .png and .webp formats are supported."
-      ),
+    //   .refine(
+    //     (file) => file?.size <= MAX_FILE_SIZE_BYTE,
+    //     `Max image size is 80KB.`
+    //   )
+    //   .refine(
+    //     (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+    //     "Only .jpg, .jpeg, .png and .webp formats are supported."
+    //   ),
 
     password: z
       .string()
@@ -108,7 +108,7 @@ const SettingForm = ({ isEditing, editAccesOff }) => {
         formData.append("password", values.password);
         formData.append("newPassword", values.newPassword);
       }
-      formData.append("image", values.image);
+      // formData.append("image", values.image);
 
       await userUpdate({ userId: user?._id, formData });
 
