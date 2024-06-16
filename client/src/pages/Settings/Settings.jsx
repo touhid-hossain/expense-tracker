@@ -17,13 +17,19 @@ const Settings = () => {
 
   return (
     <Card className="mt-10">
-      <CardHeader className="flex flex-row justify-between items-center">
-        <div>
-          <CardTitle className="mb-2">Account Information</CardTitle>
+      <CardHeader className="flex md:flex-row justify-between items-center">
+        <div className="mb-2 md:mb-0">
+          <CardTitle className="text-xl sm:text-2xl mb-1">
+            Account Information
+          </CardTitle>
           <CardDescription>Update Your account information</CardDescription>
         </div>
 
-        <Button disabled={isEditing} onClick={editAccesOn}>
+        <Button
+          className="w-full md:w-auto"
+          disabled={isEditing}
+          onClick={() => setIsEditing(true)}
+        >
           Edit
         </Button>
       </CardHeader>

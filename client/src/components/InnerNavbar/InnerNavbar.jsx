@@ -13,15 +13,56 @@ import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@/hooks/useUser";
 import { AvatarFallback } from "../ui/avatar";
+import { useTransaction } from "@/provider/transactionProvider";
 
 const InnerNavbar = () => {
   const { logout } = useAuth();
   const { user } = useUser();
   const navigate = useNavigate();
+  const { toggleSidebar } = useTransaction();
 
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-4">
+        {/* Menu Button */}
+        <div className="w-auto">
+          <Button
+            onClick={toggleSidebar}
+            class="items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-none hover:bg-accent hover:text-accent-foreground p-0 -ml-2 h-9 w-9 lg:flex"
+          >
+            <svg
+              stroke-width="1.5"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+            >
+              <path
+                d="M3 5H11"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+              <path
+                d="M3 12H16"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+              <path
+                d="M3 19H21"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+            <span class="sr-only">Toggle Sidebar</span>
+          </Button>
+        </div>
+
         <p className="text-gray-800 text-2xl font-bold">Expense Tracker</p>
       </div>
       {/* My-Account Dropdown-Menu*/}
@@ -32,7 +73,7 @@ const InnerNavbar = () => {
               <AvatarImage
                 src={user?.image_url}
                 alt="profile picture"
-                className="rounded-full w-12 aspect-square object-cover"
+                className="rounded-full w-10 xl:w-12 aspect-square object-cover"
               />
               <AvatarFallback className="p-2">
                 {user?.lastName.charAt[0]}

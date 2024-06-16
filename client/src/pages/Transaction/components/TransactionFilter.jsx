@@ -10,10 +10,10 @@ function TransactionFilter() {
   const { paginate, handleSearch, search, handleFilterType, filterType } =
     useTransaction();
 
-  const { totalTransactions, isPaginateLoading } = usePagination();
+  const { totalTransactions } = usePagination();
 
   return (
-    <div className="w-[300px] relative">
+    <div className="relative">
       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
 
       <div>
@@ -25,7 +25,7 @@ function TransactionFilter() {
         />
       </div>
       {/* Filter Transaction List */}
-      <div className="flex justify-end gap-3 mt-3">
+      <div className="flex sm:justify-end gap-2 mt-4">
         <Label>Sort By :</Label>
         <RadioGroup
           onValueChange={(value) => {
