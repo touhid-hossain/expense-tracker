@@ -14,6 +14,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useUser } from "@/hooks/useUser";
 import { AvatarFallback } from "../ui/avatar";
 import { useTransaction } from "@/provider/transactionProvider";
+import { Button } from "../ui/button";
 
 const InnerNavbar = () => {
   const { logout } = useAuth();
