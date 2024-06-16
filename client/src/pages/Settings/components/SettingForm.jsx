@@ -38,9 +38,8 @@ const profileUpdateFormSchema = z
       .min(1, { message: "This field has to be filled." })
       .email("This is not a valid email."),
     image: z
-      .instanceof(File)
-      .optional()
-      // .nullable()
+      .any()
+
       .refine(
         (file) => file?.size <= MAX_FILE_SIZE_BYTE,
         `Max image size is 80KB.`
@@ -139,7 +138,7 @@ const SettingForm = ({ isEditing, editAccesOff }) => {
         className="grid grid-cols-1 gap-5 md:grid md:grid-cols-2"
         onSubmit={form.handleSubmit(handleProfileUpdate)}
       >
-        <FormField
+        {/* <FormField
           disabled={!isEditing}
           control={form.control}
           name="image"
@@ -160,7 +159,7 @@ const SettingForm = ({ isEditing, editAccesOff }) => {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           disabled={!isEditing}

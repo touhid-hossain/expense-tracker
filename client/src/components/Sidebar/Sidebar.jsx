@@ -36,7 +36,7 @@ const Sidebar = () => {
                   alt="user-image"
                 />
               )}
-              <p className="text-white">Hello, {user?.name.split(" ")[0]}</p>
+              <p className="text-white">Hello, {user?.lastName}</p>
             </div>
 
             {/* Navigation Pages */}
