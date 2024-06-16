@@ -11,16 +11,18 @@ import {
 import { Lock } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import axios from "@/lib/axios";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getInitials } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { useUser } from "@/hooks/useUser";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_FILE_SIZE_BYTE,
+} from "@/pages/Signup/SignUp";
 
 const profileUpdateFormSchema = z
   .object({
@@ -36,7 +38,19 @@ const profileUpdateFormSchema = z
       .string()
       .min(1, { message: "This field has to be filled." })
       .email("This is not a valid email."),
-    image: z.any().optional(),
+    image: z
+      .instanceof(File)
+      .optional()
+      // .nullable()
+      .refine(
+        (file) => file?.size <= MAX_FILE_SIZE_BYTE,
+        `Max image size is 80KB.`
+      )
+      .refine(
+        (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
+        "Only .jpg, .jpeg, .png and .webp formats are supported."
+      ),
+
     password: z
       .string()
       .optional()
@@ -55,8 +69,7 @@ const profileUpdateFormSchema = z
     path: ["password"],
   });
 
-const SettingForm = ({ isEditing, setIsEditing }) => {
-  const [imageFile, setImageFile] = useState(null);
+const SettingForm = ({ isEditing, editAccesOff }) => {
   const { user, userUpdate, isUserLoading, isUpdating } = useUser();
 
   const form = useForm({
@@ -65,52 +78,49 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
       firstName: "",
       lastName: "",
       email: "",
-      image: "",
       password: "",
       newPassword: "",
     },
   });
 
+  const imageRef = form.register("image", { required: false });
   useEffect(() => {
     if (user) {
-      form.setValue("firstName", user.name.split(" ")[0] || "");
-      form.setValue("lastName", user.name.split(" ")[1] || "");
-      form.setValue("email", user.email || "");
+      form.reset({
+        firstName: user?.firstName,
+        lastName: user?.lastName,
+        email: user?.email,
+        // password: "",
+        // newPassword: "",
+        // image: null,
+      });
     }
-  }, [user]);
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setImageFile(file);
-  };
+  }, [user, isEditing]);
 
   const handleProfileUpdate = async (values) => {
+    console.log(values);
     // return
     try {
       const formData = new FormData();
-      const fullName = values.firstName + " " + values.lastName;
 
-      formData.append("name", fullName);
+      formData.append("firstName", values.firstName);
+      formData.append("lastName", values.lastName);
       formData.append("email", values.email);
 
       if (values.newPassword) {
         formData.append("password", values.password);
         formData.append("newPassword", values.newPassword);
       }
+      formData.append("image", values.image);
 
-      // Handle profile picture if uploaded
-      if (values.image && imageFile) {
-        formData.append("image", imageFile);
-      }
-
-      await userUpdate({ userId: user?._id, formData });
+      // await userUpdate({ userId: user?._id, formData });
 
       toast({
         title: "Successfully Updated",
         variant: "success",
       });
 
-      setIsEditing(false);
+      editAccesOff();
     } catch (error) {
       console.log(error);
     }
@@ -134,19 +144,17 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
           disabled={!isEditing}
           control={form.control}
           name="image"
-          render={({ field }) => (
+          render={({ field: { value, onChange, ...fieldProps } }) => (
             <FormItem>
               <FormLabel>Profile Picture</FormLabel>
               <FormControl>
                 <Input
                   className="cursor-pointer"
-                  // id="image"
-                  name="image"
                   type="file"
-                  {...field}
+                  // {...fieldProps}
+                  {...form.register("image")}
                   onChange={(event) => {
-                    handleImageChange(event);
-                    field.onChange(event);
+                    onChange(event.target.files && event.target.files[0]);
                   }}
                 />
               </FormControl>
@@ -249,7 +257,7 @@ const SettingForm = ({ isEditing, setIsEditing }) => {
               {isUpdating ? "Updating" : "Update"}
             </Button>
             <Button
-              onClick={() => setIsEditing(false)}
+              onClick={editAccesOff}
               variant="ghost"
               className="w-[140px] col-span-2 text-red-600 hover:bg-red-300"
             >

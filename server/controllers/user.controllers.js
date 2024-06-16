@@ -78,10 +78,10 @@ exports.authenticate = async (req, res) => {
 
 // Function for creating a new user
 exports.createUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { firstName, lastName, email, password } = req.body;
 
   try {
-    if (!email || !password || !name) {
+    if (!email || !password || !firstName || !lastName || !req.file) {
       return res.status(400).json({ message: "Required field missing" });
     }
     const existingUser = await UserSchema.findOne({
@@ -93,13 +93,22 @@ exports.createUser = async (req, res) => {
       return res.status(409).json({ message: "Email already in use!" });
     }
 
+    // file upload on cloudinary
+
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
+
+    let dataURI = "data:" + req.file.mimetype + ";base64," + b64;
+    const { url } = await cloudinaryUpload(dataURI);
+
     // HASH PASSWORD
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await UserSchema.create({
-      name: name,
-      email: email,
+      firstName,
+      lastName,
+      email,
       hashed_password: hashedPassword,
+      image_url: url,
     });
 
     // EXCLUDE THE hashed_password FIELD FROM THE RESPONSE
@@ -117,20 +126,16 @@ exports.createUser = async (req, res) => {
 
 // Function for updating a user
 exports.updateUser = async (req, res) => {
+  console.log(req.body);
   let user;
   try {
     user = await UserSchema.findById(req.userId);
     if (!user) {
       return res.status(404).json({ message: "Cannot find user" });
     }
-
-    if (req.body.name) {
-      user.name = req.body.name;
-    }
-
-    if (req.body.email) {
-      user.email = req.body.email;
-    }
+    user.firstName = req.body.firstName;
+    user.lastName = req.body.lastName;
+    user.email = req.body.email;
 
     if (req.file) {
       const b64 = Buffer.from(req.file.buffer).toString("base64");

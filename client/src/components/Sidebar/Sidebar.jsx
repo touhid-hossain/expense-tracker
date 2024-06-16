@@ -26,7 +26,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <div className="flex flex-shrink-0 flex-col items-center justify-between gap-20  px-5 py-8 h-screen sticky top-0 bg-zinc-800">
+      <div className="flex flex-shrink-0 w-[250px] flex-col items-center justify-between gap-20  px-5 py-8 h-screen sticky top-0 bg-zinc-800">
         {/* User */}
         <div className="flex flex-col gap-3 items-center">
           {isLoading ? (
@@ -38,7 +38,7 @@ const Sidebar = () => {
               alt="user-image"
             />
           )}
-          <p className="text-white">Hello, {user?.name.split(" ")[0]}</p>
+          <p className="text-white">Hi, {user?.lastName}</p>
         </div>
 
         {/* Navigation Pages */}

@@ -62,15 +62,17 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  const signUp = async (values, cb) => {
+  const signUp = async (formData, cb) => {
+    console.log(formData);
+
     try {
       // set loading true
       setIsLoading(true);
 
-      await axios.post("/user/", {
-        name: values.name,
-        email: values.email,
-        password: values.password,
+      await axios.post("/user", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
       setIsLoading(false);
@@ -80,7 +82,7 @@ const AuthProvider = ({ children }) => {
       });
       cb();
     } catch (error) {
-      setIsLoading(true);
+      setIsLoading(false);
       console.log(error);
       toast({
         title: error.response.data.message,

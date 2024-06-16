@@ -8,7 +8,7 @@ const upload = require("../middlewares/uploadMiddleware");
 // router.get("/:id", userController.getUserById);
 
 // Route for creating a new user
-router.post("/", userController.createUser);
+router.post("/", upload.single("userImage"), userController.createUser);
 
 // Route for getting a single user by id
 router.get("/", verifyToken, userController.getUser);

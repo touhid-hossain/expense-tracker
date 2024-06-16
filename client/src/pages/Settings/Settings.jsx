@@ -11,6 +11,10 @@ import SettingForm from "./components/SettingForm";
 
 const Settings = () => {
   const [isEditing, setIsEditing] = useState(false);
+
+  const editAccesOn = () => setIsEditing(true);
+  const editAccesOff = () => setIsEditing(false);
+
   return (
     <Card className="mt-10">
       <CardHeader className="flex flex-row justify-between items-center">
@@ -19,14 +23,14 @@ const Settings = () => {
           <CardDescription>Update Your account information</CardDescription>
         </div>
 
-        <Button disabled={isEditing} onClick={() => setIsEditing(true)}>
+        <Button disabled={isEditing} onClick={editAccesOn}>
           Edit
         </Button>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-5">
         {/* Setting Form */}
-        <SettingForm isEditing={isEditing} setIsEditing={setIsEditing} />
+        <SettingForm isEditing={isEditing} editAccesOff={editAccesOff} />
       </CardContent>
     </Card>
   );
