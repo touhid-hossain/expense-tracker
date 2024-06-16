@@ -81,7 +81,6 @@ const SettingForm = ({ isEditing, editAccesOff }) => {
     },
   });
 
-  const imageRef = form.register("image", { required: false });
   useEffect(() => {
     if (user) {
       form.reset({
@@ -111,7 +110,7 @@ const SettingForm = ({ isEditing, editAccesOff }) => {
       }
       formData.append("image", values.image);
 
-      // await userUpdate({ userId: user?._id, formData });
+      await userUpdate({ userId: user?._id, formData });
 
       toast({
         title: "Successfully Updated",
