@@ -77,7 +77,7 @@ const InnerNavbar = () => {
                 className="rounded-full w-10 xl:w-12 aspect-square object-cover"
               />
               <AvatarFallback className="p-2">
-                {user?.lastName.charAt[0]}
+                {user?.lastName?.charAt[0]}
               </AvatarFallback>
             </Avatar>
           </div>
