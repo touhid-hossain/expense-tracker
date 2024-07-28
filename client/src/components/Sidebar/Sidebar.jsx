@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useRef, useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useAuth } from "@/provider/authProvider";
@@ -8,16 +8,45 @@ import { Skeleton } from "../ui/skeleton";
 import { X } from "lucide-react";
 import { useTransaction } from "@/provider/transactionProvider";
 
+const useClickOutside = (ref, handler) => {
+  // Add event listeners
+  useEffect(() => {
+    const listener = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        handler(event);
+      }
+    };
+    document.addEventListener("mousedown", listener);
+    // Return a cleanup function to remove event listeners
+    return () => {
+      document.removeEventListener("mousedown", listener);
+    };
+  }, [ref, handler]);
+};
+
 const Sidebar = () => {
   const { logout } = useAuth();
   const { user, isLoading } = useUser();
   const navigate = useNavigate();
   const { toggleSidebar, isOpenSidebar } = useTransaction();
+  const sidebarRef = React.useRef(null);
+
+  // Calling the useClickOutside Fn from inside the Sidebar component. 
+  useClickOutside(sidebarRef, () => {
+    if (isOpenSidebar) {
+      toggleSidebar();
+    }
+  });
 
   return (
     <>
       <Sheet open={isOpenSidebar}>
-        <SheetContent side="left" className="w-[220px] md:w-[300px] ">
+        <SheetContent
+          side="left"
+          className="w-[220px] md:w-[300px]"
+          id="sidebar"
+          ref={sidebarRef}
+        >
           <div
             onClick={toggleSidebar}
             className="cursor-pointer z-50 bg-slate-200 absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-secondary"
